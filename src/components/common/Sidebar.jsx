@@ -1,245 +1,122 @@
-import React , {useState} from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Home, Search, MergeType, AddCircleOutline, Label, Build, 
-    Apps, Notifications, HelpOutline, BedOutlined, 
-    AnalyticsOutlined,
-    SensorOccupied,
-    Collections,
-    MonetizationOn,
-    Logout,
-    Add,
-    DataArray} from '@mui/icons-material';
+import React from 'react';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
+import { Dashboard, Report, Person, AttachMoney, Apps, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn } from '@mui/icons-material';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const user = localStorage.getItem('role')
+const Sidebar = ({ sidebarWidth }) => {
+  const [openTransactions, setOpenTransactions] = useState(false);
+  const [openMore, setOpenMore] = useState(false);
+  const role = localStorage.getItem('role');
 
-const Sidebar = () => {
+  const handleTransactionsClick = () => {
+    setOpenTransactions(!openTransactions);
+  };
 
-    const navigate = useNavigate()
-    const handleClick= () => {
-        navigate('/dashboard')
-    }
+  const handleMoreClick = () => {
+    setOpenMore(!openMore);
+  };
 
-    const handle2 = ()=> {
-        navigate('/room_analysis')
-    }
-    const handle3 = () => {
-        navigate('/occupancy_report')
-    }
+  const navigate = useNavigate();
 
-    const handle4 = () =>{
-        navigate('/floor_wise')
-    }
-    
-    const handle5 = () =>{
-        navigate('/daily_collections')
-    }
-    const handle6 = () =>{
-        navigate('/daily_sales')
-    }
-    const handleLogout = () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      navigate('/')
-  }
-  const handle7 = () =>{
-    navigate('/add_ledger')
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('fname');
+    localStorage.removeItem('lname');
+    navigate('/');
+  };
 
-  const handle8 = () =>{
-    navigate('/ledger_list')
-  }
-  const handle9 = () =>{
-    navigate('/add_creditor')
-  }
-  const handle10 = () =>{
-    navigate('/creditor_list')
-  }
+  const navigateTo = (path) => () => {
+    navigate(path);
+  };
+
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: 240,
-          boxSizing: 'border-box',
-        },
-      }}
-    >
-      
-      <List>
-        {user === 'accounting' && (
-          <>
-            <ListItem onClick={handleClick} sx={{cursor: 'pointer'}}>
-              <ListItemIcon >
-                <Home />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
-            <ListItem  onClick={handle7} sx={{cursor: 'pointer'}}>
-              <ListItemIcon>
-                <Add />
-              </ListItemIcon>
-              <ListItemText primary="Add Ledger" />
-            </ListItem>
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle8}>
-              <ListItemIcon>
-                <DataArray />
-              </ListItemIcon>
-              <ListItemText primary='Ledger List'/>
-            </ListItem>
-
-            <ListItem  onClick={handle9} sx={{cursor: 'pointer'}}>
-              <ListItemIcon>
-                <Add />
-              </ListItemIcon>
-              <ListItemText primary="Add Creditors" />
-            </ListItem>
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle10}>
-              <ListItemIcon>
-                <DataArray />
-              </ListItemIcon>
-              <ListItemText primary='Creditors List'/>
-            </ListItem>
-
-            <ListItem sx={{cursor: 'pointer'}} onClick={handleLogout}>
-              <ListItemIcon>
-                <Logout/>
-              </ListItemIcon>
-              <ListItemText primary='Logout' />
-            </ListItem>
-          </>
-        )}
-        {user === 'front_office' && (
-          <>
-            <ListItem onClick={handleClick} sx={{ cursor: 'pointer' }}>
-              <ListItemIcon>
-                <BedOutlined/>
-              </ListItemIcon>
-              <ListItemText primary="Rooms" />
-            </ListItem>
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle2}>
-              <ListItemIcon>
-                <AnalyticsOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Room Analysis" />
-            </ListItem>
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle3}>
-                <ListItemIcon>
-                    <SensorOccupied />
-                </ListItemIcon>
-                <ListItemText primary='Occupancy Report'/>
-            </ListItem>
-
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle4}>
-                <ListItemIcon>
-                    <SensorOccupied />
-                </ListItemIcon>
-                <ListItemText primary='Occupancy FloorWise'/>
-            </ListItem >
-
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle5}>
-                <ListItemIcon>
-                    <Collections />
-                </ListItemIcon>
-                <ListItemText primary='Daily Collections'/>
-            </ListItem>
-
-            <ListItem sx={{cursor: 'pointer'}} onClick={handle6}>
-                <ListItemIcon>
-                    <MonetizationOn/>
-                </ListItemIcon>
-                <ListItemText primary='Sales Report'/>
-            </ListItem>
-            <ListItem sx={{cursor: 'pointer'}} onClick={handleLogout}>
-              <ListItemIcon>
-                <Logout/>
-              </ListItemIcon>
-              <ListItemText primary='Logout' />
-            </ListItem>
-          </>
-        )}
-        {user === 'food_beverage_service' && (
-          <>
-            <ListItem>
-              <ListItemIcon>
-                <Search />
-              </ListItemIcon>
-              <ListItemText primary="Inspection" />
-            </ListItem>
-          </>
-        )}
-        {user === 'food_beverage_production' && (
-          <>
-            <ListItem>
-              <ListItemIcon>
-                <MergeType />
-              </ListItemIcon>
-              <ListItemText primary="Merge" />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <AddCircleOutline />
-              </ListItemIcon>
-              <ListItemText primary="Complement" />
-            </ListItem>
-          </>
-        )}
-        {user === 'house_keeping' && (
-          <>
-            <ListItem>
-              <ListItemIcon>
-                <Label />
-              </ListItemIcon>
-              <ListItemText primary="Labels" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Build />
-              </ListItemIcon>
-              <ListItemText primary="Adjust" />
-            </ListItem>
-          </>
-        )}
-        {user === 'banquetting' && (
-          <>
-            <ListItem>
-              <ListItemIcon>
-                <Apps />
-              </ListItemIcon>
-              <ListItemText primary="Apps" />
-            </ListItem>
-          </>
-        )}
-        {user === 'general_manager' && (
-          <>
-            <ListItem>
-              <ListItemIcon>
-                <Notifications />
-              </ListItemIcon>
-              <ListItemText primary="Notifications" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <HelpOutline />
-              </ListItemIcon>
-              <ListItemText primary="Help" />
-            </ListItem>
-          </>
-        )}
-        {user === 'procurement' && (
-          <>
-            <ListItem>
-              <ListItemIcon>
-                <Home />
-              </ListItemIcon>
-              <ListItemText primary="Procurement" />
-            </ListItem>
-          </>
-        )}
-      </List>
-      
+    <Drawer variant="permanent" sx={{
+      width: sidebarWidth,
+      '& .MuiDrawer-paper': {
+        width: sidebarWidth,
+        backgroundColor: 'black',
+        color: 'white',
+      },
+    }}>
+      {role === 'service' && (
+        <List>
+          <ListItem button onClick={navigateTo('/dashboard')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Dashboard />
+            </ListItemIcon>
+            <ListItemText primary="Dashboards" />
+          </ListItem>
+          <ListItem button onClick={handleTransactionsClick}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <PointOfSaleOutlined />
+            </ListItemIcon>
+            <ListItemText primary="POS" />
+            {openTransactions ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openTransactions} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/restaurant')}>
+                <ListItemText primary="Restaurant" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bar')}>
+                <ListItemText primary="Bar" />
+              </ListItem>
+            </List>
+          </Collapse>
+          <ListItem button onClick={navigateTo('/bills')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <MonetizationOn />
+            </ListItemIcon>
+            <ListItemText primary="Bills" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/reports')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Report />
+            </ListItemIcon>
+            <ListItemText primary="Reports" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/employees')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary="Employees" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/vat')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AttachMoney />
+            </ListItemIcon>
+            <ListItemText primary="VAT" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/my-accountant')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary="My accountant" />
+          </ListItem>
+          <ListItem button onClick={handleMoreClick}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Apps />
+            </ListItemIcon>
+            <ListItemText primary="Apps" />
+            {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/apps/more')}>
+                <ListItemText primary="More (0)" />
+              </ListItem>
+            </List>
+          </Collapse>
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      )}
     </Drawer>
   );
 };

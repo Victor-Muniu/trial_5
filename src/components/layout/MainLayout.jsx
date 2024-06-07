@@ -4,14 +4,14 @@ import React from 'react';
 import Sidebar from '../common/Sidebar';
 import { Outlet } from 'react-router-dom';
 
-const sidebarWidth = 350;
+const sidebarWidth = 280;
 
 const MainLayout = () => {
   return (
     <Box display="flex">
-      {/* sidebar */}
+    
       <Sidebar sidebarWidth={sidebarWidth} />
-      {/* sidebar */}
+      
 
       <Box
         component="main"

@@ -33,6 +33,8 @@ function LoginPage() {
                 const user = data.user
                 localStorage.setItem('token', token);
                 localStorage.setItem('role', user.role);
+                localStorage.setItem('fname',user.fname)
+                localStorage.setItem('lname',user.lname)
 
                 setIsLoggedIn(true);
                 setTimeout(() => {

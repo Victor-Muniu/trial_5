@@ -1,18 +1,15 @@
 import React from 'react'
 import { Box } from '@mui/material'
-import Room from '../components/Room'
-import Home from './Home'
+import Restaurant from '../components/common/Restaurant'
+
 function Dashboard() {
   const user = localStorage.getItem('role')
   
 
   return (
     <Box>
-      {user === 'front_office' && (
-        <Room />
-      )}
-      {user === 'accounting' && (
-        <Home />
+      {user === 'service' && (
+        <Restaurant />
       )}
     </Box>
   )

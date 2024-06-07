@@ -3,16 +3,11 @@ import AppLayout from "../components/layout/AppLayout";
 import LoginPage from "../pages/LoginPage";
 import MainLayout from "../components/layout/MainLayout";
 import Dashboard from "../pages/Dashboard";
-import ReservationForm from "../pages/ReservationForm";
-import RoomAnalytics from "../pages/RoomAnalytics";
-import Occopancy_Report from "../pages/Occopancy_Report";
-import FloorWise from "../pages/FloorWise";
-import CollectionReport from "../pages/CollectionReport";
-import DailySales from "../pages/DailySales";
-import AddLedger from "../pages/AddLedger";
-import LedgerList from "../pages/LedgerList";
-import AddCreditors from "../pages/AddCreditors";
-import CreditorsList from "../pages/CreditorsList";
+import Bar from "../pages/Bar";
+import Reststaurant2 from "../pages/Reststaurant2";
+import Menu from "../pages/Menu";
+import Menu2 from "../pages/Menu2";
+import Bills from "../pages/Bills";
 
 
 const checkAuth = (path) => {
@@ -50,107 +45,58 @@ export const router = createBrowserRouter([
         ]
     },
     {
-        path: "/checkin",
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <ReservationForm />
-            }
-        ]
+      path: '/bar',
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element:<Bar />
+        }
+      ]
     },
     {
-        path: '/room_analysis',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <RoomAnalytics />
-            }
-        ]
+      path: '/restaurant', 
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <Reststaurant2 />
+        }
+      ]
+    },  
+    {
+      path: '/menu/:table_no',
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <Menu />
+        }
+      ]
     },
     {
-        path: '/occupancy_report',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <Occopancy_Report />
-            }
-        ]
+      path: '/menu2/:table_no',
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <Menu2 />
+        }
+      ]
     },
     {
-        path: '/floor_wise',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <FloorWise />
-            }
-        ]
+      path: '/bills',
+      element: <MainLayout />, 
+      children: [
+        {
+          index: true,
+          element: <Bills />
+        }
+      ]
     },
     {
-        path: '/daily_collections',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <CollectionReport />
-            }
-        ]
-    },
-    {
-        path: '/daily_sales',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <DailySales />
-            }
-        ]
-    },
-    {
-        path: '/add_ledger',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <AddLedger />
-            }
-        ]
-    },
-    {
-        path: '/ledger_list',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <LedgerList />
-            }
-        ]
-    },
-    {
-        path: '/add_creditor',
-        element: <MainLayout />,
-        children: [
-            {
-               index: true,
-               element: <AddCreditors /> 
-            }
-        ]
-    },
-    {
-        path: '/creditor_list',
-        element: <MainLayout />,
-        children: [
-            {
-                index: true,
-                element: <CreditorsList />
-            }
-        ]
-    },
-    {
-        path: "*",
-        element: <Navigate to={checkAuth()} replace />
-    }
+      path: "*",
+      element: <Navigate to={checkAuth()} replace />, 
+      
+    }  
 ])
