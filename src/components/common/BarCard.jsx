@@ -12,7 +12,7 @@ function BarCard() {
 
     const getData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/clubOrders`);
+            const response = await axios.get(`https://hotel-backend-zrv3.onrender.com/clubOrders`);
             const data = response.data;
             return data;
         } catch (error) {

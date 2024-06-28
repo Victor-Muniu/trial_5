@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 function Bills() {
     const [data, setData] = useState([]);
+    const [billType, setBillType] = useState('restaurant'); // Default to restaurant bills
     const fname = localStorage.getItem('fname');
 
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/restaurantBills/byStaff/${fname}`);
+                const endpoint = billType === 'restaurant' 
+                    ? `https://hotel-backend-zrv3.onrender.com/restaurantBills/byStaff/${fname}`
+                    : `https://hotel-backend-zrv3.onrender.com/clubBills/byStaff/${fname}`;
+                
+                const response = await axios.get(endpoint);
                 const bills = response.data;
                 console.log(bills);
                 // Filter out bills with status "Not cleared"
@@ -20,10 +25,23 @@ function Bills() {
             }
         };
         getData();
-    }, [fname]);
+    }, [fname, billType]);
 
     return (
         <Box>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel id="bill-type-label">Bill Type</InputLabel>
+                <Select
+                    labelId="bill-type-label"
+                    id="bill-type-select"
+                    value={billType}
+                    label="Bill Type"
+                    onChange={(e) => setBillType(e.target.value)}
+                >
+                    <MenuItem value="restaurant">Restaurant</MenuItem>
+                    <MenuItem value="club">Club</MenuItem>
+                </Select>
+            </FormControl>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -35,7 +53,7 @@ function Bills() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((bill,index) => (
+                        {data.map((bill, index) => (
                             <TableRow key={index}>
                                 <TableCell>{new Date(bill.date).toLocaleString()}</TableCell>
                                 <TableCell>{bill.amount}</TableCell>

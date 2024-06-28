@@ -8,6 +8,17 @@ import Reststaurant2 from "../pages/Reststaurant2";
 import Menu from "../pages/Menu";
 import Menu2 from "../pages/Menu2";
 import Bills from "../pages/Bills";
+import Podium from "../pages/Podium";
+import Stock from "../pages/Stock";
+import Banquetting from "../pages/Banquetting";
+import Inventory from "../pages/Inventory";
+import Inhouse from "../pages/Inhouse";
+import CheffsLadder from "../pages/CheffsLadder";
+import FoodRequisitions from "../pages/FoodRequisitions";
+import ServiceRequisition from "../pages/ServiceRequisition";
+import Suppliers from "../pages/Suppliers";
+import Creditors from "../pages/Creditors";
+import StockRequisitions from "../pages/StockRequisitions";
 
 
 const checkAuth = (path) => {
@@ -91,6 +102,116 @@ export const router = createBrowserRouter([
         {
           index: true,
           element: <Bills />
+        }
+      ]
+    },
+    {
+      path: '/podium',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Podium />
+        }
+      ]
+    },
+    {
+      path: '/stock_movement',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Stock />
+        }
+      ]
+    },
+    {
+      path: '/banquetting',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Banquetting />
+        }
+      ]
+    },
+    {
+      path: '/inventory',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Inventory />
+        }
+      ]
+    },
+    {
+      path: '/inhouse',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Inhouse />
+        }
+      ]
+    },
+    {
+      path: '/cheffs_ladder',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <CheffsLadder />
+        }
+      ]
+    },
+    {
+      path: '/food_requisition',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <FoodRequisitions />
+        }
+      ]
+    },
+    {
+      path: '/service_requisition',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <ServiceRequisition />
+        }
+      ]
+    },
+    {
+      path: '/suppliers',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Suppliers />
+        }
+      ]
+    },
+    {
+      path: '/creditors',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Creditors />
+        }
+      ]
+    },
+    {
+      path: '/stock_requisitions',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <StockRequisitions />
         }
       ]
     },

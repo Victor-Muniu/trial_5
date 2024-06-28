@@ -14,7 +14,7 @@ function Menu() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/menus');
+        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/menus');
         const data = response.data;
         console.log(data);
         setData(data);
@@ -74,7 +74,7 @@ function Menu() {
     console.log("Submitting order data:", JSON.stringify(orderData, null, 2)); // Log the JSON data
 
     try {
-      const response = await axios.post('http://localhost:3001/api/restaurantOrders', orderData);
+      const response = await axios.post('https://hotel-backend-zrv3.onrender.com/restaurantOrders', orderData);
       console.log("Order submitted successfully", response.data);
       alert('Order submitted successfully');
     } catch (error) {

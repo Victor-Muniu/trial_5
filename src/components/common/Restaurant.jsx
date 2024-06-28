@@ -18,7 +18,7 @@ function Restaurant() {
 
     const getClubData = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/clubOrders');
+            const response = await axios.get('https://hotel-backend-zrv3.onrender.com/clubOrders');
             return response.data;
         } catch (error) {
             console.error('There was a problem with the axios operation:', error);
@@ -27,7 +27,7 @@ function Restaurant() {
 
     const getRestaurantData = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/restaurantOrders');
+            const response = await axios.get('https://hotel-backend-zrv3.onrender.com/restaurantOrders');
             return response.data;
         } catch (error) {
             console.error('There was a problem with the axios operation:', error);
