@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Typography, TextField, Button, MenuItem, Select,
+  DialogTitle,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
+import { Dialog } from '@mui/material';
+import { DialogContent } from '@mui/material';
+import { DialogActions } from '@mui/material';
 
 const Inventory = () => {
   const [data, setData] = useState([]);
@@ -47,6 +51,40 @@ const Inventory = () => {
     );
   });
   const role = localStorage.getItem('role')
+
+  const [open, setOpen] = useState(false);
+  const [newItem, setNewItem] = useState({
+    name: '',
+    description:'',
+    unit_price: '',
+    group: '',
+    quantity: '',
+    spoilt: '',
+    date: '',
+  })
+
+  const handleClickOpen = () =>{
+    setOpen(true);
+  }
+
+  const handleClose = () =>{
+    setOpen(false)
+  }
+
+  const handleInputChange = (event) =>{
+    const {name, value} = event.target;
+    setNewItem({...newItem, [name]: value})
+  }
+  const handleSubmit = async () =>{
+    try{
+      await axios.post('https://hotel-backend-zrv3.onrender.com/items',newItem);
+      setOpen(false);
+      const response = await axios.get ('https://hotel-backend-zrv3.onrender.com/items');
+      setData(response.data)
+    }catch (error){
+      console.error('There was a problem with the axios operation :', error)
+    }
+  }
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
       <Typography variant="h4">Inventory ({data.length})</Typography>
@@ -77,7 +115,7 @@ const Inventory = () => {
           <MenuItem value="Low Stock">Low Stock</MenuItem>
           <MenuItem value="Out Of Stock">Out Of Stock</MenuItem>
         </Select>
-        <Button variant="contained" color="primary">+ Add Product</Button>
+        <Button variant="contained" color="primary" onClick={handleClickOpen}>+ Add Product</Button>
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -123,7 +161,87 @@ const Inventory = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      
+      <Dialog open={open} onClose={handleClose} fullWidth>
+        <DialogTitle>Create Order</DialogTitle>
+        <DialogContent>
+          <TextField 
+          autoFocus
+          margin='dense'
+          name='name'
+          label='Name'
+          type='text'
+          fullWidth
+          value={newItem.name}
+          onChange={handleInputChange}/>
+
+        <TextField 
+          autoFocus
+          margin='dense'
+          name='description'
+          label='Description'
+          type='text'
+          fullWidth
+          value={newItem.description}
+          onChange={handleInputChange}/>
+
+        <TextField 
+          autoFocus
+          margin='dense'
+          name='unit_price'
+          label='Unit Price'
+          type='number'
+          fullWidth
+          value={newItem.unit_price}
+          onChange={handleInputChange}/> 
+
+          <TextField 
+          autoFocus
+          margin='dense'
+          name='group'
+          label='Group'
+          type='text'
+          fullWidth
+          value={newItem.group}
+          onChange={handleInputChange}/> 
+
+        <TextField 
+          autoFocus
+          margin='dense'
+          name='quantity'
+          label='Quantity'
+          type='number'
+          fullWidth
+          value={newItem.quantity}
+          onChange={handleInputChange}/> 
+
+        <TextField 
+          autoFocus
+          margin='dense'
+          name='spoilt'
+          label='Spoilt'
+          type='number'
+          fullWidth
+          value={newItem.spoilt}
+          onChange={handleInputChange}/> 
+
+        <TextField
+            margin="dense"
+            name="date"
+            label="Date"
+            type="date"
+            fullWidth
+            value={newItem.date}
+            onChange={handleInputChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Create Item</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
