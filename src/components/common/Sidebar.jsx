@@ -136,6 +136,12 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Cheffs Ladder" />
           </ListItem>
           
+          <ListItem button onClick={navigateTo('/banquetting')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting" />
+          </ListItem>
           
           
           <ListItem button onClick={handleLogout}>
@@ -195,6 +201,12 @@ const Sidebar = ({ sidebarWidth }) => {
           </ListItemIcon>
           <ListItemText primary='Creditors'/>
         </ListItem>
+        <ListItem button onClick={navigateTo('/banquetting')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting" />
+          </ListItem>
         <ListItem button onClick={navigateTo('/stock_requisitions')}>
           <ListItemIcon sx={{color: 'white'}}>
             <RequestQuote />
