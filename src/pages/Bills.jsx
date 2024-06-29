@@ -11,8 +11,8 @@ function Bills() {
         const getData = async () => {
             try {
                 const endpoint = billType === 'restaurant' 
-                    ? `https://hotel-backend-zrv3.onrender.com/restaurantBills/byStaff/${fname}`
-                    : `https://hotel-backend-zrv3.onrender.com/clubBills/byStaff/${fname}`;
+                    ? `https://hotel-backend-1-trhj.onrender.com/restaurantBills/byStaff/${fname}`
+                    : `https://hotel-backend-1-trhj.onrender.com/clubBills/byStaff/${fname}`;
                 
                 const response = await axios.get(endpoint);
                 const bills = response.data;

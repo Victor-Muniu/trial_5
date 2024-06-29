@@ -19,7 +19,7 @@ function LoginPage() {
         const password = e.target.elements.password.value;
 
         try {
-            const response = await fetch('https://hotel-backend-zrv3.onrender.com/login', {
+            const response = await fetch('https://hotel-backend-1-trhj.onrender.com/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

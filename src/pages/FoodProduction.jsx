@@ -15,7 +15,7 @@ const FoodProduction = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/cheffsLadder');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/cheffsLadder');
         const data = response.data;
         console.log(data);
         setData(data);

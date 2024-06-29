@@ -11,7 +11,7 @@ function RestCard() {
 
     const getData = async () => {
         try {
-            const response = await axios.get(`https://hotel-backend-zrv3.onrender.com/restaurantOrders`);
+            const response = await axios.get(`https://hotel-backend-1-trhj.onrender.com/restaurantOrders`);
             const data = response.data;
             return data;
         } catch (error) {

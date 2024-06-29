@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -222,6 +222,57 @@ const Sidebar = ({ sidebarWidth }) => {
         </ListItem>
         
       </List>
+      )}
+
+      {role === 'accounting' && (
+        <List>
+          <ListItem button onClick={navigateTo('/dashboard')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Dashboard />
+            </ListItemIcon>
+            <ListItemText primary="Dashboards" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/ledger')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <ListAlt />
+            </ListItemIcon>
+            <ListItemText primary="General Ledger" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/expense')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Paid />
+            </ListItemIcon>
+            <ListItemText primary="Expenses" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/purchases')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Shop />
+            </ListItemIcon>
+            <ListItemText primary="Purchases" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/trial_balance')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balance />
+            </ListItemIcon>
+            <ListItemText primary="Trial Balance" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/profit_loss')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <TrendingDown />
+            </ListItemIcon>
+            <ListItemText primary="Profit Loss" />
+          </ListItem>
+
+          <ListItem button onClick={handleLogout}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Logout />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
+        </List>
       )}
     </Drawer>
   );

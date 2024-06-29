@@ -14,7 +14,7 @@ function Menu() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/menus');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/menus');
         const data = response.data;
         console.log(data);
         setData(data);

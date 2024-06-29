@@ -12,7 +12,7 @@ const Stock = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/transfers');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/transfers');
         const data = response.data;
         console.log("Raw data:", data);
         setData(data);

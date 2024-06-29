@@ -19,6 +19,11 @@ import ServiceRequisition from "../pages/ServiceRequisition";
 import Suppliers from "../pages/Suppliers";
 import Creditors from "../pages/Creditors";
 import StockRequisitions from "../pages/StockRequisitions";
+import GeneralLedger from "../pages/GeneralLedger";
+import Expense from "../pages/Expense";
+import Purchases from "../pages/Purchases";
+import TrialBalance from "../pages/TrialBalance";
+import ProfitLoss from "../pages/ProfitLoss";
 
 
 const checkAuth = (path) => {
@@ -212,6 +217,56 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <StockRequisitions />
+        }
+      ]
+    },
+    {
+      path: '/ledger',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <GeneralLedger />
+        }
+      ]
+    },
+    {
+      path: '/expense',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Expense />
+        }
+      ]
+    },
+    {
+      path: '/purchases',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Purchases />
+        }
+      ]
+    },
+    {
+      path: '/trial_balance',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <TrialBalance />
+        }
+      ]
+    },
+    {
+      path: '/profit_loss',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <ProfitLoss />
         }
       ]
     },

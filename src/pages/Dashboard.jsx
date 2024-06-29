@@ -3,6 +3,7 @@ import { Box } from '@mui/material'
 import Restaurant from '../components/common/Restaurant'
 import FoodProduction from './FoodProduction'
 import InventoryTracker from './InventoryTracker'
+import Accounts from './Accounts'
 
 function Dashboard() {
   const user = localStorage.getItem('role')
@@ -18,6 +19,9 @@ function Dashboard() {
       )}
       {user === 'procurement' &&(
         <InventoryTracker />
+      )}
+      {user === 'accounting' &&(
+        <Accounts />
       )}
     </Box>
   )

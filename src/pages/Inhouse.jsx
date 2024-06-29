@@ -12,7 +12,7 @@ function Inhouse() {
     useEffect(()=> {
         const getData = async () => {
             try {
-              const response = await axios.get('https://hotel-backend-zrv3.onrender.com/individuals');
+              const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/individuals');
               const data = response.data;
               setData(data);
             } catch (error) {

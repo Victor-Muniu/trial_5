@@ -91,12 +91,12 @@ const Inventory = () => {
   const handleSubmit = async () => {
     try {
       if (isEditMode) {
-        await axios.patch(`https://hotel-backend-zrv3.onrender.com/items/${currentItem._id}`, newItem);
+        await axios.patch(`https://hotel-backend-1-trhj.onrender.com/items/${currentItem._id}`, newItem);
       } else {
-        await axios.post('https://hotel-backend-zrv3.onrender.com/items', newItem);
+        await axios.post('https://hotel-backend-1-trhj.onrender.com/items', newItem);
       }
       setOpen(false);
-      const response = await axios.get('https://hotel-backend-zrv3.onrender.com/items');
+      const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
       setData(response.data);
       handleClose();
     } catch (error) {
@@ -113,9 +113,9 @@ const Inventory = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://hotel-backend-zrv3.onrender.com/items/${id}`);
+      await axios.delete(`https://hotel-backend-1-trhj.onrender.com/items/${id}`);
       
-      const response = await axios.get('https://hotel-backend-zrv3.onrender.com/items');
+      const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
       setData(response.data);
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);

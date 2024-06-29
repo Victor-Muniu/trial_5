@@ -24,7 +24,7 @@ const Banquetting = () => {
   useEffect(() => {
     const fetchBanquettingData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/banquettings');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/banquettings');
         const data = response.data;
 
         const transformedEvents = data.flatMap((item) => {

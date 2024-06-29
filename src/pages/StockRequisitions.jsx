@@ -38,7 +38,7 @@ const StockRequisitions = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/requisitions');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/requisitions');
         setData(response.data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
@@ -80,9 +80,9 @@ const StockRequisitions = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post('https://hotel-backend-zrv3.onrender.com/requisitions', newItem);
+      await axios.post('https://hotel-backend-1-trhj.onrender.com/requisitions', newItem);
       setOpen(false);
-      const response = await axios.get('https://hotel-backend-zrv3.onrender.com/requisitions');
+      const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/requisitions');
       setData(response.data);
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);

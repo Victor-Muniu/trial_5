@@ -12,7 +12,7 @@ function Reststaurant2() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/tables');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/tables');
         const data = response.data;
         console.log(data);
         setData(data);

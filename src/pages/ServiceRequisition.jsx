@@ -7,7 +7,7 @@ function ServiceRequisition() {
   useEffect(()=> {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/restaurantRequisitions');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/restaurantRequisitions');
         const data = response.data;
         setData(data);
       } catch (error) {
