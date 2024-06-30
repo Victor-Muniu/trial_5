@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -264,6 +264,13 @@ const Sidebar = ({ sidebarWidth }) => {
               <TrendingDown />
             </ListItemIcon>
             <ListItemText primary="Profit Loss" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/bank_statement')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBalance />
+            </ListItemIcon>
+            <ListItemText primary="Bank Statement" />
           </ListItem>
 
           <ListItem button onClick={handleLogout}>

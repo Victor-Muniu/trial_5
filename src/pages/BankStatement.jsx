@@ -12,28 +12,29 @@ import {
   Box,
   Button,
   TextField,
-  MenuItem,
   Modal,
+  Input
 } from '@mui/material';
 
-function Expense() {
+function BankStatement() {
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const currentYear = new Date().getFullYear();
   const [startDate, setStartDate] = useState(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState(`${currentYear}-12-31`);
-  const [groupBy, setGroupBy] = useState('category');
   const [open, setOpen] = useState(false);
-  const [newExpense, setNewExpense] = useState({
+  const [newTransaction, setNewTransaction] = useState({
     date: '',
-    category: '',
-    amount: ''
+    particulars: '',
+    moneyOut: '',
+    moneyIn: '',
+    balance: ''
   });
-  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/expenses');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/transactions');
         setData(response.data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
@@ -42,20 +43,28 @@ function Expense() {
     getData();
   }, []);
 
-  const groupedData = data.reduce((acc, item) => {
-    const group = acc[item[groupBy]] || [];
-    group.push(item);
-    acc[item[groupBy]] = group;
-    return acc;
-  }, {});
+  useEffect(() => {
+    filterData();
+  }, [startDate, endDate, data]);
+
+  const filterData = () => {
+    const filtered = data.filter((transaction) => {
+      const [day, month, year] = transaction.date.split('-');
+      const transactionDate = new Date(year, month - 1, day);
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return transactionDate >= start && transactionDate <= end;
+    });
+    setFilteredData(filtered);
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewExpense({
-      ...newExpense,
+    setNewTransaction({
+      ...newTransaction,
       [name]: value
     });
   };
@@ -63,11 +72,11 @@ function Expense() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/expenses', newExpense);
+      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/transactions', newTransaction);
       setData([...data, response.data]);
       handleClose();
     } catch (error) {
-      console.error('Error posting expense:', error);
+      console.error('Error posting transaction:', error);
     }
   };
 
@@ -93,20 +102,23 @@ function Expense() {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">Expense Report</Typography>
+        <Typography variant="h4" margin={5}>Bank Statement</Typography>
         <Box>
-          <Button variant="contained" color="primary" style={{ marginRight: 8 }} onClick={handleOpen}>Add Expense</Button>
+          <Button variant="contained" color="primary" style={{ marginRight: 8 }} onClick={handleOpen}>Add Transaction</Button>
           <Button variant="contained" color="primary" component="label" style={{ marginRight: 8 }}>
             Upload Excel
             <input type="file" hidden onChange={handleFileUpload} />
           </Button>
-          <Button variant="contained" color="primary">Print Report</Button>
+          <Button variant="contained" color="primary">Print</Button>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Box display="flex" alignItems="center">
+      <TableContainer component={Paper}>
+        <Typography variant="h6" gutterBottom margin={5}>
+          Bank Statement
+        </Typography>
+        <Box display="flex" alignItems="center" mb={3} ml={5}>
           <TextField
-            label="Date Range"
+            label="Start Date"
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -115,89 +127,82 @@ function Expense() {
           />
           <Typography style={{ marginRight: 8 }}>to</Typography>
           <TextField
-            label="Date Range"
+            label="End Date"
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
           />
         </Box>
-        <Box display="flex" alignItems="center">
-          <Typography style={{ marginRight: 8 }}>Group By:</Typography>
-          <TextField
-            select
-            value={groupBy}
-            onChange={(e) => setGroupBy(e.target.value)}
-            style={{ marginRight: 8 }}
-          >
-            <MenuItem value="category">Category</MenuItem>
-            <MenuItem value="date">Date</MenuItem>
-          </TextField>
-          <Button variant="contained" color="primary" onClick={() => console.log('Update clicked')}>Update</Button>
-        </Box>
-      </Box>
-      <TableContainer component={Paper}>
-        <Typography variant="h6" gutterBottom margin={5}>
-          Expenses by {groupBy.charAt(0).toUpperCase() + groupBy.slice(1)}
-        </Typography>
-        
-        <Typography variant="subtitle2" gutterBottom margin={5}>
-          Between {new Date(startDate).toLocaleDateString()} and {new Date(endDate).toLocaleDateString()}
-        </Typography>
 
-        {Object.keys(groupedData).map((group) => (
-          <React.Fragment key={group}>
-            <Typography variant="h6" gutterBottom margin={5}>
-              {group}
-            </Typography>
-            <Table aria-label="expense table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {groupedData[group].map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell>{row.category || '-'}</TableCell>
-                    <TableCell>{row.amount || '-'}</TableCell>
-                    <TableCell align="">{new Date(row.date).toLocaleDateString()}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </React.Fragment>
-        ))}
+        <Table aria-label="bank statement table" margin={5}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell>Particulars</TableCell>
+              <TableCell align="right">Money Out</TableCell>
+              <TableCell align="right">Money In</TableCell>
+              <TableCell align="right">Balance</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.map((row) => (
+              <TableRow key={row._id}>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>{row.particulars}</TableCell>
+                <TableCell align="right">{row.moneyOut ? row.moneyOut.toLocaleString() : '-'}</TableCell>
+                <TableCell align="right">{row.moneyIn ? row.moneyIn.toLocaleString() : '-'}</TableCell>
+                <TableCell align="right">{row.balance}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </TableContainer>
 
       <Modal open={open} onClose={handleClose}>
         <Box component="form" onSubmit={handleSubmit} style={{ padding: '20px', margin: '100px auto', maxWidth: '500px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
-          <Typography variant="h6" marginBottom={3}>Add New Expense</Typography>
+          <Typography variant="h6" marginBottom={3}>Add New Transaction</Typography>
           <TextField
             name="date"
             label="Date"
             type="date"
-            value={newExpense.date}
+            value={newTransaction.date}
             onChange={handleChange}
             InputLabelProps={{ shrink: true }}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="category"
-            label="Category"
-            value={newExpense.category}
+            name="particulars"
+            label="Particulars"
+            value={newTransaction.particulars}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="amount"
-            label="Amount"
+            name="moneyOut"
+            label="Money Out"
             type="number"
-            value={newExpense.amount}
+            value={newTransaction.moneyOut}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="moneyIn"
+            label="Money In"
+            type="number"
+            value={newTransaction.moneyIn}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="balance"
+            label="Balance"
+            type="number"
+            value={newTransaction.balance}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -209,4 +214,4 @@ function Expense() {
   );
 }
 
-export default Expense;
+export default BankStatement;

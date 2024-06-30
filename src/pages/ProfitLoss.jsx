@@ -56,7 +56,7 @@ function ProfitLoss() {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" margin={5}>Profit & Loss</Typography>
+        <Typography variant="h4">Profit & Loss</Typography>
         <Box>
           <Button variant="contained" color="primary" style={{ marginRight: 8 }}>Export to Excel</Button>
           <Button variant="contained" color="primary">Print</Button>
@@ -96,13 +96,13 @@ function ProfitLoss() {
         </Box>
       </Box>
       <TableContainer component={Paper}>
-        <Typography variant="h6" gutterBottom margin={5}>
+        <Typography variant="h6" gutterBottom>
           Profit & Loss
         </Typography>
-        <Typography variant="subtitle1" gutterBottom margin={5}>
+        <Typography variant="subtitle1" gutterBottom>
           The Ant Agency
         </Typography>
-        <Typography variant="subtitle2" gutterBottom margin={5}>
+        <Typography variant="subtitle2" gutterBottom>
           For {startDate} - {endDate}
         </Typography>
 
