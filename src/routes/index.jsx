@@ -25,6 +25,7 @@ import Purchases from "../pages/Purchases";
 import TrialBalance from "../pages/TrialBalance";
 import ProfitLoss from "../pages/ProfitLoss";
 import BankStatement from "../pages/BankStatement";
+import CashFlow from "../pages/CashFlow";
 
 
 const checkAuth = (path) => {
@@ -278,6 +279,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <BankStatement />
+        }
+      ]
+    },
+    {
+      path: '/cashflow',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <CashFlow />
         }
       ]
     },

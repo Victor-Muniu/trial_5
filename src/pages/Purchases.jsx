@@ -4,10 +4,10 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 
 function Purchases() {
   const [data, setData] = useState([]);
+  const [file, setFile] = useState(null);
   const currentYear = new Date().getFullYear();
   const [startDate, setStartDate] = useState(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState(`${currentYear}-12-31`);
-  const [groupBy, setGroupBy] = useState('category');
 
   useEffect(() => {
     const getData = async () => {
@@ -21,15 +21,31 @@ function Purchases() {
     getData();
   }, []);
 
-  const groupedData = data.reduce((acc, item) => {
-    const category = acc[item.category] || [];
-    category.push(item);
-    acc[item.category] = category;
-    return acc;
-  }, {});
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleFileUpload = async () => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/upload-consolidated-purchases', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log('File uploaded successfully:', response.data);
+      setData([...data, ...response.data]); // Append the new data to the existing data
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
 
   return (
-    <Box>
+    <Box padding={3}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">Purchase Report</Typography>
         <Box>
@@ -60,50 +76,60 @@ function Purchases() {
           <Typography style={{ marginRight: 8 }}>Group By:</Typography>
           <TextField
             select
-            value={groupBy}
-            onChange={(e) => setGroupBy(e.target.value)}
+            value="category"
             style={{ marginRight: 8 }}
           >
             <MenuItem value="category">Category</MenuItem>
-            <MenuItem value="date">Date</MenuItem>
           </TextField>
-          <Button variant="contained" color="primary" onClick={() => console.log('Update clicked')}>Update</Button>
+          <Button variant="contained" color="primary">Update</Button>
         </Box>
+      </Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <input
+          type="file"
+          onChange={handleFileChange}
+          accept=".xlsx, .xls"
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleFileUpload}
+          disabled={!file}
+        >
+          Upload File
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Typography variant="h6" gutterBottom margin={5}>
-          Purchases by {groupBy.charAt(0).toUpperCase() + groupBy.slice(1)}
+          Purchase by Category
         </Typography>
         
         <Typography variant="subtitle2" gutterBottom margin={5}>
           Between {new Date(startDate).toLocaleDateString()} and {new Date(endDate).toLocaleDateString()}
         </Typography>
 
-        {Object.keys(groupedData).map((category) => (
-          <React.Fragment key={category}>
-            <Typography variant="h6" gutterBottom margin={5}>
-              {category}
-            </Typography>
-            <Table aria-label="expense table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {groupedData[category].map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell>{row.category || '-'}</TableCell>
-                    <TableCell>{row.amount || '-'}</TableCell>
-                    <TableCell align="">{new Date(row.date).toLocaleDateString()}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </React.Fragment>
-        ))}
+        <Table aria-label="expense table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Category</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Amount</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row) => (
+              <TableRow key={row._id}>
+                <TableCell>{row.category || '-'}</TableCell>
+                <TableCell>{row.quantity || '-'}</TableCell>
+                <TableCell>{row.price || '-'}</TableCell>
+                <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
+                <TableCell>{row.amount || '-'}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </TableContainer>
     </Box>
   );

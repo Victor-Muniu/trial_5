@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -213,6 +213,13 @@ const Sidebar = ({ sidebarWidth }) => {
           </ListItemIcon>
           <ListItemText primary='Stock Requisitions'/>
         </ListItem>
+
+        <ListItem button onClick={navigateTo('/purchases')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Shop />
+            </ListItemIcon>
+            <ListItemText primary="Purchases" />
+          </ListItem>
         
         <ListItem button onClick={handleLogout}>
           <ListItemIcon sx={{ color: 'white' }}>
@@ -245,13 +252,6 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Expenses" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/purchases')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Shop />
-            </ListItemIcon>
-            <ListItemText primary="Purchases" />
-          </ListItem>
-
           <ListItem button onClick={navigateTo('/trial_balance')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <Balance />
@@ -271,6 +271,20 @@ const Sidebar = ({ sidebarWidth }) => {
               <AccountBalance />
             </ListItemIcon>
             <ListItemText primary="Bank Statement" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/purchases')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Shop />
+            </ListItemIcon>
+            <ListItemText primary="Purchases" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/cashflow')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Air />
+            </ListItemIcon>
+            <ListItemText primary="Cash Flow" />
           </ListItem>
 
           <ListItem button onClick={handleLogout}>
