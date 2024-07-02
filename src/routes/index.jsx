@@ -28,6 +28,7 @@ import BankStatement from "../pages/BankStatement";
 import Assets from "../pages/Assets";
 import Debtors from "../pages/Debtors";
 import Collections from "../pages/Collections";
+import PettyCash from "../pages/PettyCash";
 
 
 const checkAuth = (path) => {
@@ -311,6 +312,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <Debtors />
+        }
+      ]
+    },
+    {
+      path: '/petty_cash',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <PettyCash />
         }
       ]
     },

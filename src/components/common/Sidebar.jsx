@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -308,6 +308,22 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Daily collections" />
           </ListItem>
+
+          <ListItem button onClick={navigateTo('/petty_cash')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <LocalAtm />
+            </ListItemIcon>
+            <ListItemText primary="Petty Cash" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/creditors')}>
+          <ListItemIcon sx={{color: 'white'}}>
+            <Contacts />
+          </ListItemIcon>
+          <ListItemText primary='Creditors'/>
+        </ListItem>
+
+          
 
           <ListItem button onClick={handleLogout}>
           <ListItemIcon sx={{ color: 'white' }}>
