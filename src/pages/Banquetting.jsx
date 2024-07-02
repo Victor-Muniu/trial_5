@@ -32,7 +32,7 @@ const Banquetting = () => {
           return {
             title: `${item.name} - ${item.workshopName} | ${item.package_type} | Packs: ${item.packs}`,
             start: new Date(start),
-            end: new Date(end), // Ensure end date includes the whole day
+            end: new Date(end), 
             allDay: true,
           };
         });

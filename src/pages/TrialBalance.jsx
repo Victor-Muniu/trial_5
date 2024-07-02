@@ -99,9 +99,7 @@ function TrialBalance() {
         <Typography variant="h6" gutterBottom>
           Trial Balance
         </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          The Ant Agency
-        </Typography>
+        
         <Typography variant="subtitle2" gutterBottom>
           For {startDate} - {endDate}
         </Typography>

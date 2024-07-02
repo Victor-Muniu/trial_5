@@ -25,7 +25,9 @@ import Purchases from "../pages/Purchases";
 import TrialBalance from "../pages/TrialBalance";
 import ProfitLoss from "../pages/ProfitLoss";
 import BankStatement from "../pages/BankStatement";
-import CashFlow from "../pages/CashFlow";
+import Assets from "../pages/Assets";
+import Debtors from "../pages/Debtors";
+import Collections from "../pages/Collections";
 
 
 const checkAuth = (path) => {
@@ -283,12 +285,32 @@ export const router = createBrowserRouter([
       ]
     },
     {
-      path: '/cashflow',
+      path: '/collections',
       element: <MainLayout />,
       children: [
         {
           index:true,
-          element: <CashFlow />
+          element: <Collections />
+        }
+      ]
+    },
+    {
+      path: '/assets',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: < Assets />
+        }
+      ]
+    },
+    {
+      path: '/debtors',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Debtors />
         }
       ]
     },
