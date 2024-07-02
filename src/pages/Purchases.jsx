@@ -112,6 +112,7 @@ function Purchases() {
           <TableHead>
             <TableRow>
               <TableCell>Category</TableCell>
+              <TableCell>Vendor</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Date</TableCell>
@@ -122,6 +123,7 @@ function Purchases() {
             {data.map((row) => (
               <TableRow key={row._id}>
                 <TableCell>{row.category || '-'}</TableCell>
+                <TableCell>{row.vendor || '-'}</TableCell>
                 <TableCell>{row.quantity || '-'}</TableCell>
                 <TableCell>{row.price || '-'}</TableCell>
                 <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
