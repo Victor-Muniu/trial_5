@@ -465,6 +465,13 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Daily collections" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/laundry_service')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Checkroom />
+            </ListItemIcon>
+            <ListItemText primary="Laundry Service" />
+          </ListItem>
+
           <ListItem button onClick={navigateTo('/agents_analysis')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <SupportAgent />
