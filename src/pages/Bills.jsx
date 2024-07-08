@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, FormControl, InputLabel, Select, MenuItem, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 function Bills() {
     const [data, setData] = useState([]);
-    const [billType, setBillType] = useState('restaurant'); // Default to restaurant bills
+    const [billType, setBillType] = useState('restaurant'); 
+    const [selectedBill, setSelectedBill] = useState(null);
+    const [open, setOpen] = useState(false);
     const fname = localStorage.getItem('fname');
+    const role = localStorage.getItem('role'); 
 
     useEffect(() => {
         const getData = async () => {
             try {
-                const endpoint = billType === 'restaurant' 
-                    ? `https://hotel-backend-1-trhj.onrender.com/restaurantBills/byStaff/${fname}`
-                    : `https://hotel-backend-1-trhj.onrender.com/clubBills/byStaff/${fname}`;
+                let endpoint = '';
+                if (role === 'front office') {
+                    endpoint = billType === 'restaurant' 
+                        ? 'https://hotel-backend-1-trhj.onrender.com/restaurantBills'
+                        : 'https://hotel-backend-1-trhj.onrender.com/clubBills';
+                } else {
+                    endpoint = billType === 'restaurant' 
+                        ? `https://hotel-backend-1-trhj.onrender.com/restaurantBills/byStaff/${fname}`
+                        : `https://hotel-backend-1-trhj.onrender.com/clubBills/byStaff/${fname}`;
+                }
                 
                 const response = await axios.get(endpoint);
                 const bills = response.data;
-                console.log(bills);
-                // Filter out bills with status "Not cleared"
                 const filteredBills = bills.filter(bill => bill.status === 'Not cleared');
                 setData(filteredBills);
             } catch (error) {
@@ -25,7 +33,41 @@ function Bills() {
             }
         };
         getData();
-    }, [fname, billType]);
+    }, [fname, billType, role]);
+
+    const handleEditClick = (bill) => {
+        setSelectedBill(bill);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedBill(null);
+    };
+
+    const handleSave = async () => {
+        try {
+            const endpoint = billType === 'restaurant' 
+                ? `https://hotel-backend-1-trhj.onrender.com/restaurantBills/${selectedBill._id}`
+                : `https://hotel-backend-1-trhj.onrender.com/clubBills/${selectedBill._id}`;
+
+            await axios.patch(endpoint, selectedBill);
+            setOpen(false);
+            setSelectedBill(null);
+            // Refresh data
+            const response = await axios.get(endpoint);
+            const bills = response.data;
+            const filteredBills = bills.filter(bill => bill.status === 'Not cleared');
+            setData(filteredBills);
+        } catch (error) {
+            console.error('There was a problem with the axios operation:', error);
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSelectedBill({ ...selectedBill, [name]: value });
+    };
 
     return (
         <Box>
@@ -50,6 +92,7 @@ function Bills() {
                             <TableCell>Amount</TableCell>
                             <TableCell>Item Name</TableCell>
                             <TableCell>Status</TableCell>
+                            {role === 'front office' && <TableCell>Edit</TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -59,11 +102,63 @@ function Bills() {
                                 <TableCell>{bill.amount}</TableCell>
                                 <TableCell>{bill.menuName}</TableCell>
                                 <TableCell>{bill.status}</TableCell>
+                                {role === 'front office' && (
+                                    <TableCell>
+                                        <Button variant="contained" color="primary" onClick={() => handleEditClick(bill)}>
+                                            Edit
+                                        </Button>
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Edit Bill</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please edit the details of the bill.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        name="amount"
+                        label="Amount"
+                        type="number"
+                        fullWidth
+                        value={selectedBill?.amount || ''}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="menuName"
+                        label="Item Name"
+                        type="text"
+                        fullWidth
+                        value={selectedBill?.menuName || ''}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="status"
+                        label="Status"
+                        type="text"
+                        fullWidth
+                        value={selectedBill?.status || ''}
+                        onChange={handleChange}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSave} color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

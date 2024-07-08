@@ -37,10 +37,10 @@ function BarCard() {
             console.log("Order date year:", orderDate.year()); 
             if ((orderDate.month() + 1) === currentMonth && orderDate.year() === currentYear) { 
                 
-                const price = parseFloat(order.amount);
-                const quantity = parseFloat(order.quantity);
+                const price = parseFloat(order.totalAmount);
+                
     
-                if (!isNaN(price) && !isNaN(quantity)) {
+                if (!isNaN(price)) {
                     sales =data.length;
                     revenue += price ;
                 } else {
@@ -62,6 +62,7 @@ function BarCard() {
         fetchData();
     }, []);
 
+    console.log(data)
   return (
     <Paper sx={{ p: 2 }}>
         <Typography variant='subtitle2'>Bar Sales and Revenue</Typography>

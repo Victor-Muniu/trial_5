@@ -4,6 +4,7 @@ import Restaurant from '../components/common/Restaurant'
 import FoodProduction from './FoodProduction'
 import InventoryTracker from './InventoryTracker'
 import Accounts from './Accounts'
+import HouseKeeping from './HouseKeeping'
 
 function Dashboard() {
   const user = localStorage.getItem('role')
@@ -22,6 +23,9 @@ function Dashboard() {
       )}
       {user === 'accounting' &&(
         <Accounts />
+      )}
+      {user === 'house keeping' &&(
+        <HouseKeeping />
       )}
     </Box>
   )

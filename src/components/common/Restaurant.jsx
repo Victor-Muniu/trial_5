@@ -42,7 +42,7 @@ function Restaurant() {
             return {
                 month,
                 clubSales: monthlyOrders.length,
-                clubRevenue: monthlyOrders.reduce((acc, order) => acc + (order.amount * order.quantity), 0),
+                clubRevenue: monthlyOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0),
             };
         });
 
@@ -51,7 +51,7 @@ function Restaurant() {
             return {
                 month,
                 restaurantSales: monthlyOrders.length,
-                restaurantRevenue: monthlyOrders.reduce((acc, order) => acc + (order.amount * order.quantity), 0),
+                restaurantRevenue: monthlyOrders.reduce((acc, order) => acc + (order.totalAmount || 0), 0),
             };
         });
 
@@ -71,17 +71,21 @@ function Restaurant() {
 
         data.forEach(order => {
             const { menuId, quantity, amount } = order;
-            if (menuItemMap[menuId.name]) {
-                menuItemMap[menuId.name].quantity += quantity;
-                menuItemMap[menuId.name].revenue += amount;
-            } else {
-                menuItemMap[menuId.name] = {
-                    quantity: quantity,
-                    revenue: amount,
-                    pointOfSale: menuId.point_of_sale
-                };
+            if (menuId && menuId.name) {
+                if (menuItemMap[menuId.name]) {
+                    menuItemMap[menuId.name].quantity += quantity;
+                    menuItemMap[menuId.name].revenue += amount;
+                } else {
+                    menuItemMap[menuId.name] = {
+                        quantity: quantity || 0,
+                        revenue: amount || 0,
+                        pointOfSale: menuId.point_of_sale || 'Unknown'
+                    };
+                }
             }
         });
+
+        console.log('Menu Item Map:', menuItemMap); // Log the menu item map for debugging
 
         const menuItems = Object.keys(menuItemMap).map(name => ({
             name,
@@ -92,6 +96,8 @@ function Restaurant() {
 
         menuItems.sort((a, b) => b.quantity - a.quantity);
 
+        console.log('Top Menu Items:', menuItems); // Log the top menu items
+
         return menuItems.slice(0, 5);
     };
 
@@ -99,12 +105,15 @@ function Restaurant() {
         const fetchData = async () => {
             const clubData = await getClubData();
             const restaurantData = await getRestaurantData();
-            setClubData(clubData);
-            setRestaurantData(restaurantData);
-            const formattedData = formatDataForChart(clubData, restaurantData);
+            console.log('Club Data:', clubData); // Log fetched club data
+            console.log('Restaurant Data:', restaurantData); // Log fetched restaurant data
+            setClubData(clubData || []);
+            setRestaurantData(restaurantData || []);
+            const formattedData = formatDataForChart(clubData || [], restaurantData || []);
             setChartData(formattedData);
-            const allData = [...clubData, ...restaurantData];
+            const allData = [...(clubData || []), ...(restaurantData || [])];
             const topItems = getTopMenuItems(allData);
+            console.log('Top Menu Items After Processing:', topItems); // Log top items after processing
             setTopMenuItems(topItems);
         };
         fetchData();
@@ -163,14 +172,20 @@ function Restaurant() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {topMenuItems.map((item, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{item.name}</TableCell>
-                                            <TableCell>{item.quantity}</TableCell>
-                                            <TableCell>{item.revenue}</TableCell>
-                                            <TableCell>{item.pointOfSale}</TableCell>
+                                    {topMenuItems.length > 0 ? (
+                                        topMenuItems.map((item, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{item.name}</TableCell>
+                                                <TableCell>{item.quantity}</TableCell>
+                                                <TableCell>{item.revenue}</TableCell>
+                                                <TableCell>{item.pointOfSale}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={4}>No data available</TableCell>
                                         </TableRow>
-                                    ))}
+                                    )}
                                 </TableBody>
                             </Table>
                         </TableContainer>

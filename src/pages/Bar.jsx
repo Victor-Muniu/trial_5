@@ -13,9 +13,13 @@ function Bar() {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/tables');
-        const data = response.data;
-        console.log(data);
-        setData(data);
+        const allTables = response.data;
+        
+        // Filter tables to only include those from the "Twiga" restaurant
+        const filteredTables = allTables.filter(table => table.restaurant === 'Twiga');
+        
+        console.log(filteredTables);
+        setData(filteredTables);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }

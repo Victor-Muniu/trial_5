@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Box, Button,  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Select, FormControl, InputLabel, CircularProgress, Card, CardContent, Modal
+  Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, CircularProgress, Card, CardContent, Modal
 } from '@mui/material';
-
 
 function Collections() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -16,8 +14,11 @@ function Collections() {
     date: '',
     float: '',
     cash_paid_out: '',
-    total_sales: '',
-    total_revenue: '',
+    mpesa: '',
+    cash: '',
+    pesa_pal: '',
+    equity: '',
+    cheque: '',
     shift: ''
   });
 
@@ -35,8 +36,6 @@ function Collections() {
     getData();
   }, []);
 
-  
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -46,8 +45,11 @@ function Collections() {
       date: '',
       float: '',
       cash_paid_out: '',
-      total_sales: '',
-      total_revenue: '',
+      mpesa: '',
+      cash: '',
+      pesa_pal: '',
+      equity: '',
+      cheque: '',
       shift: ''
     });
   };
@@ -61,12 +63,16 @@ function Collections() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const total_sales = parseFloat(newData.mpesa) + parseFloat(newData.cash) + parseFloat(newData.pesa_pal) + parseFloat(newData.equity) + parseFloat(newData.cheque);
+    const total_revenue = parseFloat(newData.float) + total_sales - parseFloat(newData.cash_paid_out);
+
     try {
+      const payload = { ...newData, total_sales, total_revenue };
       if (editing) {
-        await axios.put(`https://hotel-backend-1-trhj.onrender.com/dailycollections/${currentId}`, newData);
-        setData(data.map((item) => (item._id === currentId ? newData : item)));
+        await axios.patch(`https://hotel-backend-1-trhj.onrender.com/dailycollections/${currentId}`, payload);
+        setData(data.map((item) => (item._id === currentId ? { ...item, ...payload } : item)));
       } else {
-        const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/dailycollections', newData);
+        const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/dailycollections', payload);
         setData([...data, response.data]);
       }
       handleClose();
@@ -80,8 +86,11 @@ function Collections() {
       date: new Date(item.date).toISOString().slice(0, 10),
       float: item.float,
       cash_paid_out: item.cash_paid_out,
-      total_sales: item.total_sales,
-      total_revenue: item.total_revenue,
+      mpesa: item.mpesa,
+      cash: item.cash,
+      pesa_pal: item.pesa_pal,
+      equity: item.equity,
+      cheque: item.cheque,
       shift: item.shift
     });
     setCurrentId(item._id);
@@ -100,9 +109,6 @@ function Collections() {
   return (
     <Box padding={3}>
       <Typography variant="h4" gutterBottom>Daily Collections</Typography>
-
-      
-
       <Button variant="contained" color="secondary" onClick={handleOpen}>
         Add New Entry
       </Button>
@@ -144,17 +150,41 @@ function Collections() {
                   margin="normal"
                 />
                 <TextField
-                  label="Total Sales"
-                  name="total_sales"
-                  value={newData.total_sales}
+                  label="Mpesa"
+                  name="mpesa"
+                  value={newData.mpesa}
                   onChange={handleChange}
                   fullWidth
                   margin="normal"
                 />
                 <TextField
-                  label="Total Revenue"
-                  name="total_revenue"
-                  value={newData.total_revenue}
+                  label="Cash"
+                  name="cash"
+                  value={newData.cash}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Pesa Pal"
+                  name="pesa_pal"
+                  value={newData.pesa_pal}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Equity"
+                  name="equity"
+                  value={newData.equity}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Cheque"
+                  name="cheque"
+                  value={newData.cheque}
                   onChange={handleChange}
                   fullWidth
                   margin="normal"
@@ -183,8 +213,13 @@ function Collections() {
               <TableCell>Date</TableCell>
               <TableCell>Float</TableCell>
               <TableCell>Cash Paid Out</TableCell>
+              <TableCell>Mpesa</TableCell>
+              <TableCell>Cash</TableCell>
+              <TableCell>Pesa Pal</TableCell>
+              <TableCell>Equity</TableCell>
+              <TableCell>Cheque</TableCell>
               <TableCell>Total Sales</TableCell>
-              <TableCell>Total Revenue</TableCell>
+
               <TableCell>Shift</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -195,8 +230,13 @@ function Collections() {
                 <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
                 <TableCell>{row.float}</TableCell>
                 <TableCell>{row.cash_paid_out}</TableCell>
+                <TableCell>{row.mpesa}</TableCell>
+                <TableCell>{row.cash}</TableCell>
+                <TableCell>{row.pesa_pal}</TableCell>
+                <TableCell>{row.equity}</TableCell>
+                <TableCell>{row.cheque}</TableCell>
                 <TableCell>{row.total_sales}</TableCell>
-                <TableCell>{row.total_revenue}</TableCell>
+
                 <TableCell>{row.shift}</TableCell>
                 <TableCell>
                   <Button variant="contained" color="primary" onClick={() => handleEdit(row)}>

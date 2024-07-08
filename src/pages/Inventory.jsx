@@ -30,7 +30,7 @@ const Inventory = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-zrv3.onrender.com/items');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
         const data = response.data;
         setData(data);
       } catch (error) {

@@ -36,7 +36,7 @@ function Podium() {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const restaurantResponse = await axios.get('https://hotel-backend-1-trhj.onrender.comm/restaurantOrders');
+        const restaurantResponse = await axios.get('https://hotel-backend-1-trhj.onrender.com/restaurantOrders');
         const clubResponse = await axios.get('https://hotel-backend-1-trhj.onrender.com/clubBills');
         
         const restaurantOrders = restaurantResponse.data;
@@ -76,6 +76,8 @@ function Podium() {
 
     fetchSalesData();
   }, []);
+
+  
 
   return (
     <PodiumContainer>

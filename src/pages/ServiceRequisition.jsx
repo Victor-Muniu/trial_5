@@ -43,7 +43,7 @@ function ServiceRequisition() {
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell>{row.itemName}</TableCell>
+              <TableCell>{row.itemID.name}</TableCell>
               <TableCell>{row.department}</TableCell>
               <TableCell>{row.quantity}</TableCell>
               <TableCell>{row.unit}</TableCell>
