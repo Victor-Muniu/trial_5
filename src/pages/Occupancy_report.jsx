@@ -7,11 +7,9 @@ function OccupancyReport() {
   const [data, setData] = useState([]);
   const [roomServiceData, setRoomServiceData] = useState([]);
   const [laundryServiceData, setLaundryServiceData] = useState([]);
-  const [reservationBillsData, setReservationBillsData] = useState([]);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const roomServiceRef = useRef();
   const laundryServiceRef = useRef();
-  const reservationBillsRef = useRef();
 
   const fname = localStorage.getItem('fname');
   const lname = localStorage.getItem('lname');
@@ -30,13 +28,12 @@ function OccupancyReport() {
 
   const handleOpenReceipt = async (room_no) => {
     const roomNumber = Array.isArray(room_no) ? room_no[0] : room_no;
+    console.log(roomNumber)
     try {
       const roomServiceResponse = await axios.get(`https://hotel-backend-1-trhj.onrender.com/room-services/room/${roomNumber}`);
       const laundryServiceResponse = await axios.get(`https://hotel-backend-1-trhj.onrender.com/laundry-service-bills/room/${roomNumber}`);
-      const reservationBillsResponse = await axios.get(`https://hotel-backend-1-trhj.onrender.com/reservation-bills/room/${roomNumber}`);
       setRoomServiceData(roomServiceResponse.data || []);
       setLaundryServiceData(laundryServiceResponse.data || []);
-      setReservationBillsData(reservationBillsResponse.data || []);
       setReceiptOpen(true);
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
@@ -47,7 +44,6 @@ function OccupancyReport() {
     setReceiptOpen(false);
     setRoomServiceData([]);
     setLaundryServiceData([]);
-    setReservationBillsData([]);
   };
 
   const getCurrentDate = () => {
@@ -59,21 +55,8 @@ function OccupancyReport() {
   };
 
   const handlePrint = (section) => {
-    let printContent;
-    switch (section) {
-      case 'roomService':
-        printContent = roomServiceRef.current;
-        break;
-      case 'laundryService':
-        printContent = laundryServiceRef.current;
-        break;
-      case 'reservationBills':
-        printContent = reservationBillsRef.current;
-        break;
-      default:
-        return;
-    }
-    const WinPrint = window.open('', '', 'width=900,height=650');
+    const printContent = section === 'roomService' ? roomServiceRef.current : laundryServiceRef.current;
+    const WinPrint = window.open('', '', 'width=900,height=300');
     WinPrint.document.write(printContent.innerHTML);
     WinPrint.document.close();
     WinPrint.focus();
@@ -179,41 +162,6 @@ function OccupancyReport() {
               <Typography>No laundry service data available.</Typography>
             )}
           </div>
-
-          <div ref={reservationBillsRef}>
-            <Typography variant="h6" style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}>Reservation Bill</Typography>
-            {reservationBillsData.length > 0 ? (
-              reservationBillsData.map((data, index) => (
-                <Paper key={index} elevation={1} style={{ padding: '10px', marginBottom: '10px' }}>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>Epashikino Resort & Spa</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>P.O Box : 12328-20100</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>OPP LAKE ELEMENTAITA</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>TEL : 0705455001,0788455001</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>PIN : P051626100V</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'semibold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>info@epashikino.com</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'semibold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>www.epashikinoresort.com</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'semibold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>Date: {getCurrentDate()} </Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>MPESA PAYBILL NO. 794921</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}>ACCOUNT NO. 123</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'semibold', textAlign: 'center', marginBottom: '-2px', fontSize:'12px'}}> Room No : {data.reservationID.room_no} </Typography>
-                  <Typography variant="body1" style={{ textAlign: 'center', marginBottom: '-3px' }}>Packages:</Typography>
-                  {data.reservationID.package_type.map((item, i) => (
-                    <Typography key={i} variant="body2" style={{ textAlign: 'center', fontSize:'12px' }}>
-                      {item}  Ksh {data.package_price[i]}
-                    </Typography>
-                  ))}
-                  <Typography variant="body1" style={{ textAlign: 'center', marginTop: '-3px', fontSize:'12px'}}>
-                    <strong>Total:</strong> Ksh {data.total_amount}
-                  </Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '-3px', fontSize:'12px'}}>Served by: {fname} {lname} </Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'semibold', textAlign: 'center', marginBottom: '-3px', fontSize:'12px'}}>Thank you for your business</Typography>
-                  <Typography variant="body1" style={{ fontWeight: 'semibold', textAlign: 'center', marginBottom: '-3px', fontSize:'12px'}}>Your Ultimate Joyous Experience</Typography>
-                </Paper>
-              ))
-            ) : (
-              <Typography>No reservation bills data available.</Typography>
-            )}
-          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseReceipt} color="primary">
@@ -224,9 +172,6 @@ function OccupancyReport() {
           </Button>
           <Button onClick={() => handlePrint('laundryService')} color="primary">
             Print Laundry Service
-          </Button>
-          <Button onClick={() => handlePrint('reservationBills')} color="primary">
-            Print Reservation Bill
           </Button>
         </DialogActions>
       </Dialog>

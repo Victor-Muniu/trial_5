@@ -28,7 +28,7 @@ function RoomService() {
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/reservation-bills', {
         reservationID,
-        package_price: packagePrice.split(',').map(Number), // Convert comma-separated string to array of numbers
+        package_price: packagePrice.split(',').map(Number), 
       });
       setSnackbarMessage('Reservation bill posted successfully');
       setSnackbarOpen(true);

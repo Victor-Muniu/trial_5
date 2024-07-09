@@ -38,6 +38,7 @@ import RoomService from "../pages/RoomService";
 import OccupancyReport from "../pages/Occupancy_report";
 import Menu2 from "../pages/Menu2";
 import RequisitionForm from "../pages/RequisitionForm";
+import BillForm from "../pages/BillForm";
 
 
 const checkAuth = (path) => {
@@ -411,6 +412,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <RequisitionForm />
+        }
+      ]
+    },
+    {
+      path: '/bills2',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <BillForm />
         }
       ]
     },

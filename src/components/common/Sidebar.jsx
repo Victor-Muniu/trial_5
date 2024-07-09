@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -437,11 +437,25 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Reservation Analysis" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/bills2')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <NoteAdd />
+            </ListItemIcon>
+            <ListItemText primary=" Create Bills" />
+          </ListItem>
+
           <ListItem button onClick={navigateTo('/banquetting')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <Balcony />
             </ListItemIcon>
             <ListItemText primary="Banquetting" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/stock_movement')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AddBusiness />
+            </ListItemIcon>
+            <ListItemText primary="Curio" />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/bills')}>

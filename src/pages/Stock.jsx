@@ -8,20 +8,29 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#387908', '#ff0070'
 
 const Stock = () => {
   const [data, setData] = useState([]);
+  const role = localStorage.getItem('role');
 
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/transfers');
-        const data = response.data;
-        console.log("Raw data:", data);
+        let data = response.data;
+
+        // Filter data based on role
+        if (role === 'service') {
+          data = data.filter(item => item.group === 'Bar');
+        } else if (role === 'front office') {
+          data = data.filter(item => item.group === 'Curio');
+        }
+
+        console.log("Filtered data:", data);
         setData(data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
     };
     getData();
-  }, []);
+  }, [role]);
 
   const formatDataForCharts = (data) => {
     const months = Array.from({ length: 12 }, (v, k) => dayjs().month(k).format('MMM'));
