@@ -145,6 +145,7 @@ const InvoiceTable = ({ data }) => {
             <TableCell>Unit Price</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Spoilt</TableCell>
+            <TableCell>Value</TableCell>
             <TableCell>Date</TableCell>
           </TableRow>
         </TableHead>
@@ -152,11 +153,11 @@ const InvoiceTable = ({ data }) => {
           {data.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.name}</TableCell>
-              <TableCell>{row.description}</TableCell>
               <TableCell>{row.group}</TableCell>
-              <TableCell>{row.unit_price ? `$${row.unit_price.toFixed(2)}` : 'N/A'}</TableCell>
+              <TableCell>{row.unit_price ? `Ksh${row.unit_price.toFixed(2)}` : 'N/A'}</TableCell>
               <TableCell>{row.quantity}</TableCell>
               <TableCell>{row.spoilt}</TableCell>
+              <TableCell>{row.value}</TableCell>
               <TableCell>{dayjs(row.date).format('MMM DD, YYYY')}</TableCell>
             </TableRow>
           ))}

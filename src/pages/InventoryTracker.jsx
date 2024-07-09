@@ -103,7 +103,7 @@ const InvoiceTable = ({ data }) => {
           {data.map((row) => (
             <TableRow key={row._id}>
               
-              <TableCell>{row.itemId.name}</TableCell>
+              <TableCell>{row.itemId?.name || 'N/A'}</TableCell>
               <TableCell>{dayjs(row.date).format('MMM DD, YYYY')}</TableCell>
               <TableCell>{row.quantity}</TableCell>
               <TableCell>{row.movementType}</TableCell>

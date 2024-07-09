@@ -56,8 +56,6 @@ function Rooms() {
   const handleSave = async () => {
     try {
       if (selectedRoom._id) {
-        console.log(selectedRoom._id)
-
         await axios.patch(`https://hotel-backend-1-trhj.onrender.com/rooms/${selectedRoom._id}`, selectedRoom);
         setData(data.map(room => (room._id === selectedRoom._id ? selectedRoom : room)));
       } else {
@@ -75,7 +73,6 @@ function Rooms() {
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
     }
-
   };
 
   const handleChange = (e) => {
@@ -94,30 +91,46 @@ function Rooms() {
     setOpen(true);
   };
 
+  const renderRoomsByBlock = (block) => {
+    return data.filter(room => room.block === block).map((room) => (
+      <Grid item xs={12} md={4} key={room._id}>
+        <Paper elevation={3} style={{ padding: '20px', borderColor: getColor(room), borderStyle: 'solid' }}>
+          <Typography variant="h6">No. {room.room_no}</Typography>
+          <Typography variant="h6">Block. {room.block}</Typography>
+          <Typography variant="body2">Vacant: {room.vacancy}</Typography>
+          <Typography variant="body1">Clean: {room.clean}</Typography>
+          <Typography variant="body2">Damage: {room.damage_report}</Typography>
+          <IconButton color="primary" onClick={() => handleEdit(room)}>
+            <Edit />
+          </IconButton>
+          <IconButton color="secondary" onClick={() => handleDelete(room._id)}>
+            <Delete />
+          </IconButton>
+        </Paper>
+      </Grid>
+    ));
+  };
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
         Room Status
       </Typography>
       <Button variant="contained" color="primary" onClick={handleAddNewRoom}>Add New Room</Button>
-      <Grid container spacing={3} style={{ marginTop: '20px' }}>
-        {data.map((room) => (
-          <Grid item xs={12} md={4} key={room._id}>
-            <Paper elevation={3} style={{ padding: '20px', borderColor: getColor(room), borderStyle: 'solid' }}>
-              <Typography variant="h6">No. {room.room_no}</Typography>
-              <Typography variant="h6">Block. {room.block}</Typography>
-              <Typography variant="body2">Vacant: {room.vacancy}</Typography>
-              <Typography variant="body1">Clean: {room.clean}</Typography>
-              <Typography variant="body2">Damage: {room.damage_report}</Typography>
-              <IconButton color="primary" onClick={() => handleEdit(room)}>
-                <Edit />
-              </IconButton>
-              <IconButton color="secondary" onClick={() => handleDelete(room._id)}>
-                <Delete />
-              </IconButton>
-            </Paper>
-          </Grid>
-        ))}
+
+      <Typography variant="h5" style={{ marginTop: '20px' }}>Block A</Typography>
+      <Grid container spacing={3} style={{ marginTop: '10px' }}>
+        {renderRoomsByBlock('A')}
+      </Grid>
+
+      <Typography variant="h5" style={{ marginTop: '20px' }}>Block B</Typography>
+      <Grid container spacing={3} style={{ marginTop: '10px' }}>
+        {renderRoomsByBlock('B')}
+      </Grid>
+
+      <Typography variant="h5" style={{ marginTop: '20px' }}>Block C</Typography>
+      <Grid container spacing={3} style={{ marginTop: '10px' }}>
+        {renderRoomsByBlock('C')}
       </Grid>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
