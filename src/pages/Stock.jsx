@@ -140,7 +140,6 @@ const InvoiceTable = ({ data }) => {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Description</TableCell>
             <TableCell>Group</TableCell>
             <TableCell>Unit Price</TableCell>
             <TableCell>Quantity</TableCell>
