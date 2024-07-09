@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -434,7 +434,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemIcon sx={{ color: 'white' }}>
               <Analytics />
             </ListItemIcon>
-            <ListItemText primary="Reservation Analysis" />
+            <ListItemText primary="Room Bills" />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/bills2')}>
@@ -486,12 +486,21 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Laundry Service" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/ammenities')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Games />
+            </ListItemIcon>
+            <ListItemText primary="Ammenities" />
+          </ListItem>
+
           <ListItem button onClick={navigateTo('/agents_analysis')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <SupportAgent />
             </ListItemIcon>
             <ListItemText primary="Agent Analytics" />
           </ListItem>
+
+          
 
           <ListItem button onClick={handleLogout}>
             <ListItemIcon sx={{ color: 'white' }}>

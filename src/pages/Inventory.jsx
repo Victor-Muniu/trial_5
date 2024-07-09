@@ -26,6 +26,8 @@ const Inventory = () => {
     spoilt: '',
     date: '',
   });
+  const [file, setFile] = useState(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -81,16 +83,39 @@ const Inventory = () => {
       spoilt: '',
       date: '',
     });
+    setFile(null);
   }
+
+  const handleUploadDialogOpen = () => {
+    setUploadDialogOpen(true);
+  };
+
+  const handleUploadDialogClose = () => {
+    setUploadDialogOpen(false);
+    setFile(null);
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setNewItem({ ...newItem, [name]: value });
   }
 
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  }
+
   const handleSubmit = async () => {
     try {
-      if (isEditMode) {
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        await axios.post('https://hotel-backend-1-trhj.onrender.com/upload-items', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        handleUploadDialogClose();
+      } else if (isEditMode) {
         await axios.patch(`https://hotel-backend-1-trhj.onrender.com/items/${currentItem._id}`, newItem);
       } else {
         await axios.post('https://hotel-backend-1-trhj.onrender.com/items', newItem);
@@ -141,7 +166,6 @@ const Inventory = () => {
         >
           <MenuItem value="All">All Categories</MenuItem>
           <MenuItem value="Butchery">Butchery</MenuItem>
-          
         </Select>
         <Select
           value={selectedStockAlert}
@@ -154,6 +178,7 @@ const Inventory = () => {
           <MenuItem value="Out Of Stock">Out Of Stock</MenuItem>
         </Select>
         <Button variant="contained" color="primary" onClick={handleClickOpen}>+ Add Product</Button>
+        <Button variant="contained" color="secondary" onClick={handleUploadDialogOpen}>Upload File</Button>
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -197,7 +222,7 @@ const Inventory = () => {
         </Table>
       </TableContainer>
       <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>{isEditMode ? 'Edit Item' : 'Create Order'}</DialogTitle>
+        <DialogTitle>{isEditMode ? 'Edit Item' : 'Create Item'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -254,25 +279,36 @@ const Inventory = () => {
             value={newItem.spoilt}
             onChange={handleInputChange} />
           <TextField
-            margin="dense"
-            name="date"
-            label="Date"
-            type="date"
+            autoFocus
+            margin='dense'
+            name='date'
+            label='Date'
+            type='date'
             fullWidth
             value={newItem.date}
             onChange={handleInputChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+            InputLabelProps={{ shrink: true }} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>{isEditMode ? 'Update Item' : 'Create Item'}</Button>
+          <Button onClick={handleSubmit}>{isEditMode ? 'Update' : 'Submit'}</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={uploadDialogOpen} onClose={handleUploadDialogClose} fullWidth>
+        <DialogTitle>Upload File</DialogTitle>
+        <DialogContent>
+          <input
+            type='file'
+            onChange={handleFileChange}
+            style={{ marginTop: 20 }} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleUploadDialogClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Upload</Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
-};
+}
 
 export default Inventory;

@@ -39,6 +39,7 @@ import OccupancyReport from "../pages/Occupancy_report";
 import Menu2 from "../pages/Menu2";
 import RequisitionForm from "../pages/RequisitionForm";
 import BillForm from "../pages/BillForm";
+import Ammenities from "../pages/Ammenities";
 
 
 const checkAuth = (path) => {
@@ -425,7 +426,16 @@ export const router = createBrowserRouter([
         }
       ]
     },
-
+    {
+      path: '/ammenities',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Ammenities />
+        }
+      ]
+    },
     {
       path: "*",
       element: <Navigate to={checkAuth()} replace />, 

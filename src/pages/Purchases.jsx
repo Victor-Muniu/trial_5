@@ -38,9 +38,9 @@ function Purchases() {
         }
       });
       console.log('File uploaded successfully:', response.data);
-      setData([...data, ...response.data]); // Append the new data to the existing data
+      setData([...data, ...response.data]); 
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error('Error uploading file:', error.message); // Corrected error handling
     }
   };
 

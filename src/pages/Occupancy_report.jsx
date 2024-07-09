@@ -66,7 +66,7 @@ function OccupancyReport() {
 
   return (
     <Container>
-      <Typography variant="h6">Room Occupancy</Typography>
+      <Typography variant="h6">Room Bills</Typography>
       <Grid container spacing={3}>
         {data.map((room, index) => (
           <Grid item xs={12} md={4} key={index}>
