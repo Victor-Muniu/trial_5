@@ -281,7 +281,7 @@ const Reservations = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Group Name"
+                label="How did you find us ?"
                 name="group_name"
                 value={formData.group_name}
                 onChange={handleChange}
