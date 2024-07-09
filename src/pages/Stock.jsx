@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Grid, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, PieChart, Pie, Cell } from 'recharts';
 import dayjs from 'dayjs';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#387908', '#ff0070', '#0000ff'];
@@ -69,7 +69,6 @@ const Stock = () => {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Legend />
                 {products.map((product, index) => (
                   <Line
                     key={product}
@@ -102,7 +101,6 @@ const Stock = () => {
                   ))}
                 </Pie>
                 <Tooltip />
-                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
@@ -122,7 +120,6 @@ const Stock = () => {
                 <XAxis type="number" />
                 <YAxis type="category" dataKey="name" />
                 <Tooltip />
-                <Legend />
                 <Line dataKey="quantity" fill="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
