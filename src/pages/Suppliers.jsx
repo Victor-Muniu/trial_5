@@ -1,22 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button,
-  Modal, Box, TextField
-} from '@mui/material';
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-  opacity: 0.9,
-};
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button, Card, TextField, Modal, Box } from '@mui/material';
 
 function Suppliers() {
   const [data, setData] = useState([]);
@@ -28,6 +12,7 @@ function Suppliers() {
     address: '',
     zip_code: '',
     contact_person: '',
+    credit_limit: '',
     email: '',
     telephone_no: ''
   });
@@ -36,7 +21,8 @@ function Suppliers() {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/suppliers');
-        setData(response.data);
+        const data = response.data;
+        setData(data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
@@ -48,14 +34,17 @@ function Suppliers() {
   const handleClose = () => setOpen(false);
 
   const handleChange = (e) => {
-    setSupplier({ ...supplier, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setSupplier({
+      ...supplier,
+      [name]: value
+    });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
-      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/suppliers', supplier);
-      setData([...data, response.data]);
+      await axios.post('https://hotel-backend-1-trhj.onrender.com/suppliers', supplier);
+      setData([...data, supplier]);
       handleClose();
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
@@ -63,146 +52,64 @@ function Suppliers() {
   };
 
   return (
-    <div>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+    <TableContainer component={Paper}>
+      <Typography variant="h6" component="div" gutterBottom>
+        Suppliers
+      </Typography>
+      <Button variant="contained" onClick={handleOpen}>
         Add Supplier
       </Button>
-      <TableContainer component={Paper}>
-        <Typography variant="h6" component="div" gutterBottom>
-          Suppliers
-        </Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>KRA Pin</TableCell>
-              <TableCell>VAT No</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Zip Code</TableCell>
-              <TableCell>Contact Person</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Contact</TableCell>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>KRA Pin</TableCell>
+            <TableCell>VAT No</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Zip Code</TableCell>
+            <TableCell>Contact Person</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Contact</TableCell>
+            <TableCell>Credit Limit</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((supplier, index) => (
+            <TableRow key={index}>
+              <TableCell>{supplier.name}</TableCell>
+              <TableCell>{supplier.Kra_pin}</TableCell>
+              <TableCell>{supplier.Vat_no}</TableCell>
+              <TableCell>{supplier.address}</TableCell>
+              <TableCell>{supplier.zip_code}</TableCell>
+              <TableCell>{supplier.contact_person}</TableCell>
+              <TableCell>{supplier.email}</TableCell>
+              <TableCell>{supplier.telephone_no}</TableCell>
+              <TableCell>{supplier.credit_limit}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((supplier) => (
-              <TableRow key={supplier._id}>
-                <TableCell>{supplier.name}</TableCell>
-                <TableCell>{supplier.Kra_pin}</TableCell>
-                <TableCell>{supplier.Vat_no}</TableCell>
-                <TableCell>{supplier.address}</TableCell>
-                <TableCell>{supplier.zip_code}</TableCell>
-                <TableCell>{supplier.contact_person}</TableCell>
-                <TableCell>{supplier.email}</TableCell>
-                <TableCell>{supplier.telephone_no}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          ))}
+        </TableBody>
+      </Table>
 
       <Modal open={open} onClose={handleClose}>
-        <Box sx={modalStyle}>
-          <Typography variant="h6" component="h2">
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 4, bgcolor: 'background.paper', boxShadow: 24, borderRadius: 1, opacity: 0.9 }}>
+          <Typography variant="h6" gutterBottom>
             Add Supplier
           </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="name"
-              label="Name"
-              name="name"
-              autoComplete="name"
-              autoFocus
-              value={supplier.name}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="Kra_pin"
-              label="KRA Pin"
-              name="Kra_pin"
-              autoComplete="Kra_pin"
-              value={supplier.Kra_pin}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="Vat_no"
-              label="VAT No"
-              name="Vat_no"
-              autoComplete="Vat_no"
-              value={supplier.Vat_no}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="address"
-              label="Address"
-              name="address"
-              autoComplete="address"
-              value={supplier.address}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="zip_code"
-              label="Zip Code"
-              name="zip_code"
-              autoComplete="zip_code"
-              value={supplier.zip_code}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="contact_person"
-              label="Contact Person"
-              name="contact_person"
-              autoComplete="contact_person"
-              value={supplier.contact_person}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              value={supplier.email}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="telephone_no"
-              label="Telephone No"
-              name="telephone_no"
-              autoComplete="telephone_no"
-              value={supplier.telephone_no}
-              onChange={handleChange}
-            />
-            <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
-              Add Supplier
-            </Button>
-          </form>
+          <TextField label="Name" name="name" value={supplier.name} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="KRA Pin" name="Kra_pin" value={supplier.Kra_pin} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="VAT No" name="Vat_no" value={supplier.Vat_no} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="Address" name="address" value={supplier.address} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="Zip Code" name="zip_code" value={supplier.zip_code} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="Contact Person" name="contact_person" value={supplier.contact_person} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="Credit Limit" name="credit_limit" value={supplier.credit_limit} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="Email" name="email" value={supplier.email} onChange={handleChange} fullWidth margin="normal" />
+          <TextField label="Telephone No" name="telephone_no" value={supplier.telephone_no} onChange={handleChange} fullWidth margin="normal" />
+          <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
+            Submit
+          </Button>
         </Box>
       </Modal>
-    </div>
+    </TableContainer>
   );
 }
 
