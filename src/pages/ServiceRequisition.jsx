@@ -1,43 +1,46 @@
-import React,{ useEffect, useState } from 'react'
-import axios from 'axios'
-import { Table,Paper,TableCell,TableRow,TableBody,TableHead, TableContainer, Checkbox, Button } from '@mui/material'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Table, Paper, TableCell, TableRow, TableBody, TableHead, TableContainer, Checkbox, Button } from '@mui/material';
 
 function ServiceRequisition() {
-    const [data, setData]= useState([])
-  useEffect(()=> {
+  const [data, setData] = useState([]);
+  const role = localStorage.getItem('role');
+
+  useEffect(() => {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/restaurantRequisitions');
-        const data = response.data;
+        let data = response.data;
+        if (role === 'procurement') {
+          data = data.filter(item => item.status === 'Pending');
+        }
         setData(data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
     };
     getData();
-  },[])
-  console.log(data)
-  const role = localStorage.getItem('role')
+  }, [role]);
+
   return (
     <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox />
-              </TableCell>
-              <TableCell>Product name</TableCell>
-              <TableCell>Department</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Unit</TableCell>
-              <TableCell>Date</TableCell>
-              {role === 'procurement' && (
-                <TableCell>Action</TableCell>
-              )}
-              
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell padding="checkbox">
+              <Checkbox />
+            </TableCell>
+            <TableCell>Product name</TableCell>
+            <TableCell>Department</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>Unit</TableCell>
+            <TableCell>Date</TableCell>
+            {role === 'procurement' && (
+              <TableCell>Action</TableCell>
+            )}
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {data.map((row) => (
             <TableRow key={row._id}>
               <TableCell padding="checkbox">
@@ -54,11 +57,11 @@ function ServiceRequisition() {
                 </TableCell>
               )}
             </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-  )
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 }
 
-export default ServiceRequisition
+export default ServiceRequisition;

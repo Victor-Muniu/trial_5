@@ -100,6 +100,8 @@ const Creditors = () => {
 
   const groupedData = groupByVendorAndMonth(data);
 
+  const isAdminOrAccounting = localStorage.getItem('role') === 'admin' || localStorage.getItem('role') === 'accounting';
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -112,9 +114,11 @@ const Creditors = () => {
     <Box padding={3}>
       <Typography variant="h4" gutterBottom>Creditors</Typography>
 
-      <Button variant="contained" color="secondary" onClick={handleOpen}>
-        Add New Entry
-      </Button>
+      {isAdminOrAccounting && (
+        <Button variant="contained" color="secondary" onClick={handleOpen}>
+          Add New Entry
+        </Button>
+      )}
 
       <Modal open={open} onClose={handleClose}>
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="rgba(0, 0, 0, 0.5)">

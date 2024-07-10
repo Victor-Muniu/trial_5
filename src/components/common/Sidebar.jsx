@@ -198,7 +198,7 @@ const Sidebar = ({ sidebarWidth }) => {
               <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/service_requisition')}>
                 <ListItemText primary="Service" />
               </ListItem>
-              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/')}>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/housekeeping_requisition')}>
                 <ListItemText primary="House Keeping" />
               </ListItem>
             </List>

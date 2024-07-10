@@ -12,16 +12,19 @@ const Ammenities = () => {
   const [ageGroup, setAgeGroup] = useState('');
   const [editingAmmenity, setEditingAmmenity] = useState(null);
   const [showAmmenityForm, setShowAmmenityForm] = useState(false); 
-  
 
-  
   const [orders, setOrders] = useState([]);
   const [staffName, setStaffName] = useState('');
   const [orderAgeGroup, setOrderAgeGroup] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [showOrderForm, setShowOrderForm] = useState(false); 
 
-  
+  useEffect(() => {
+    fetchAmmenities();
+    fetchOrders();
+  }, []);
+
+  // Fetch Ammenities
   const fetchAmmenities = async () => {
     try {
       const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/ammenities');
@@ -31,6 +34,7 @@ const Ammenities = () => {
     }
   };
 
+  // Fetch Orders
   const fetchOrders = async () => {
     try {
       const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders');
@@ -39,11 +43,6 @@ const Ammenities = () => {
       console.error('Error fetching orders:', error);
     }
   };
-
-  useEffect(() => {
-    fetchAmmenities();
-    fetchOrders();
-  }, []);
 
   // Handle Ammenity Form Submission
   const handleAmmenitySubmit = async (event) => {
@@ -118,18 +117,24 @@ const Ammenities = () => {
     }
   };
 
+  // Get role from localStorage
+  const role = localStorage.getItem('role');
+
   return (
     <div>
-      {/* Ammenity Form */}
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ marginTop: '16px', marginRight: '16px' }}
-        onClick={() => setShowAmmenityForm(true)}
-      >
-        Add Ammenity
-      </Button>
+      {/* Add Ammenity Button (Visible for Admin) */}
+      {role === 'admin' && (
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: '16px', marginRight: '16px' }}
+          onClick={() => setShowAmmenityForm(true)}
+        >
+          Add Ammenity
+        </Button>
+      )}
 
+      {/* Ammenity Form Modal */}
       <Modal
         open={showAmmenityForm}
         onClose={() => setShowAmmenityForm(false)}
@@ -222,6 +227,7 @@ const Ammenities = () => {
         Post Order
       </Button>
 
+      {/* Ammenities Order Form Modal */}
       <Modal
         open={showOrderForm}
         onClose={() => setShowOrderForm(false)}
@@ -276,14 +282,14 @@ const Ammenities = () => {
                 />
               </Box>
               <Button type="submit" variant="contained" color="primary">
-                Post Order
+                Place Order
               </Button>
             </form>
           </Paper>
         </Fade>
       </Modal>
-
-      {/* Orders Table */}
+      
+      {/* Ammenities Orders Table */}
       <TableContainer component={Paper} style={{ marginTop: '16px' }}>
         <Table>
           <TableHead>
@@ -292,16 +298,18 @@ const Ammenities = () => {
               <TableCell>Staff Name</TableCell>
               <TableCell>Age Group</TableCell>
               <TableCell>Quantity</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell>{order.ammenitiesId.name}</TableCell>
-                <TableCell>{order.staffId.fname}</TableCell>
+                <TableCell>{order.ammenitiesName}</TableCell>
+                <TableCell>{order.staffName}</TableCell>
                 <TableCell>{order.age_group}</TableCell>
                 <TableCell>{order.quantity}</TableCell>
+                <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleDeleteOrder(order._id)}>
                     <DeleteIcon />

@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Typography, TextField, Button, MenuItem, Select,
-  DialogTitle,
+  DialogTitle, Dialog, DialogContent, DialogActions
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
-import { Dialog } from '@mui/material';
-import { DialogContent } from '@mui/material';
-import { DialogActions } from '@mui/material';
 
 const Inventory = () => {
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStockAlert, setSelectedStockAlert] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [open, setOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -33,15 +32,13 @@ const Inventory = () => {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
-        const data = response.data;
-        setData(data);
+        setData(response.data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
     };
     getData();
   }, []);
-  console.log(data)
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
@@ -55,21 +52,38 @@ const Inventory = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
+
   const filteredData = data.filter((item) => {
-    return (
-      (selectedCategory === 'All' || item.group === selectedCategory) &&
-      (selectedStockAlert === 'All' ||
-        (selectedStockAlert === 'Low Stock' && item.quantity < 20) ||
-        (selectedStockAlert === 'Out Of Stock' && item.quantity === 0)) &&
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const isInSelectedCategory = selectedCategory === 'All' || item.group === selectedCategory;
+    const isInSelectedStockAlert =
+      selectedStockAlert === 'All' ||
+      (selectedStockAlert === 'Low Stock' && item.quantity < 20) ||
+      (selectedStockAlert === 'Out Of Stock' && item.quantity === 0);
+    const matchesSearchTerm = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    let matchesDateRange = true;
+    if (startDate && endDate) {
+      const itemDate = new Date(item.date);
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      matchesDateRange = itemDate >= start && itemDate <= end;
+    }
+
+    return isInSelectedCategory && isInSelectedStockAlert && matchesSearchTerm && matchesDateRange;
   });
 
   const role = localStorage.getItem('role');
 
   const handleClickOpen = () => {
     setOpen(true);
-  }
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -84,7 +98,7 @@ const Inventory = () => {
       date: '',
     });
     setFile(null);
-  }
+  };
 
   const handleUploadDialogOpen = () => {
     setUploadDialogOpen(true);
@@ -98,11 +112,11 @@ const Inventory = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setNewItem({ ...newItem, [name]: value });
-  }
+  };
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-  }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -127,26 +141,24 @@ const Inventory = () => {
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
     }
-  }
+  };
 
   const handleEdit = (item) => {
     setCurrentItem(item);
     setNewItem(item);
     setIsEditMode(true);
     setOpen(true);
-  }
+  };
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`https://hotel-backend-1-trhj.onrender.com/items/${id}`);
-      
       const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
       setData(response.data);
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
-      
     }
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -177,8 +189,30 @@ const Inventory = () => {
           <MenuItem value="Low Stock">Low Stock</MenuItem>
           <MenuItem value="Out Of Stock">Out Of Stock</MenuItem>
         </Select>
-        <Button variant="contained" color="primary" onClick={handleClickOpen}>+ Add Product</Button>
-        <Button variant="contained" color="secondary" onClick={handleUploadDialogOpen}>Upload File</Button>
+        <TextField
+          label="Start Date"
+          type="date"
+          value={startDate}
+          onChange={handleStartDateChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          label="End Date"
+          type="date"
+          value={endDate}
+          onChange={handleEndDateChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        {(role === 'admin' || role === 'procurement') && (
+          <>
+            <Button variant="contained" color="primary" onClick={handleClickOpen}>+ Add Product</Button>
+            <Button variant="contained" color="secondary" onClick={handleUploadDialogOpen}>Upload File</Button>
+          </>
+        )}
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -286,29 +320,28 @@ const Inventory = () => {
             type='date'
             fullWidth
             value={newItem.date}
-            onChange={handleInputChange}
-            InputLabelProps={{ shrink: true }} />
+            onChange={handleInputChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>{isEditMode ? 'Update' : 'Submit'}</Button>
+          <Button onClick={handleSubmit} color="primary">{isEditMode ? 'Save' : 'Add'}</Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={uploadDialogOpen} onClose={handleUploadDialogClose} fullWidth>
+      <Dialog open={uploadDialogOpen} onClose={handleUploadDialogClose}>
         <DialogTitle>Upload File</DialogTitle>
         <DialogContent>
           <input
-            type='file'
+            type="file"
             onChange={handleFileChange}
-            style={{ marginTop: 20 }} />
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleUploadDialogClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Upload</Button>
+          <Button onClick={handleSubmit} color="primary">Upload</Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
-}
+};
 
 export default Inventory;

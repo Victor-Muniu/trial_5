@@ -55,43 +55,53 @@ function Restaurant2() {
     }
   };
 
+  // Function to check if user is admin
+  const isAdmin = () => {
+    const role = localStorage.getItem('role');
+    return role === 'admin';
+  };
+
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-      <form onSubmit={handleSubmit}>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Table Number"
-            name="table_no"
-            value={newTable.table_no}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Status"
-            name="status"
-            value={newTable.status}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Restaurant Name"
-            name="restaurant"
-            value={newTable.restaurant}
-            onChange={handleChange}
-            required
-            fullWidth
-          />
-        </Box>
-        <Box sx={{ mb: 2 }}>
-          <Button type="submit" variant="contained" color="primary" fullWidth>Add Table</Button>
-        </Box>
-      </form>
+      {isAdmin() && (
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Table Number"
+              name="table_no"
+              value={newTable.table_no}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Status"
+              name="status"
+              value={newTable.status}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Restaurant Name"
+              name="restaurant"
+              value={newTable.restaurant}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Add Table
+            </Button>
+          </Box>
+        </form>
+      )}
       <Grid container spacing={3}>
         {data.map((table, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>

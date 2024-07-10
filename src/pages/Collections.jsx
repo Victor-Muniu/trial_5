@@ -98,6 +98,8 @@ function Collections() {
     setOpen(true);
   };
 
+  const role = localStorage.getItem('role'); // Retrieve role from localStorage
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -109,9 +111,11 @@ function Collections() {
   return (
     <Box padding={3}>
       <Typography variant="h4" gutterBottom>Daily Collections</Typography>
-      <Button variant="contained" color="secondary" onClick={handleOpen}>
-        Add New Entry
-      </Button>
+      {(role === 'admin' || role === 'front office') && ( // Check if role is admin or front office
+        <Button variant="contained" color="secondary" onClick={handleOpen}>
+          Add New Entry
+        </Button>
+      )}
 
       <Modal open={open} onClose={handleClose}>
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="rgba(0, 0, 0, 0.5)">
@@ -219,7 +223,6 @@ function Collections() {
               <TableCell>Equity</TableCell>
               <TableCell>Cheque</TableCell>
               <TableCell>Total Sales</TableCell>
-
               <TableCell>Shift</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -236,12 +239,13 @@ function Collections() {
                 <TableCell>{row.equity}</TableCell>
                 <TableCell>{row.cheque}</TableCell>
                 <TableCell>{row.total_sales}</TableCell>
-
                 <TableCell>{row.shift}</TableCell>
                 <TableCell>
-                  <Button variant="contained" color="primary" onClick={() => handleEdit(row)}>
-                    Edit
-                  </Button>
+                  {(role === 'admin' || role === 'front office') && ( // Check if role is admin or front office
+                    <Button variant="contained" color="primary" onClick={() => handleEdit(row)}>
+                      Edit
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

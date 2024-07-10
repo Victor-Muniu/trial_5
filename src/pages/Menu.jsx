@@ -133,15 +133,23 @@ function Menu() {
     }
   };
 
+  // Function to check if user is admin
+  const isAdmin = () => {
+    const role = localStorage.getItem('role');
+    return role === 'admin';
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: '70%', p: 3 }}>
         <Typography variant="h4" sx={{ mb: 4 }}>
           Menu for Table {table_no}
         </Typography>
-        <Button variant="contained" color="primary" onClick={handleOpenAdd} sx={{ mb: 4 }}>
-          Add Menu
-        </Button>
+        {isAdmin() && (
+          <Button variant="contained" color="primary" onClick={handleOpenAdd} sx={{ mb: 4 }}>
+            Add Menu
+          </Button>
+        )}
         <Grid container spacing={3}>
           {restaurantItems.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>

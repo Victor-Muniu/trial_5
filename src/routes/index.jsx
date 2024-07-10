@@ -32,7 +32,7 @@ import Rooms from "../pages/Rooms";
 import RoomReport from "../pages/RoomReport";
 import LaundryService from "../pages/LaundryService";
 import Reservations from "../pages/Reservations";
-import RoomAnalysis from "../pages/RoomAnalysis";
+
 import AgentsAnalytics from "../pages/AgentsAnalytics";
 import RoomService from "../pages/RoomService";
 import OccupancyReport from "../pages/Occupancy_report";
@@ -40,6 +40,7 @@ import Menu2 from "../pages/Menu2";
 import RequisitionForm from "../pages/RequisitionForm";
 import BillForm from "../pages/BillForm";
 import Ammenities from "../pages/Ammenities";
+import HouseKeeping from "../pages/HouseKeeping";
 
 
 const checkAuth = (path) => {
@@ -433,6 +434,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <Ammenities />
+        }
+      ]
+    },
+    {
+      path: '/housekeeping_requisition',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <HouseKeeping />
         }
       ]
     },

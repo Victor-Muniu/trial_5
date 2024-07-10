@@ -17,6 +17,9 @@ function Suppliers() {
     telephone_no: ''
   });
 
+  // Retrieve user role from localStorage
+  const userRole = localStorage.getItem('role');
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -56,9 +59,11 @@ function Suppliers() {
       <Typography variant="h6" component="div" gutterBottom>
         Suppliers
       </Typography>
-      <Button variant="contained" onClick={handleOpen}>
-        Add Supplier
-      </Button>
+      {userRole === 'admin' && (
+        <Button variant="contained" onClick={handleOpen}>
+          Add Supplier
+        </Button>
+      )}
       <Table>
         <TableHead>
           <TableRow>
@@ -104,9 +109,11 @@ function Suppliers() {
           <TextField label="Credit Limit" name="credit_limit" value={supplier.credit_limit} onChange={handleChange} fullWidth margin="normal" />
           <TextField label="Email" name="email" value={supplier.email} onChange={handleChange} fullWidth margin="normal" />
           <TextField label="Telephone No" name="telephone_no" value={supplier.telephone_no} onChange={handleChange} fullWidth margin="normal" />
-          <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
-            Submit
-          </Button>
+          {userRole === 'admin' && (
+            <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
+              Submit
+            </Button>
+          )}
         </Box>
       </Modal>
     </TableContainer>

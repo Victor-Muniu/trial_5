@@ -14,13 +14,13 @@ function Menu2() {
   const [editMenuItem, setEditMenuItem] = useState({ _id: '', name: '', quantity: '', price: '', point_of_sale: 'Bar' });
   const { table_no } = useParams();
   const fname = localStorage.getItem('fname');
+  const isAdmin = localStorage.getItem('role') === 'admin'; // Assuming you store role as 'admin'
 
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/menus');
         const data = response.data;
-        console.log(data);
         setData(data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
@@ -77,14 +77,10 @@ function Menu2() {
       date: new Date().toISOString()
     };
 
-    console.log("Submitting order data:", JSON.stringify(orderData, null, 2)); 
-
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/clubOrders', orderData);
-      console.log("Order submitted successfully", response.data);
       alert('Order submitted successfully');
-      setOrders([]); 
-      
+      setOrders([]);
     } catch (error) {
       console.error('There was a problem submitting the order:', error);
     }
@@ -140,9 +136,11 @@ function Menu2() {
         <Typography variant="h4" sx={{ mb: 4 }}>
           Menu for Table {table_no}
         </Typography>
-        <Button variant="contained" color="primary" onClick={handleOpenAdd} sx={{ mb: 4 }}>
-          Add Menu Item
-        </Button>
+        {isAdmin && (
+          <Button variant="contained" color="primary" onClick={handleOpenAdd} sx={{ mb: 4 }}>
+            Add Menu Item
+          </Button>
+        )}
         <Grid container spacing={3}>
           {barItems.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>

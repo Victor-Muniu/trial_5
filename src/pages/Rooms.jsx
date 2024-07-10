@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Select, MenuItem, TextField, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+  Container, Grid, Paper, Typography, Select, MenuItem, TextField, Button, FormControl, InputLabel, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
 function Rooms() {
@@ -13,6 +15,7 @@ function Rooms() {
     damage_report: ''
   });
   const [open, setOpen] = useState(false);
+  const [role, setRole] = useState(localStorage.getItem('role'));
 
   useEffect(() => {
     const getData = async () => {
@@ -29,12 +32,12 @@ function Rooms() {
   const getColor = (room) => {
     if (room.vacancy === 'Vacant' && room.clean === 'Yes' && room.damage_report === 'None') {
       return 'green';
-    } else if (room.vacancy === 'Occupied'&& room.clean === 'Yes' && room.damage_report === 'None') {
+    } else if (room.vacancy === 'Occupied' && room.clean === 'Yes' && room.damage_report === 'None') {
       return 'blue';
     } else if (room.damage_report !== 'None') {
       return 'red';
-    }else if(room.vacancy === 'Occupied' && room.clean === 'No' && room.damage_report === 'None'){
-        return 'yellow'
+    } else if (room.vacancy === 'Occupied' && room.clean === 'No' && room.damage_report === 'None') {
+      return 'yellow';
     }
     return 'default';
   };
@@ -100,12 +103,16 @@ function Rooms() {
           <Typography variant="body2">Vacant: {room.vacancy}</Typography>
           <Typography variant="body1">Clean: {room.clean}</Typography>
           <Typography variant="body2">Damage: {room.damage_report}</Typography>
-          <IconButton color="primary" onClick={() => handleEdit(room)}>
-            <Edit />
-          </IconButton>
-          <IconButton color="secondary" onClick={() => handleDelete(room._id)}>
-            <Delete />
-          </IconButton>
+          {(role === 'admin' || role === 'housekeeping') && (
+            <>
+              <IconButton color="primary" onClick={() => handleEdit(room)}>
+                <Edit />
+              </IconButton>
+              <IconButton color="secondary" onClick={() => handleDelete(room._id)}>
+                <Delete />
+              </IconButton>
+            </>
+          )}
         </Paper>
       </Grid>
     ));
@@ -116,7 +123,9 @@ function Rooms() {
       <Typography variant="h4" gutterBottom>
         Room Status
       </Typography>
-      <Button variant="contained" color="primary" onClick={handleAddNewRoom}>Add New Room</Button>
+      {(role === 'admin' || role === 'housekeeping') && (
+        <Button variant="contained" color="primary" onClick={handleAddNewRoom}>Add New Room</Button>
+      )}
 
       <Typography variant="h5" style={{ marginTop: '20px' }}>Block A</Typography>
       <Grid container spacing={3} style={{ marginTop: '10px' }}>
