@@ -226,7 +226,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemIcon sx={{ color: 'white' }}>
               <RequestQuote />
             </ListItemIcon>
-            <ListItemText primary='Stock Requisitions' />
+            <ListItemText primary='LPO' />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/purchases')}>
