@@ -71,7 +71,7 @@ function OccupancyReport() {
         {data.map((room, index) => (
           <Grid item xs={12} md={4} key={index}>
             <Paper elevation={3} style={{ padding: '20px', borderColor: 'green', borderStyle: 'solid' }}>
-              <Typography variant="h6">No. {room.room_no}</Typography>
+              <Typography variant="h6">{room.room_no.join(', ')}</Typography>
               <Typography variant="body2">
                 {room.individual
                   ? `${room.individual.fname} ${room.individual.lname}`
