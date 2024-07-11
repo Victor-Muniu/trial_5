@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Container, Grid, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Container, Grid, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from '@mui/material';
 import './styles.css';
 
 function OccupancyReport() {
@@ -68,6 +68,17 @@ function OccupancyReport() {
     WinPrint.close();
   };
 
+  
+    const handleCheckout = async (id) => {
+      try {
+        await axios.delete(`https://hotel-backend-1-trhj.onrender.com/reservations/${id}`);
+        setData(data.filter(room => room._id !== id)); 
+      } catch (error) {
+        console.error('There was a problem with the delete operation:', error);
+      }
+    };
+  
+
   return (
     <Container>
       <Typography variant="h6">Room Bills</Typography>
@@ -85,9 +96,15 @@ function OccupancyReport() {
                   ))
                 )}
               </Typography>
+              <Box display='flex' justifyContent='space-between' >
               <Button variant="contained" color="primary" onClick={() => handleOpenReceipt(room.room_no)}>
                 Show Receipts
               </Button>
+              <Button variant="contained" color="primary"  onClick={()=>handleCheckout(room._id)} >
+                  CheckOut 
+              </Button>
+              </Box>
+              
             </Paper>
           </Grid>
         ))}
