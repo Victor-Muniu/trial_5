@@ -113,17 +113,7 @@ function BillForm() {
       <form onSubmit={handleSubmit}>
         <FormControl fullWidth margin="normal">
           <InputLabel>Service Type</InputLabel>
-          <Select
-            name="serviceType"
-            value={formData.serviceType}
-            onChange={handleChange}
-            fullWidth
-            required
-            disabled
-          >
-            <MenuItem value="laundry">Laundry Service</MenuItem>
-            <MenuItem value="room">Room Service</MenuItem>
-          </Select>
+          
         </FormControl>
 
         <FormControl fullWidth margin="normal">
