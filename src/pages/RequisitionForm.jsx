@@ -136,8 +136,7 @@ function RequisitionForm() {
             onChange={handleChange}
           >
             <MenuItem value="Pending">Pending</MenuItem>
-            <MenuItem value="Approved">Approved</MenuItem>
-            <MenuItem value="Rejected">Rejected</MenuItem>
+            
           </Select>
         </FormControl>
         <Box mt={2}>

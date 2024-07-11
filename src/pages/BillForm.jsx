@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, TextField, Button, Typography, Box, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, FormControl } from '@mui/material';
 
 function BillForm() {
   const [formData, setFormData] = useState({
     room_no: '',
     laundryServices: [{ laundryName: '', quantity: '' }],
     menuItems: [{ name: '', quantity: '' }],
-    delivery_fee: 500,
+    delivery_fee: 0,
     serviceType: 'laundry' 
   });
   const [role, setRole] = useState('');
@@ -93,7 +93,7 @@ function BillForm() {
           room_no: '',
           laundryServices: [{ laundryName: '', quantity: '' }],
           menuItems: [{ name: '', quantity: '' }],
-          delivery_fee: 500,
+          delivery_fee: 0,
           serviceType: 'laundry'
         });
       } catch (error) {
@@ -111,8 +111,6 @@ function BillForm() {
         Service Bill Form
       </Typography>
       <form onSubmit={handleSubmit}>
-        
-
         <FormControl fullWidth margin="normal">
           <TextField
             name="room_no"
