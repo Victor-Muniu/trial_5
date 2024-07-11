@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, TextField, Button, Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 function RequisitionForm() {
+  const role = localStorage.getItem('role');
+  const defaultRequisitionType = role === 'housekeeping' ? 'housekeeping' : 'restaurant';
+
   const [formData, setFormData] = useState({
     itemName: '',
     quantity: '',
@@ -11,7 +14,7 @@ function RequisitionForm() {
     date: '',
     department: '',
     status: '',
-    requisitionType: 'restaurant' // Default to restaurant requisition
+    requisitionType: defaultRequisitionType
   });
 
   const handleChange = (e) => {
@@ -37,30 +40,26 @@ function RequisitionForm() {
         date: '',
         department: '',
         status: '',
-        requisitionType: 'restaurant' // Reset to default
+        requisitionType: defaultRequisitionType // Reset to default
       });
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
     }
   };
 
+  useEffect(() => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      requisitionType: defaultRequisitionType
+    }));
+  }, [defaultRequisitionType]);
+
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        Requisition Form
+        {defaultRequisitionType === 'restaurant' ? 'Restaurant Requisition Form' : 'Housekeeping Requisition Form'}
       </Typography>
       <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Requisition Type</InputLabel>
-          <Select
-            name="requisitionType"
-            value={formData.requisitionType}
-            onChange={handleChange}
-          >
-            <MenuItem value="restaurant">Restaurant</MenuItem>
-            <MenuItem value="housekeeping">Housekeeping</MenuItem>
-          </Select>
-        </FormControl>
         <TextField
           label="Item Name"
           name="itemName"

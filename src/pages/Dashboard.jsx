@@ -5,6 +5,7 @@ import FoodProduction from './FoodProduction'
 import InventoryTracker from './InventoryTracker'
 import Accounts from './Accounts'
 import HouseKeeping from './HouseKeeping'
+import Reception from './Reception'
 
 function Dashboard() {
   const user = localStorage.getItem('role')
@@ -26,6 +27,9 @@ function Dashboard() {
       )}
       {user === 'house keeping' &&(
         <HouseKeeping />
+      )}
+      {user === 'front office' &&(
+        <Reception />
       )}
     </Box>
   )

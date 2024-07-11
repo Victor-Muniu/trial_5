@@ -510,6 +510,22 @@ const Sidebar = ({ sidebarWidth }) => {
           </ListItem>
         </List>
       )}
+      {role === 'admin' &&(
+        <List>
+          <ListItem button onClick={navigateTo('/dashboard')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Dashboard />
+            </ListItemIcon>
+            <ListItemText primary="Dashboards" />
+          </ListItem>
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      )}
     </Drawer>
   );
 };

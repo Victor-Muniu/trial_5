@@ -7,6 +7,7 @@ import { Edit, Delete } from '@mui/icons-material';
 
 function Rooms() {
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState({
     room_no: '',
     block: '',
@@ -14,6 +15,7 @@ function Rooms() {
     clean: '',
     damage_report: ''
   });
+  const [searchQuery, setSearchQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState(localStorage.getItem('role'));
 
@@ -22,6 +24,7 @@ function Rooms() {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/rooms');
         setData(response.data);
+        setFilteredData(response.data); // Set filtered data initially to all rooms
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
@@ -51,6 +54,7 @@ function Rooms() {
     try {
       await axios.delete(`https://hotel-backend-1-trhj.onrender.com/rooms/${id}`);
       setData(data.filter(room => room._id !== id));
+      setFilteredData(filteredData.filter(room => room._id !== id)); // Update filtered data as well
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
     }
@@ -61,9 +65,11 @@ function Rooms() {
       if (selectedRoom._id) {
         await axios.patch(`https://hotel-backend-1-trhj.onrender.com/rooms/${selectedRoom._id}`, selectedRoom);
         setData(data.map(room => (room._id === selectedRoom._id ? selectedRoom : room)));
+        setFilteredData(filteredData.map(room => (room._id === selectedRoom._id ? selectedRoom : room))); // Update filtered data as well
       } else {
         const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/rooms', selectedRoom);
         setData([...data, response.data]);
+        setFilteredData([...filteredData, response.data]); // Update filtered data as well
       }
       setOpen(false);
       setSelectedRoom({
@@ -94,8 +100,14 @@ function Rooms() {
     setOpen(true);
   };
 
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    setFilteredData(data.filter(room => room.room_no.toString().includes(query)));
+  };
+
   const renderRoomsByBlock = (block) => {
-    return data.filter(room => room.block === block).map((room) => (
+    return filteredData.filter(room => room.block === block).map((room) => (
       <Grid item xs={12} md={4} key={room._id}>
         <Paper elevation={3} style={{ padding: '20px', borderColor: getColor(room), borderStyle: 'solid' }}>
           <Typography variant="h6">No. {room.room_no}</Typography>
@@ -126,6 +138,14 @@ function Rooms() {
       {(role === 'admin' || role === 'housekeeping') && (
         <Button variant="contained" color="primary" onClick={handleAddNewRoom}>Add New Room</Button>
       )}
+
+      <TextField
+        label="Search Rooms"
+        fullWidth
+        margin="normal"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
 
       <Typography variant="h5" style={{ marginTop: '20px' }}>Block A</Typography>
       <Grid container spacing={3} style={{ marginTop: '10px' }}>
