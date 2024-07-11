@@ -9,6 +9,7 @@ function RoomService() {
   const [packagePrice, setPackagePrice] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const getData = async () => {
@@ -39,6 +40,18 @@ function RoomService() {
     }
   };
 
+  const filteredData = data.filter(reservation => {
+    if (reservation.type === 'individual') {
+      const fullName = `${reservation.individual.fname} ${reservation.individual.lname}`;
+      return fullName.toLowerCase().includes(searchTerm.toLowerCase());
+    } else {
+      return reservation.group.some(g => {
+        const fullName = `${g.fname} ${g.lname}`;
+        return fullName.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    }
+  });
+
   if (loading) {
     return (
       <Container>
@@ -50,11 +63,18 @@ function RoomService() {
   return (
     <Container>
       <Typography variant="h6">Reservations</Typography>
+      <TextField
+        label="Search by Name"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
       <Grid container spacing={3}>
-        {data.map((reservation, index) => (
+        {filteredData.map((reservation, index) => (
           <Grid item xs={12} md={4} key={index}>
             <Paper elevation={3} style={{ padding: '20px', borderColor: 'green', borderStyle: 'solid' }}>
-            <Typography variant="h6">Reservation No: {reservation._id}</Typography>
+              <Typography variant="h6">Reservation No: {reservation._id}</Typography>
               <Typography variant="body2">
                 {reservation.type === 'individual'
                   ? `${reservation.individual.fname} ${reservation.individual.lname}`

@@ -8,7 +8,6 @@ function OccupancyReport() {
   const [roomServiceData, setRoomServiceData] = useState([]);
   const [laundryServiceData, setLaundryServiceData] = useState([]);
   const [reservationBillsData, setReservationBillsData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const roomServiceRef = useRef();
   const laundryServiceRef = useRef();
