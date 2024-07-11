@@ -111,10 +111,7 @@ function BillForm() {
         Service Bill Form
       </Typography>
       <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Service Type</InputLabel>
-          
-        </FormControl>
+        
 
         <FormControl fullWidth margin="normal">
           <TextField

@@ -14,7 +14,7 @@ function Menu2() {
   const [editMenuItem, setEditMenuItem] = useState({ _id: '', name: '', quantity: '', price: '', point_of_sale: 'Bar' });
   const { table_no } = useParams();
   const fname = localStorage.getItem('fname');
-  const isAdmin = localStorage.getItem('role') === 'admin'; // Assuming you store role as 'admin'
+  const isAdmin = localStorage.getItem('role') === 'admin'; 
 
   useEffect(() => {
     const getData = async () => {
