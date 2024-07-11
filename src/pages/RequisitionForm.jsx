@@ -4,7 +4,7 @@ import { Container, TextField, Button, Typography, Box, FormControl, InputLabel,
 
 function RequisitionForm() {
   const role = localStorage.getItem('role');
-  const defaultRequisitionType = role === 'housekeeping' ? 'housekeeping' : 'restaurant';
+  const defaultRequisitionType = role === 'housekeeping' ? 'housekeeping' : role === 'front office' ? 'front office' : 'restaurant';
 
   const [formData, setFormData] = useState({
     itemName: '',
@@ -25,10 +25,21 @@ function RequisitionForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const endpoint = formData.requisitionType === 'restaurant'
-        ? 'https://hotel-backend-1-trhj.onrender.com/restaurantRequisitions'
-        : 'https://hotel-backend-1-trhj.onrender.com/houseKeepingRequisitions';
-      
+      let endpoint;
+      switch (formData.requisitionType) {
+        case 'restaurant':
+          endpoint = 'https://hotel-backend-1-trhj.onrender.com/restaurantRequisitions';
+          break;
+        case 'housekeeping':
+          endpoint = 'https://hotel-backend-1-trhj.onrender.com/houseKeepingRequisitions';
+          break;
+        case 'front office':
+          endpoint = 'https://hotel-backend-1-trhj.onrender.com/frontOfficeRequisitions';
+          break;
+        default:
+          throw new Error('Invalid requisition type');
+      }
+
       const response = await axios.post(endpoint, formData);
       console.log('Requisition created:', response.data);
 
@@ -57,7 +68,7 @@ function RequisitionForm() {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        {defaultRequisitionType === 'restaurant' ? 'Restaurant Requisition Form' : 'Housekeeping Requisition Form'}
+        {defaultRequisitionType === 'restaurant' ? 'Restaurant Requisition Form' : defaultRequisitionType === 'housekeeping' ? 'Housekeeping Requisition Form' : 'Front Office Requisition Form'}
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField

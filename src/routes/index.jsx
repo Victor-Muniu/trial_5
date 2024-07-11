@@ -41,6 +41,7 @@ import RequisitionForm from "../pages/RequisitionForm";
 import BillForm from "../pages/BillForm";
 import Ammenities from "../pages/Ammenities";
 import HouseKeeping from "../pages/HouseKeeping";
+import FrontOfficeRequisition from "../pages/FrontOfficeRequisition";
 
 
 const checkAuth = (path) => {
@@ -444,6 +445,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <HouseKeeping />
+        }
+      ]
+    },
+    {
+      path: '/front_requisitions',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <FrontOfficeRequisition />
         }
       ]
     },

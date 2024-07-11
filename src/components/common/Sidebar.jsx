@@ -97,6 +97,13 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Banquetting" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/bills2')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <NoteAdd />
+            </ListItemIcon>
+            <ListItemText primary=" Room Service bill" />
+          </ListItem>
+
           <ListItem button onClick={navigateTo('/requisition_form')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <RequestQuoteOutlined />
@@ -500,6 +507,19 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Agent Analytics" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/requisition_form')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Requisition Form" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/front_requisitions')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Departent Requisition" />
+          </ListItem>
           
 
           <ListItem button onClick={handleLogout}>

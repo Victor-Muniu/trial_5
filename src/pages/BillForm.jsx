@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, TextField, Button, Typography, Box, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 
@@ -8,8 +8,14 @@ function BillForm() {
     laundryServices: [{ laundryName: '', quantity: '' }],
     menuItems: [{ name: '', quantity: '' }],
     delivery_fee: 500,
-    serviceType: 'laundry' // default to laundry service
+    serviceType: 'laundry' 
   });
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    const userRole = localStorage.getItem('role');
+    setRole(userRole);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +45,7 @@ function BillForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.serviceType === 'laundry') {
+    if (role === 'front office') {
       const formattedLaundryServices = formData.laundryServices.map(service => ({
         laundryName: service.laundryName,
         quantity: parseInt(service.quantity, 10)
@@ -67,7 +73,7 @@ function BillForm() {
           console.error('Response data:', error.response.data);
         }
       }
-    } else if (formData.serviceType === 'room') {
+    } else if (role === 'service') {
       const formattedMenuItems = formData.menuItems.map(item => ({
         name: item.name,
         quantity: parseInt(item.quantity, 10)
@@ -113,6 +119,7 @@ function BillForm() {
             onChange={handleChange}
             fullWidth
             required
+            disabled
           >
             <MenuItem value="laundry">Laundry Service</MenuItem>
             <MenuItem value="room">Room Service</MenuItem>
@@ -131,7 +138,7 @@ function BillForm() {
           />
         </FormControl>
 
-        {formData.serviceType === 'laundry' && (
+        {role === 'front office' && (
           <>
             <Typography variant="h6" gutterBottom>
               Laundry Services
@@ -180,7 +187,7 @@ function BillForm() {
           </>
         )}
 
-        {formData.serviceType === 'room' && (
+        {role === 'service' && (
           <>
             <Typography variant="h6" gutterBottom>
               Room Services
