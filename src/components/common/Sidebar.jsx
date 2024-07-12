@@ -214,6 +214,9 @@ const Sidebar = ({ sidebarWidth }) => {
               <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/housekeeping_requisition')}>
                 <ListItemText primary="House Keeping" />
               </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/front_requisitions')}>
+                <ListItemText primary="Front Office" />
+              </ListItem>
             </List>
           </Collapse>
 
