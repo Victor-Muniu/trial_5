@@ -175,7 +175,7 @@ function Suppliers() {
             fullWidth
             margin="normal"
           />
-          {userRole === 'admin' && (
+          {(userRole === 'admin' || userRole === 'accounting' || userRole === "procurement") && (
             <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
               Submit
             </Button>
