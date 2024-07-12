@@ -224,7 +224,10 @@ function Collections() {
               <TableCell>Cheque</TableCell>
               <TableCell>Total Sales</TableCell>
               <TableCell>Shift</TableCell>
-              <TableCell>Actions</TableCell>
+              {(role === 'admin ' || role === 'front office') && (
+                <TableCell>Actions</TableCell>
+              )}
+              
             </TableRow>
           </TableHead>
           <TableBody>
