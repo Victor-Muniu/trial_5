@@ -42,6 +42,7 @@ import BillForm from "../pages/BillForm";
 import Ammenities from "../pages/Ammenities";
 import HouseKeeping from "../pages/HouseKeeping";
 import FrontOfficeRequisition from "../pages/FrontOfficeRequisition";
+import SokoCarriageInwards from "../pages/SokoCarriageInwards";
 
 
 const checkAuth = (path) => {
@@ -455,6 +456,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <FrontOfficeRequisition />
+        }
+      ]
+    },
+    {
+      path: '/carrage_inwards',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <SokoCarriageInwards />
         }
       ]
     },

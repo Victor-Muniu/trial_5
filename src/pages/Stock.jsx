@@ -1,13 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Grid, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, PieChart, Pie, Cell } from 'recharts';
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField
+} from '@mui/material';
+import {
+  ResponsiveContainer,
+  LineChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Line,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
 import dayjs from 'dayjs';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#387908', '#ff0070', '#0000ff'];
 
 const Stock = () => {
   const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredStartDate, setFilteredStartDate] = useState('');
+  const [filteredEndDate, setFilteredEndDate] = useState('');
   const role = localStorage.getItem('role');
 
   useEffect(() => {
@@ -16,19 +42,20 @@ const Stock = () => {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/transfers');
         let data = response.data;
 
-        // Filter data based on role
         if (role === 'service') {
           data = data.filter(item => item.group === 'Bar');
         } else if (role === 'front office') {
           data = data.filter(item => item.group === 'Curio');
+        } else if (role === 'procurement') {
+          data = data.filter(item => item.group === 'House Keeping' || item.group === 'Internal');
         }
 
-        console.log("Filtered data:", data);
         setData(data);
       } catch (error) {
-        console.error('There was a problem with the axios operation:', error);
+        console.error('Error fetching data:', error);
       }
     };
+
     getData();
   }, [role]);
 
@@ -45,20 +72,78 @@ const Stock = () => {
       return monthData;
     });
 
-    const productQuantities = products.map(product => {
-      return {
-        name: product,
-        quantity: data.filter(item => item.name === product).reduce((acc, item) => acc + (item.quantity || 0), 0)
-      };
-    });
+    const productQuantities = products.map(product => ({
+      name: product,
+      quantity: data.filter(item => item.name === product).reduce((acc, item) => acc + (item.quantity || 0), 0)
+    }));
 
     return { monthlyData, productQuantities, products };
   };
 
+  const handleFilterByDate = () => {
+    let filteredData = data;
+
+    if (filteredStartDate && filteredEndDate) {
+      filteredData = data.filter(item =>
+        dayjs(item.date).isAfter(filteredStartDate) && dayjs(item.date).isBefore(filteredEndDate)
+      );
+    }
+
+    return filteredData;
+  };
+
   const { monthlyData, productQuantities, products } = formatDataForCharts(data);
+  const filteredDataByDate = handleFilterByDate();
+
+  const handleStartDateChange = (e) => {
+    setFilteredStartDate(dayjs(e.target.value).startOf('day').toDate()); // Convert dayjs object to Date object
+  };
+
+  const handleEndDateChange = (e) => {
+    setFilteredEndDate(dayjs(e.target.value).endOf('day').toDate()); // Convert dayjs object to Date object
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredDataBySearch = data.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.group.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
+      <TextField
+        label="Search"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        onChange={handleSearchChange}
+      />
+      <TextField
+        label="Start Date"
+        type="date"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        onChange={handleStartDateChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+        label="End Date"
+        type="date"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        onChange={handleEndDateChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3 }}>
@@ -108,7 +193,7 @@ const Stock = () => {
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant='h6'>Stock</Typography>
-            <InvoiceTable data={data} />
+            <InvoiceTable data={filteredDataBySearch.filter(item => filteredDataByDate.includes(item))} />
           </Paper>
         </Grid>
         <Grid item xs={12}>
@@ -130,37 +215,37 @@ const Stock = () => {
   );
 };
 
-const InvoiceTable = ({ data }) => {
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Group</TableCell>
-            <TableCell>Unit Price</TableCell>
-            <TableCell>Quantity</TableCell>
-            <TableCell>Spoilt</TableCell>
-            <TableCell>Value</TableCell>
-            <TableCell>Date</TableCell>
+const InvoiceTable = ({ data }) => (
+  <TableContainer component={Paper}>
+    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell>Name</TableCell>
+          <TableCell>Group</TableCell>
+          <TableCell>Unit Of Measurement</TableCell>
+          <TableCell>Unit Price</TableCell>
+          <TableCell>Quantity</TableCell>
+          <TableCell>Spoilt</TableCell>
+          <TableCell>Value</TableCell>
+          <TableCell>Date</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((row) => (
+          <TableRow key={row.id}>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.group}</TableCell>
+            <TableCell>{row.description}</TableCell>
+            <TableCell>{row.unit_price ? `Ksh${row.unit_price.toFixed(2)}` : 'N/A'}</TableCell>
+            <TableCell>{row.quantity}</TableCell>
+            <TableCell>{row.spoilt}</TableCell>
+            <TableCell>{row.value}</TableCell>
+            <TableCell>{dayjs(row.date).format('MMM DD, YYYY')}</TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.group}</TableCell>
-              <TableCell>{row.unit_price ? `Ksh${row.unit_price.toFixed(2)}` : 'N/A'}</TableCell>
-              <TableCell>{row.quantity}</TableCell>
-              <TableCell>{row.spoilt}</TableCell>
-              <TableCell>{row.value}</TableCell>
-              <TableCell>{dayjs(row.date).format('MMM DD, YYYY')}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
 
 export default Stock;

@@ -223,6 +223,7 @@ const Inventory = () => {
               </TableCell>
               <TableCell>Product name</TableCell>
               <TableCell>Group</TableCell>
+              <TableCell>Unit of Measurement</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Spoilt</TableCell>
               <TableCell>Unit Price</TableCell>
@@ -240,6 +241,7 @@ const Inventory = () => {
                 </TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.group}</TableCell>
+                <TableCell>{row.description}</TableCell>
                 <TableCell>{row.quantity}</TableCell>
                 <TableCell>{row.spoilt}</TableCell>
                 <TableCell>{row.unit_price}</TableCell>
@@ -271,7 +273,7 @@ const Inventory = () => {
             autoFocus
             margin='dense'
             name='description'
-            label='Description'
+            label='Unit of Measurement'
             type='text'
             fullWidth
             value={newItem.description}
