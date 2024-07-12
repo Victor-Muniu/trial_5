@@ -54,7 +54,7 @@ const Creditors = () => {
     e.preventDefault();
     try {
       if (editing) {
-        await axios.put(`https://hotel-backend-1-trhj.onrender.com/creditors/${currentId}`, newData);
+        await axios.patch(`https://hotel-backend-1-trhj.onrender.com/creditors/${currentId}`, newData);
         setData(data.map((item) => (item._id === currentId ? { ...item, ...newData } : item)));
       } else {
         const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/creditors', newData);
