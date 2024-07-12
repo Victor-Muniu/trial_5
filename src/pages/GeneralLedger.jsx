@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button } from '@mui/material';
 
 function GeneralLedger() {
   const [data, setData] = useState([]);
-
-  const currentYear = new Date().getFullYear();
+  const [displayedYear, setDisplayedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     const getData = async () => {
@@ -19,10 +18,44 @@ function GeneralLedger() {
     getData();
   }, []);
 
-  const groupedData = data.reduce((acc, item) => {
-    const category = acc[item.category] || [];
-    category.push(item);
-    acc[item.category] = category;
+  const groupDataByCategoryAndMonthYear = () => {
+    const groupedData = {};
+    data.forEach(item => {
+      const date = new Date(item.date);
+      const month = date.getMonth() + 1; // Get the month (1-12)
+      const year = date.getFullYear(); // Get the year
+
+      if (!groupedData[item.category]) {
+        groupedData[item.category] = {};
+      }
+
+      if (!groupedData[item.category][year]) {
+        groupedData[item.category][year] = {};
+      }
+
+      if (!groupedData[item.category][year][month]) {
+        groupedData[item.category][year][month] = {
+          category: item.category,
+          month,
+          year,
+          totalAmount: 0
+        };
+      }
+      groupedData[item.category][year][month].totalAmount += item.amount;
+    });
+    return groupedData;
+  };
+
+  const groupedData = groupDataByCategoryAndMonthYear();
+
+  const handleYearChange = (newYear) => {
+    setDisplayedYear(newYear);
+  };
+
+  const displayedData = Object.keys(groupedData).reduce((acc, category) => {
+    if (groupedData[category][displayedYear]) {
+      acc[category] = groupedData[category][displayedYear];
+    }
     return acc;
   }, {});
 
@@ -33,33 +66,39 @@ function GeneralLedger() {
       </Typography>
 
       <Typography variant="h5" gutterBottom margin={5}>
-        For Jan 1, {currentYear} - Dec 31, {currentYear}
+        For Jan 1, {displayedYear} - Dec 31, {displayedYear}
       </Typography>
-      
 
-      {Object.keys(groupedData).map((category) => (
-        <React.Fragment key={category} >
+      <div style={{ marginBottom: '16px' }}>
+        <Button variant="contained" onClick={() => handleYearChange(displayedYear - 1)} style={{ marginRight: '8px' }}>
+          Previous Year
+        </Button>
+        <Button variant="contained" onClick={() => handleYearChange(displayedYear + 1)}>
+          Next Year
+        </Button>
+      </div>
+
+      {Object.keys(displayedData).map(category => (
+        <React.Fragment key={category}>
           <Typography variant="h6" gutterBottom margin={5}>
             {category}
           </Typography>
           <Table aria-label="simple table" margin={5}>
             <TableHead>
               <TableRow>
-                <TableCell>Transaction / Reference</TableCell>
-                <TableCell>Date / Note</TableCell>
-                <TableCell align="right">Amount</TableCell>
-                
+                <TableCell>Category</TableCell>
+                <TableCell>Month</TableCell>
+                <TableCell align="right">Total Amount</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {groupedData[category].map((row) => (
-                <TableRow key={row._id}>
+              {Object.values(displayedData[category]).map((group, index) => (
+                <TableRow key={index}>
                   <TableCell component="th" scope="row">
-                    {row.category}
+                    {group.category}
                   </TableCell>
-                  <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
-                  <TableCell align="right">{row.amount}</TableCell>
-                  
+                  <TableCell>{new Date(group.year, group.month - 1).toLocaleString('default', { month: 'long' })} {group.year}</TableCell>
+                  <TableCell align="right">{group.totalAmount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

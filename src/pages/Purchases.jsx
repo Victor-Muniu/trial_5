@@ -256,10 +256,7 @@ function Purchases() {
         <Fade in={showAddForm}>
           <Card style={{ padding: 20, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
             <Typography variant="h5" gutterBottom>Add Purchases</Typography>
-            <TextField label="Category" name="category" value={newPurchase.category} onChange={handleInputChange} fullWidth margin="normal" />
             <TextField label="Vendor" name="vendor" value={newPurchase.vendor} onChange={handleInputChange} fullWidth margin="normal" />
-            <TextField label="Quantity" name="quantity" type="number" value={newPurchase.quantity} onChange={handleInputChange} fullWidth margin="normal" />
-            <TextField label="Price" name="price" type="number" value={newPurchase.price} onChange={handleInputChange} fullWidth margin="normal" />
             <TextField label="Date" name="date" type="date" value={newPurchase.date} onChange={handleInputChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
             <TextField label="Amount" name="amount" type="number" value={newPurchase.amount} onChange={handleInputChange} fullWidth margin="normal" />
             <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
