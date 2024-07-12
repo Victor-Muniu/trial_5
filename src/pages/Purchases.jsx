@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, Button, TextField, MenuItem, Card, CardContent } from '@mui/material';
+import { 
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
+  Paper, Typography, Box, Button, TextField, MenuItem, Card, CardContent 
+} from '@mui/material';
 
 function Purchases() {
   const [data, setData] = useState([]);
@@ -16,19 +19,24 @@ function Purchases() {
     date: '',
     amount: ''
   });
-  const [showPurchaseForm, setShowPurchaseForm] = useState(false); // State for showing/hiding purchase form
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false); 
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases', {
+          params: {
+            startDate,
+            endDate
+          }
+        });
         setData(response.data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
     };
     getData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -83,19 +91,36 @@ function Purchases() {
   // Function to group data by vendor and calculate totals
   const getGroupedData = () => {
     const groupedData = {};
+    
+    // Iterate through all data items
     data.forEach((item) => {
-      if (!groupedData[item.vendor]) {
-        groupedData[item.vendor] = {
-          category: item.category,
-          vendor: item.vendor,
-          totalQuantity: parseInt(item.quantity),
-          totalPrice: parseFloat(item.amount)
-        };
-      } else {
-        groupedData[item.vendor].totalQuantity += parseInt(item.quantity);
-        groupedData[item.vendor].totalPrice += parseFloat(item.amount);
+      const itemDate = new Date(item.date);
+      
+      // Check if item date is within the selected date range
+      if (itemDate >= new Date(startDate) && itemDate <= new Date(endDate)) {
+        const itemYear = itemDate.getFullYear();
+        const itemMonth = itemDate.getMonth() + 1; // Adjust month to 1-based index
+        
+        // Create a unique key for grouping by vendor, year, and month
+        const key = `${item.vendor}-${itemYear}-${itemMonth}`;
+        
+        // Initialize the group if it doesn't exist
+        if (!groupedData[key]) {
+          groupedData[key] = {
+            vendor: item.vendor,
+            date: `${itemYear}-${itemMonth}`,
+            totalQuantity: parseInt(item.quantity),
+            totalPrice: parseFloat(item.amount)
+          };
+        } else {
+          // Accumulate quantities and prices for existing groups
+          groupedData[key].totalQuantity += parseInt(item.quantity);
+          groupedData[key].totalPrice += parseFloat(item.amount);
+        }
       }
     });
+    
+    // Convert object to array of grouped data and return
     return Object.values(groupedData);
   };
 
@@ -276,7 +301,7 @@ function Purchases() {
           <TableHead>
             <TableRow>
               <TableCell>Vendor</TableCell>
-              <TableCell>Total Quantity</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell>Total Price</TableCell>
             </TableRow>
           </TableHead>
@@ -284,7 +309,7 @@ function Purchases() {
             {getGroupedData().map((group, index) => (
               <TableRow key={index}>
                 <TableCell>{group.vendor || '-'}</TableCell>
-                <TableCell>{group.totalQuantity || '-'}</TableCell>
+                <TableCell>{group.date}</TableCell>
                 <TableCell>{group.totalPrice.toFixed(2) || '-'}</TableCell>
               </TableRow>
             ))}
