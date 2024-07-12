@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button, Card, TextField, Modal, Box } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Button,
+  Modal,
+  Box,
+  TextField
+} from '@mui/material';
 
 function Suppliers() {
   const [data, setData] = useState([]);
@@ -16,6 +29,7 @@ function Suppliers() {
     email: '',
     telephone_no: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Retrieve user role from localStorage
   const userRole = localStorage.getItem('role');
@@ -54,16 +68,35 @@ function Suppliers() {
     }
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredSuppliers = data.filter((supplier) => {
+    // Ensure supplier.name exists and convert both to lowercase before comparing
+    return supplier.name && supplier.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
     <TableContainer component={Paper}>
       <Typography variant="h6" component="div" gutterBottom>
         Suppliers
       </Typography>
-      {userRole === 'admin' && (
+      {(userRole === 'admin' || userRole === 'accounting' || userRole === 'procurement') && (
         <Button variant="contained" onClick={handleOpen}>
           Add Supplier
         </Button>
       )}
+
+      <TextField
+        label="Search by Supplier Name"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+
       <Table>
         <TableHead>
           <TableRow>
@@ -79,7 +112,7 @@ function Suppliers() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((supplier, index) => (
+          {filteredSuppliers.map((supplier, index) => (
             <TableRow key={index}>
               <TableCell>{supplier.name}</TableCell>
               <TableCell>{supplier.Kra_pin}</TableCell>
@@ -96,7 +129,19 @@ function Suppliers() {
       </Table>
 
       <Modal open={open} onClose={handleClose}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 4, bgcolor: 'background.paper', boxShadow: 24, borderRadius: 1, opacity: 0.9 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 4,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            borderRadius: 1,
+            opacity: 0.9
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Add Supplier
           </Typography>
@@ -105,10 +150,31 @@ function Suppliers() {
           <TextField label="VAT No" name="Vat_no" value={supplier.Vat_no} onChange={handleChange} fullWidth margin="normal" />
           <TextField label="Address" name="address" value={supplier.address} onChange={handleChange} fullWidth margin="normal" />
           <TextField label="Zip Code" name="zip_code" value={supplier.zip_code} onChange={handleChange} fullWidth margin="normal" />
-          <TextField label="Contact Person" name="contact_person" value={supplier.contact_person} onChange={handleChange} fullWidth margin="normal" />
-          <TextField label="Credit Limit" name="credit_limit" value={supplier.credit_limit} onChange={handleChange} fullWidth margin="normal" />
+          <TextField
+            label="Contact Person"
+            name="contact_person"
+            value={supplier.contact_person}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Credit Limit"
+            name="credit_limit"
+            value={supplier.credit_limit}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
           <TextField label="Email" name="email" value={supplier.email} onChange={handleChange} fullWidth margin="normal" />
-          <TextField label="Telephone No" name="telephone_no" value={supplier.telephone_no} onChange={handleChange} fullWidth margin="normal" />
+          <TextField
+            label="Telephone No"
+            name="telephone_no"
+            value={supplier.telephone_no}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
           {userRole === 'admin' && (
             <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
               Submit
