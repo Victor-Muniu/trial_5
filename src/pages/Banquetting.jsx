@@ -49,7 +49,7 @@ const Banquetting = () => {
         const [start, end] = item.reservedDates;
         return {
           id: item._id,
-          title: `${item.name} - ${item.workshopName} | ${item.package_type} | Packs: ${item.packs} | ${item.status}`,
+          title: `${item.name} - ${item.workshopName} | ${item.package_type} | Packs: ${item.packs} | ${item.status} | ${item.booking_no}`,
           start: new Date(start),
           end: new Date(end),
           allDay: true,

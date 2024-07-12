@@ -323,6 +323,12 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Assets" />
           </ListItem>
+          <ListItem button onClick={navigateTo('/banquetting')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting" />
+          </ListItem>
 
           <ListItem button onClick={navigateTo('/debtors')}>
             <ListItemIcon sx={{ color: 'white' }}>
