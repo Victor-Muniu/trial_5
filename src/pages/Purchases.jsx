@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
-  Paper, Typography, Box, Button, TextField, MenuItem, Card, CardContent 
-} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, Button, TextField, MenuItem, Modal, Fade, Backdrop, Card } from '@mui/material';
 
 function Purchases() {
   const [data, setData] = useState([]);
@@ -11,32 +8,19 @@ function Purchases() {
   const currentYear = new Date().getFullYear();
   const [startDate, setStartDate] = useState(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState(`${currentYear}-12-31`);
-  const [newPurchase, setNewPurchase] = useState({
-    category: '',
-    vendor: '',
-    quantity: '',
-    price: '',
-    date: '',
-    amount: ''
-  });
-  const [showPurchaseForm, setShowPurchaseForm] = useState(false); 
+  const [showAddForm, setShowAddForm] = useState(false); // State for showing the add form/card
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases', {
-          params: {
-            startDate,
-            endDate
-          }
-        });
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases');
         setData(response.data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
     };
     getData();
-  }, [startDate, endDate]);
+  }, []);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -44,181 +28,67 @@ function Purchases() {
 
   const handleFileUpload = async () => {
     if (!file) return;
-
+  
     const formData = new FormData();
     formData.append('file', file);
-
+  
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/upload-consolidated-purchases', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
+      
       console.log('File uploaded successfully:', response.data);
-      setData([...data, ...response.data]); 
+
+      const getData = async () => {
+        try {
+          const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases');
+          setData(response.data);
+        } catch (error) {
+          console.error('There was a problem with fetching updated data:', error);
+        }
+      };
+      getData();
+  
     } catch (error) {
       console.error('Error uploading file:', error.message);
     }
   };
+  
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPurchase({
-      ...newPurchase,
-      [name]: value
-    });
+  const handleAddPurchases = () => {
+    setShowAddForm(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases', newPurchase);
-      setData([...data, response.data]);
-      setNewPurchase({
-        category: '',
-        vendor: '',
-        quantity: '',
-        price: '',
-        date: '',
-        amount: ''
-      });
-      setShowPurchaseForm(false); // Hide the form after submission
-    } catch (error) {
-      console.error('Error posting purchase:', error.message);
-    }
+  const handleCloseAddForm = () => {
+    setShowAddForm(false);
   };
 
-  // Function to group data by vendor and calculate totals
-  const getGroupedData = () => {
+  // Function to group purchases by month and year with vendor details
+  const groupPurchasesByMonthYear = () => {
     const groupedData = {};
-    
-    // Iterate through all data items
-    data.forEach((item) => {
-      const itemDate = new Date(item.date);
-      
-      // Check if item date is within the selected date range
-      if (itemDate >= new Date(startDate) && itemDate <= new Date(endDate)) {
-        const itemYear = itemDate.getFullYear();
-        const itemMonth = itemDate.getMonth() + 1; // Adjust month to 1-based index
-        
-        // Create a unique key for grouping by vendor, year, and month
-        const key = `${item.vendor}-${itemYear}-${itemMonth}`;
-        
-        // Initialize the group if it doesn't exist
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            vendor: item.vendor,
-            date: `${itemYear}-${itemMonth}`,
-            totalQuantity: parseInt(item.quantity),
-            totalPrice: parseFloat(item.amount)
-          };
-        } else {
-          // Accumulate quantities and prices for existing groups
-          groupedData[key].totalQuantity += parseInt(item.quantity);
-          groupedData[key].totalPrice += parseFloat(item.amount);
-        }
+    data.forEach(row => {
+      const date = new Date(row.date);
+      const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`; // Example format: "7-2024"
+      const key = `${monthYear}_${row.vendor}`; // Unique key combining monthYear and vendor
+      if (!groupedData[key]) {
+        groupedData[key] = {
+          monthYear,
+          vendor: row.vendor,
+          totalAmount: 0
+        };
       }
+      groupedData[key].totalAmount += row.amount;
     });
-    
-    // Convert object to array of grouped data and return
     return Object.values(groupedData);
   };
 
+  // Grouped data by month and year with vendor
+  const groupedPurchases = groupPurchasesByMonthYear();
+
   return (
     <Box padding={3}>
-      {/* Overlay for purchase form */}
-      {showPurchaseForm && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-            zIndex: 9999,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Add New Purchase
-              </Typography>
-              <form onSubmit={handleSubmit}>
-                <TextField
-                  label="Category"
-                  name="category"
-                  value={newPurchase.category}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="Vendor"
-                  name="vendor"
-                  value={newPurchase.vendor}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="Quantity"
-                  name="quantity"
-                  value={newPurchase.quantity}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="Price"
-                  name="price"
-                  value={newPurchase.price}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="Date"
-                  type="date"
-                  name="date"
-                  value={newPurchase.date}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                  label="Amount"
-                  name="amount"
-                  value={newPurchase.amount}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  style={{ marginTop: 16 }}
-                >
-                  Add Purchase
-                </Button>
-                <Button
-                  onClick={() => setShowPurchaseForm(false)}
-                  color="secondary"
-                  style={{ marginTop: 16, marginLeft: 16 }}
-                >
-                  Cancel
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
-
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">Purchase Report</Typography>
         <Box>
@@ -249,18 +119,12 @@ function Purchases() {
           <Typography style={{ marginRight: 8 }}>Group By:</Typography>
           <TextField
             select
-            value="vendor"
+            value="category"
             style={{ marginRight: 8 }}
           >
-            <MenuItem value="vendor">Vendor</MenuItem>
+            <MenuItem value="category">Category</MenuItem>
           </TextField>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => console.log('Update button clicked')}
-          >
-            Update
-          </Button>
+          <Button variant="contained" color="primary">Update</Button>
         </Box>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -278,19 +142,14 @@ function Purchases() {
           Upload File
         </Button>
       </Box>
-      {/* Button to show/hide purchase form */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setShowPurchaseForm(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Add Purchase
-      </Button>
-
-      <TableContainer component={Paper} style={{ marginTop: 32 }}>
+      <Box mb={3}>
+        <Button variant="contained" color="primary" onClick={handleAddPurchases}>
+          Add Purchases
+        </Button>
+      </Box>
+      <TableContainer component={Paper}>
         <Typography variant="h6" gutterBottom margin={5}>
-          Purchase by Vendor
+          Purchase by Category
         </Typography>
         
         <Typography variant="subtitle2" gutterBottom margin={5}>
@@ -300,22 +159,45 @@ function Purchases() {
         <Table aria-label="expense table">
           <TableHead>
             <TableRow>
+              <TableCell>Month-Year</TableCell>
               <TableCell>Vendor</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Total Price</TableCell>
+              <TableCell>Total Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {getGroupedData().map((group, index) => (
-              <TableRow key={index}>
-                <TableCell>{group.vendor || '-'}</TableCell>
-                <TableCell>{group.date}</TableCell>
-                <TableCell>{group.totalPrice.toFixed(2) || '-'}</TableCell>
+            {groupedPurchases.map((group) => (
+              <TableRow key={`${group.monthYear}_${group.vendor}`}>
+                <TableCell>{group.monthYear}</TableCell>
+                <TableCell>{group.vendor}</TableCell>
+                <TableCell>{group.totalAmount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Modal for Add Purchases Form */}
+      <Modal
+        open={showAddForm}
+        onClose={handleCloseAddForm}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={showAddForm}>
+          <Card style={{ padding: 20, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <Typography variant="h5" gutterBottom>Add Purchases</Typography>
+            <TextField label="Category" fullWidth margin="normal" />
+            <TextField label="Quantity" type="number" fullWidth margin="normal" />
+            <TextField label="Price" type="number" fullWidth margin="normal" />
+            <TextField label="Date" type="date" defaultValue={new Date().toISOString().substr(0, 10)} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
+            <TextField label="Vendor" fullWidth margin="normal" />
+            <Button variant="contained" color="primary">Submit</Button>
+          </Card>
+        </Fade>
+      </Modal>
     </Box>
   );
 }
