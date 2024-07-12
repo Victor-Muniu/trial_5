@@ -67,10 +67,18 @@ const Creditors = () => {
   };
 
   const handleEdit = (item) => {
+    let date = '';
+    if (item.date) {
+      const parsedDate = new Date(item.date);
+      if (!isNaN(parsedDate)) {
+        date = parsedDate.toISOString().slice(0, 10);
+      }
+    }
+
     setNewData({
       vendor: item.vendor,
       amount: item.amount,
-      date: new Date(item.date).toISOString().slice(0, 10)
+      date: date
     });
     setCurrentId(item._id);
     setEditing(true);
