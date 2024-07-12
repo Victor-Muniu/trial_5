@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, Button, TextField, MenuItem, Modal, Fade, Backdrop, Card } from '@mui/material';
+import { 
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
+  Paper, Typography, Box, Button, TextField, MenuItem, Modal, Fade, Backdrop, Card 
+} from '@mui/material';
 
 function Purchases() {
   const [data, setData] = useState([]);
@@ -9,17 +12,25 @@ function Purchases() {
   const [startDate, setStartDate] = useState(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState(`${currentYear}-12-31`);
   const [showAddForm, setShowAddForm] = useState(false); // State for showing the add form/card
+  const [newPurchase, setNewPurchase] = useState({
+    category: '',
+    vendor: '',
+    quantity: '',
+    price: '',
+    date: '',
+    amount: ''
+  });
 
   useEffect(() => {
-    const getData = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases');
         setData(response.data);
       } catch (error) {
-        console.error('There was a problem with the axios operation:', error);
+        console.error('Error fetching data:', error);
       }
     };
-    getData();
+    fetchData();
   }, []);
 
   const handleFileChange = (e) => {
@@ -28,34 +39,32 @@ function Purchases() {
 
   const handleFileUpload = async () => {
     if (!file) return;
-  
+
     const formData = new FormData();
     formData.append('file', file);
-  
+
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/upload-consolidated-purchases', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      
       console.log('File uploaded successfully:', response.data);
 
-      const getData = async () => {
+      const fetchData = async () => {
         try {
           const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases');
           setData(response.data);
         } catch (error) {
-          console.error('There was a problem with fetching updated data:', error);
+          console.error('Error fetching updated data:', error);
         }
       };
-      getData();
-  
+      fetchData();
+
     } catch (error) {
-      console.error('Error uploading file:', error.message);
+      console.error('Error uploading file:', error);
     }
   };
-  
 
   const handleAddPurchases = () => {
     setShowAddForm(true);
@@ -63,6 +72,64 @@ function Purchases() {
 
   const handleCloseAddForm = () => {
     setShowAddForm(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPurchase({
+      ...newPurchase,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases', {
+        category: newPurchase.category,
+        vendor: newPurchase.vendor,
+        quantity: parseInt(newPurchase.quantity),
+        price: parseFloat(newPurchase.price),
+        date: newPurchase.date,
+        amount: parseFloat(newPurchase.amount)
+      });
+
+      console.log('Purchase added successfully:', response.data);
+
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/consolidated-purchases');
+          setData(response.data);
+        } catch (error) {
+          console.error('Error fetching updated data:', error);
+        }
+      };
+      fetchData();
+
+      setNewPurchase({
+        category: '',
+        vendor: '',
+        quantity: '',
+        price: '',
+        date: '',
+        amount: ''
+      });
+
+      setShowAddForm(false); // Close the form after successful submission
+    } catch (error) {
+      console.error('Error adding purchase:', error.message);
+      // Handle specific errors here if needed
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error('Server responded with:', error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Request setup error:', error.message);
+      }
+    }
   };
 
   // Function to group purchases by month and year with vendor details
@@ -189,12 +256,13 @@ function Purchases() {
         <Fade in={showAddForm}>
           <Card style={{ padding: 20, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
             <Typography variant="h5" gutterBottom>Add Purchases</Typography>
-            <TextField label="Category" fullWidth margin="normal" />
-            <TextField label="Quantity" type="number" fullWidth margin="normal" />
-            <TextField label="Price" type="number" fullWidth margin="normal" />
-            <TextField label="Date" type="date" defaultValue={new Date().toISOString().substr(0, 10)} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
-            <TextField label="Vendor" fullWidth margin="normal" />
-            <Button variant="contained" color="primary">Submit</Button>
+            <TextField label="Category" name="category" value={newPurchase.category} onChange={handleInputChange} fullWidth margin="normal" />
+            <TextField label="Vendor" name="vendor" value={newPurchase.vendor} onChange={handleInputChange} fullWidth margin="normal" />
+            <TextField label="Quantity" name="quantity" type="number" value={newPurchase.quantity} onChange={handleInputChange} fullWidth margin="normal" />
+            <TextField label="Price" name="price" type="number" value={newPurchase.price} onChange={handleInputChange} fullWidth margin="normal" />
+            <TextField label="Date" name="date" type="date" value={newPurchase.date} onChange={handleInputChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
+            <TextField label="Amount" name="amount" type="number" value={newPurchase.amount} onChange={handleInputChange} fullWidth margin="normal" />
+            <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
           </Card>
         </Fade>
       </Modal>
