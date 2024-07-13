@@ -12,6 +12,7 @@ function Menu() {
   const [openEdit, setOpenEdit] = useState(false);
   const [newMenuItem, setNewMenuItem] = useState({ name: '', quantity: '', price: '', point_of_sale: 'Restaurant' });
   const [editMenuItem, setEditMenuItem] = useState({ _id: '', name: '', quantity: '', price: '', point_of_sale: 'Restaurant' });
+  const [searchTerm, setSearchTerm] = useState('');
   const { table_no } = useParams();
   const fname = localStorage.getItem('fname');
 
@@ -29,7 +30,7 @@ function Menu() {
     getData();
   }, []);
 
-  const restaurantItems = data.filter(item => item.point_of_sale === 'Restaurant');
+  const restaurantItems = data.filter(item => item.point_of_sale === 'Restaurant' && item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleAdd = (item) => {
     setOrders((prevOrders) => {
@@ -150,6 +151,14 @@ function Menu() {
             Add Menu
           </Button>
         )}
+        <TextField
+          label="Search Menu"
+          variant="outlined"
+          fullWidth
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 4 }}
+        />
         <Grid container spacing={3}>
           {restaurantItems.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>

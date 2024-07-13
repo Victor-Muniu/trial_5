@@ -12,6 +12,7 @@ function Menu2() {
   const [openEdit, setOpenEdit] = useState(false);
   const [newMenuItem, setNewMenuItem] = useState({ name: '', quantity: '', price: '', point_of_sale: 'Bar' });
   const [editMenuItem, setEditMenuItem] = useState({ _id: '', name: '', quantity: '', price: '', point_of_sale: 'Bar' });
+  const [searchTerm, setSearchTerm] = useState('');
   const { table_no } = useParams();
   const fname = localStorage.getItem('fname');
   const isAdmin = localStorage.getItem('role') === 'admin'; 
@@ -29,7 +30,7 @@ function Menu2() {
     getData();
   }, []);
 
-  const barItems = data.filter(item => item.point_of_sale === 'Bar');
+  const barItems = data.filter(item => item.point_of_sale === 'Bar' && item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleAdd = (item) => {
     setOrders((prevOrders) => {
@@ -141,6 +142,14 @@ function Menu2() {
             Add Menu Item
           </Button>
         )}
+        <TextField
+          label="Search Menu"
+          variant="outlined"
+          fullWidth
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 4 }}
+        />
         <Grid container spacing={3}>
           {barItems.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
