@@ -305,8 +305,8 @@ const Ammenities = () => {
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell>{order.ammenitiesName}</TableCell>
-                <TableCell>{order.staffName}</TableCell>
+                <TableCell>{order.ammenitiesId.name}</TableCell>
+                <TableCell>{order.staffId.fname} {order.staffId.lname}</TableCell>
                 <TableCell>{order.age_group}</TableCell>
                 <TableCell>{order.quantity}</TableCell>
                 <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>

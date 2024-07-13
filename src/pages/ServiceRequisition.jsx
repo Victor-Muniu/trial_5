@@ -22,6 +22,28 @@ function ServiceRequisition() {
     getData();
   }, [role]);
 
+  const handleApprove = async (row) => {
+    const patchData = {
+      itemName: row.itemID.name,
+      quantity: row.quantity,
+      unit: row.unit,
+      description: row.description,
+      date: row.date,
+      department: row.department,
+      status: 'Approved',
+    };
+    try {
+      console.log(`Approving requisition with ID: ${row._id}`);
+      console.log('Patch data:', patchData);
+
+      const response = await axios.patch(`https://hotel-backend-1-trhj.onrender.com/restaurantRequisitions/${row._id}`, patchData);
+      console.log('Response:', response.data);
+      setData(data.map(item => item._id === row._id ? { ...item, status: 'Approved' } : item));
+    } catch (error) {
+      console.error('There was a problem with the axios operation:', error);
+    }
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -30,7 +52,7 @@ function ServiceRequisition() {
             <TableCell padding="checkbox">
               <Checkbox />
             </TableCell>
-            <TableCell>Product name</TableCell>
+            <TableCell>Product Name</TableCell>
             <TableCell>Department</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Unit</TableCell>
@@ -53,7 +75,14 @@ function ServiceRequisition() {
               <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
               {role === 'procurement' && (
                 <TableCell>
-                  <Button variant="contained" color="primary">Approve</Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleApprove(row)}
+                    disabled={row.status === 'Approved'}
+                  >
+                    Approve
+                  </Button>
                 </TableCell>
               )}
             </TableRow>
