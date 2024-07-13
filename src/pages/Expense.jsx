@@ -21,7 +21,6 @@ function Expense() {
   const currentYear = new Date().getFullYear();
   const [startDate, setStartDate] = useState(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState(`${currentYear}-12-31`);
-  const [groupBy, setGroupBy] = useState('category');
   const [open, setOpen] = useState(false);
   const [newExpense, setNewExpense] = useState({
     date: '',
@@ -42,10 +41,29 @@ function Expense() {
     getData();
   }, []);
 
+  // Function to group expenses by category and month-year and aggregate amounts
   const groupedData = data.reduce((acc, item) => {
-    const group = acc[item[groupBy]] || [];
-    group.push(item);
-    acc[item[groupBy]] = group;
+    const date = new Date(item.date);
+    const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
+    
+    if (!acc[item.category]) {
+      acc[item.category] = {};
+    }
+
+    if (!acc[item.category][monthYear]) {
+      acc[item.category][monthYear] = {
+        totalAmount: parseFloat(item.amount),
+        data: [item]
+      };
+    } else {
+      acc[item.category][monthYear].totalAmount += parseFloat(item.amount);
+      // Check if the expense is already included in data array for this monthYear
+      const existingIndex = acc[item.category][monthYear].data.findIndex(e => e._id === item._id);
+      if (existingIndex === -1) {
+        acc[item.category][monthYear].data.push(item);
+      }
+    }
+
     return acc;
   }, {});
 
@@ -122,52 +140,49 @@ function Expense() {
             InputLabelProps={{ shrink: true }}
           />
         </Box>
-        <Box display="flex" alignItems="center">
-          <Typography style={{ marginRight: 8 }}>Group By:</Typography>
-          <TextField
-            select
-            value={groupBy}
-            onChange={(e) => setGroupBy(e.target.value)}
-            style={{ marginRight: 8 }}
-          >
-            <MenuItem value="category">Category</MenuItem>
-            <MenuItem value="date">Date</MenuItem>
-          </TextField>
-          <Button variant="contained" color="primary" onClick={() => console.log('Update clicked')}>Update</Button>
-        </Box>
       </Box>
       <TableContainer component={Paper}>
         <Typography variant="h6" gutterBottom margin={5}>
-          Expenses by {groupBy.charAt(0).toUpperCase() + groupBy.slice(1)}
+          Expenses by Category and Month-Year
         </Typography>
         
         <Typography variant="subtitle2" gutterBottom margin={5}>
           Between {new Date(startDate).toLocaleDateString()} and {new Date(endDate).toLocaleDateString()}
         </Typography>
 
-        {Object.keys(groupedData).map((group) => (
-          <React.Fragment key={group}>
+        {Object.keys(groupedData).map((category) => (
+          <React.Fragment key={category}>
             <Typography variant="h6" gutterBottom margin={5}>
-              {group}
+              {category}
             </Typography>
-            <Table aria-label="expense table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {groupedData[group].map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell>{row.category || '-'}</TableCell>
-                    <TableCell>{row.amount || '-'}</TableCell>
-                    <TableCell align="">{new Date(row.date).toLocaleDateString()}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            {Object.keys(groupedData[category]).map((monthYear) => {
+              const { totalAmount, data } = groupedData[category][monthYear];
+              return (
+                <React.Fragment key={monthYear}>
+                  <Typography variant="subtitle1" gutterBottom margin={5}>
+                    {`${monthYear} - Total Amount: ${totalAmount.toFixed(2)}`}
+                  </Typography>
+                  <Table aria-label="expense table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Category</TableCell>
+                        <TableCell>Amount</TableCell>
+                        <TableCell>Date</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.map((row) => (
+                        <TableRow key={row._id}>
+                          <TableCell>{row.category || '-'}</TableCell>
+                          <TableCell>{row.amount || '-'}</TableCell>
+                          <TableCell align="">{new Date(row.date).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </React.Fragment>
+              );
+            })}
           </React.Fragment>
         ))}
       </TableContainer>

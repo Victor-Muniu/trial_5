@@ -310,6 +310,14 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Profit Loss" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/payroll')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <MonetizationOn />
+            </ListItemIcon>
+            <ListItemText primary="Pay Roll" />
+          </ListItem>
+
+
           <ListItem button onClick={navigateTo('/bank_statement')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <AccountBalance />

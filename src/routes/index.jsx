@@ -43,6 +43,7 @@ import Ammenities from "../pages/Ammenities";
 import HouseKeeping from "../pages/HouseKeeping";
 import FrontOfficeRequisition from "../pages/FrontOfficeRequisition";
 import SokoCarriageInwards from "../pages/SokoCarriageInwards";
+import Payroll from "../pages/Payroll";
 
 
 const checkAuth = (path) => {
@@ -469,7 +470,16 @@ export const router = createBrowserRouter([
         }
       ]
     },
-    
+    {
+      path: '/payroll',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Payroll />
+        }
+      ]
+    },
     {
       path: "*",
       element: <Navigate to={checkAuth()} replace />, 
