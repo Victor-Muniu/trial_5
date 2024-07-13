@@ -193,7 +193,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemIcon sx={{ color: 'white' }}>
               <AddBusiness />
             </ListItemIcon>
-            <ListItemText primary="Transfers" />
+            <ListItemText primary="Internal" />
           </ListItem>
 
           <ListItem button onClick={handleMoreClick}>

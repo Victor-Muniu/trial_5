@@ -50,15 +50,26 @@ function Bills() {
             const endpoint = billType === 'restaurant' 
                 ? `https://hotel-backend-1-trhj.onrender.com/restaurantBills/${selectedBill._id}`
                 : `https://hotel-backend-1-trhj.onrender.com/clubBills/${selectedBill._id}`;
-
+    
             await axios.patch(endpoint, selectedBill);
-            setOpen(false);
-            setSelectedBill(null);
-            // Refresh data
-            const response = await axios.get(endpoint);
+            let billsEndpoint = '';
+            if (role === 'front office') {
+                billsEndpoint = billType === 'restaurant' 
+                    ? 'https://hotel-backend-1-trhj.onrender.com/restaurantBills'
+                    : 'https://hotel-backend-1-trhj.onrender.com/clubBills';
+            } else {
+                billsEndpoint = billType === 'restaurant' 
+                    ? `https://hotel-backend-1-trhj.onrender.com/restaurantBills/byStaff/${fname}`
+                    : `https://hotel-backend-1-trhj.onrender.com/clubBills/byStaff/${fname}`;
+            }
+    
+            const response = await axios.get(billsEndpoint);
             const bills = response.data;
             const filteredBills = bills.filter(bill => bill.status === 'Not cleared');
             setData(filteredBills);
+    
+            setOpen(false);
+            setSelectedBill(null);
         } catch (error) {
             console.error('There was a problem with the axios operation:', error);
         }
