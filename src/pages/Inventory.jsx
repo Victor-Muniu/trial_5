@@ -111,7 +111,7 @@ const Inventory = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNewItem({ ...newItem, [name]: value });
+    setNewItem({ ...newItem, [name]: name === 'quantity' || name === 'unit_price' || name === 'spoilt' ? Number(value) : value });
   };
 
   const handleFileChange = (event) => {
@@ -178,6 +178,8 @@ const Inventory = () => {
         >
           <MenuItem value="All">All Categories</MenuItem>
           <MenuItem value="Butchery">Butchery</MenuItem>
+          <MenuItem value="Produce">Produce</MenuItem>
+          <MenuItem value="Dairy">Dairy</MenuItem>
         </Select>
         <Select
           value={selectedStockAlert}
@@ -245,11 +247,15 @@ const Inventory = () => {
                 <TableCell>{row.quantity}</TableCell>
                 <TableCell>{row.spoilt}</TableCell>
                 <TableCell>{row.unit_price}</TableCell>
-                <TableCell>{row.value}</TableCell>
+                <TableCell>{(row.quantity - row.spoilt) * row.unit_price}</TableCell>
                 {role === 'procurement' && (
                   <TableCell>
-                    <Edit style={{ cursor: 'pointer', marginRight: 10 }} onClick={() => handleEdit(row)} />
-                    <Delete style={{ cursor: 'pointer' }} onClick={() => handleDelete(row._id)} />
+                    <Button onClick={() => handleEdit(row)}>
+                      <Edit />
+                    </Button>
+                    <Button onClick={() => handleDelete(row._id)}>
+                      <Delete />
+                    </Button>
                   </TableCell>
                 )}
               </TableRow>
@@ -257,89 +263,95 @@ const Inventory = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>{isEditMode ? 'Edit Item' : 'Create Item'}</DialogTitle>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{isEditMode ? 'Edit Product' : 'Add New Product'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
-            margin='dense'
-            name='name'
-            label='Name'
-            type='text'
-            fullWidth
+            margin="dense"
+            label="Product Name"
+            name="name"
             value={newItem.name}
-            onChange={handleInputChange} />
-          <TextField
-            autoFocus
-            margin='dense'
-            name='description'
-            label='Unit of Measurement'
-            type='text'
+            onChange={handleInputChange}
             fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Unit Of Measurement"
+            name="description"
             value={newItem.description}
-            onChange={handleInputChange} />
-          <TextField
-            autoFocus
-            margin='dense'
-            name='unit_price'
-            label='Unit Price'
-            type='number'
+            onChange={handleInputChange}
             fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Unit Price"
+            name="unit_price"
             value={newItem.unit_price}
-            onChange={handleInputChange} />
-          <TextField
-            autoFocus
-            margin='dense'
-            name='group'
-            label='Group'
-            type='text'
+            onChange={handleInputChange}
             fullWidth
+            type="number"
+          />
+          <TextField
+            margin="dense"
+            label="Group"
+            name="group"
             value={newItem.group}
-            onChange={handleInputChange} />
-          <TextField
-            autoFocus
-            margin='dense'
-            name='quantity'
-            label='Quantity'
-            type='number'
+            onChange={handleInputChange}
             fullWidth
+          />
+          <TextField
+            margin="dense"
+            label="Quantity"
+            name="quantity"
             value={newItem.quantity}
-            onChange={handleInputChange} />
-          <TextField
-            autoFocus
-            margin='dense'
-            name='spoilt'
-            label='Spoilt'
-            type='number'
+            onChange={handleInputChange}
             fullWidth
+            type="number"
+          />
+          <TextField
+            margin="dense"
+            label="Spoilt"
+            name="spoilt"
             value={newItem.spoilt}
-            onChange={handleInputChange} />
-          <TextField
-            autoFocus
-            margin='dense'
-            name='date'
-            label='Date'
-            type='date'
+            onChange={handleInputChange}
             fullWidth
+            type="number"
+          />
+          <TextField
+            margin="dense"
+            label="Date"
+            name="date"
             value={newItem.date}
-            onChange={handleInputChange} />
+            onChange={handleInputChange}
+            fullWidth
+            type="date"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">{isEditMode ? 'Save' : 'Add'}</Button>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            {isEditMode ? 'Update' : 'Add'}
+          </Button>
         </DialogActions>
       </Dialog>
       <Dialog open={uploadDialogOpen} onClose={handleUploadDialogClose}>
         <DialogTitle>Upload File</DialogTitle>
         <DialogContent>
-          <input
-            type="file"
-            onChange={handleFileChange}
-          />
+          <input type="file" onChange={handleFileChange} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleUploadDialogClose}>Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">Upload</Button>
+          <Button onClick={handleUploadDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            Upload
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
