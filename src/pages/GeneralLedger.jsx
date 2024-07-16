@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function GeneralLedger() {
   const [data, setData] = useState([]);
   const [displayedYear, setDisplayedYear] = useState(new Date().getFullYear());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
@@ -18,46 +20,37 @@ function GeneralLedger() {
     getData();
   }, []);
 
-  const groupDataByCategoryAndMonthYear = () => {
+  const groupDataByCategory = () => {
     const groupedData = {};
     data.forEach(item => {
-      const date = new Date(item.date);
-      const month = date.getMonth() + 1; // Get the month (1-12)
-      const year = date.getFullYear(); // Get the year
-
-      if (!groupedData[item.category]) {
-        groupedData[item.category] = {};
+      const year = new Date(item.date).getFullYear();
+      if (year === displayedYear) {
+        if (!groupedData[item.category]) {
+          groupedData[item.category] = {
+            category: item.category,
+            totalAmount: 0
+          };
+        }
+        groupedData[item.category].totalAmount += item.amount;
       }
-
-      if (!groupedData[item.category][year]) {
-        groupedData[item.category][year] = {};
-      }
-
-      if (!groupedData[item.category][year][month]) {
-        groupedData[item.category][year][month] = {
-          category: item.category,
-          month,
-          year,
-          totalAmount: 0
-        };
-      }
-      groupedData[item.category][year][month].totalAmount += item.amount;
     });
     return groupedData;
   };
 
-  const groupedData = groupDataByCategoryAndMonthYear();
+  const groupedData = groupDataByCategory();
 
   const handleYearChange = (newYear) => {
     setDisplayedYear(newYear);
   };
 
-  const displayedData = Object.keys(groupedData).reduce((acc, category) => {
-    if (groupedData[category][displayedYear]) {
-      acc[category] = groupedData[category][displayedYear];
+  const handleCategoryClick = (category) => {
+    if (category === 'Creditors') {
+      navigate('/creditors');
+    } else if (category === 'Some Other Category') {
+      navigate('/some-other-page');
     }
-    return acc;
-  }, {});
+    
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -78,33 +71,24 @@ function GeneralLedger() {
         </Button>
       </div>
 
-      {Object.keys(displayedData).map(category => (
-        <React.Fragment key={category}>
-          <Typography variant="h6" gutterBottom margin={5}>
-            {category}
-          </Typography>
-          <Table aria-label="simple table" margin={5}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Category</TableCell>
-                <TableCell>Month</TableCell>
-                <TableCell align="right">Total Amount</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.values(displayedData[category]).map((group, index) => (
-                <TableRow key={index}>
-                  <TableCell component="th" scope="row">
-                    {group.category}
-                  </TableCell>
-                  <TableCell>{new Date(group.year, group.month - 1).toLocaleString('default', { month: 'long' })} {group.year}</TableCell>
-                  <TableCell align="right">{group.totalAmount}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </React.Fragment>
-      ))}
+      <Table aria-label="simple table" margin={5}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Category</TableCell>
+            <TableCell align="right">Total Amount</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.values(groupedData).map((group, index) => (
+            <TableRow key={index} onClick={() => handleCategoryClick(group.category)} style={{ cursor: 'pointer' }}>
+              <TableCell component="th" scope="row">
+                {group.category}
+              </TableCell>
+              <TableCell align="right">{group.totalAmount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </TableContainer>
   );
 }

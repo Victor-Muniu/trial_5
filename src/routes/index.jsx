@@ -32,7 +32,6 @@ import Rooms from "../pages/Rooms";
 import RoomReport from "../pages/RoomReport";
 import LaundryService from "../pages/LaundryService";
 import Reservations from "../pages/Reservations";
-
 import AgentsAnalytics from "../pages/AgentsAnalytics";
 import RoomService from "../pages/RoomService";
 import OccupancyReport from "../pages/Occupancy_report";

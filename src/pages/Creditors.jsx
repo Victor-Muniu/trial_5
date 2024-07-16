@@ -3,12 +3,14 @@ import axios from 'axios';
 import {
   Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, CircularProgress, Card, CardContent, Modal
 } from '@mui/material';
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'; // Import dayjs here
 
 const Creditors = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentVendor, setCurrentVendor] = useState(null);
   const [editing, setEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [newData, setNewData] = useState({
@@ -85,28 +87,35 @@ const Creditors = () => {
     setOpen(true);
   };
 
-  const groupByVendorAndMonth = (data) => {
+  const handleVendorClick = (vendor) => {
+    setCurrentVendor(vendor);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setCurrentVendor(null);
+  };
+
+  const groupByVendor = (data) => {
     const grouped = data.reduce((acc, curr) => {
       const vendor = curr.vendor;
-      const month = dayjs(curr.date).format('YYYY-MM');
-      const key = `${vendor}-${month}`;
-
-      if (!acc[key]) {
-        acc[key] = {
+      if (!acc[vendor]) {
+        acc[vendor] = {
           vendor: vendor,
-          amount: 0,
-          month: month,
+          totalAmount: 0,
+          details: []
         };
       }
-
-      acc[key].amount += curr.amount;
+      acc[vendor].totalAmount += curr.amount;
+      acc[vendor].details.push(curr);
       return acc;
     }, {});
 
     return Object.values(grouped);
   };
 
-  const groupedData = groupByVendorAndMonth(data);
+  const groupedData = groupByVendor(data);
 
   const isAdminOrAccounting = localStorage.getItem('role') === 'admin' || localStorage.getItem('role') === 'accounting';
 
@@ -130,7 +139,7 @@ const Creditors = () => {
 
       <Modal open={open} onClose={handleClose}>
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="rgba(0, 0, 0, 0.5)">
-          <Card>
+          <Card style={{ width: '60%' }}>
             <CardContent>
               <Typography variant="h5" gutterBottom>
                 {editing ? 'Edit Creditor' : 'Add New Creditor'}
@@ -178,17 +187,15 @@ const Creditors = () => {
           <TableHead>
             <TableRow>
               <TableCell>Vendor</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Month</TableCell>
+              <TableCell align="right">Total Amount</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {groupedData.map((row, index) => (
-              <TableRow key={index}>
+              <TableRow key={index} onClick={() => handleVendorClick(row)} style={{ cursor: 'pointer' }}>
                 <TableCell>{row.vendor}</TableCell>
-                <TableCell>{row.amount}</TableCell>
-                <TableCell>{row.month}</TableCell>
+                <TableCell align="right">{row.totalAmount}</TableCell>
                 <TableCell>
                   <Button variant="contained" color="primary" onClick={() => handleEdit(row)}>
                     Edit
@@ -199,6 +206,39 @@ const Creditors = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Modal open={modalOpen} onClose={handleModalClose}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="rgba(0, 0, 0, 0.5)">
+          <Card style={{ width: '60%', overflowY: 'auto' }}>
+            <CardContent>
+              {currentVendor && (
+                <>
+                  <Typography variant="h5" gutterBottom>{currentVendor.vendor}</Typography>
+                  <TableContainer component={Paper} style={{ marginTop: '1rem' }}>
+                    <Table aria-label="details table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Date</TableCell>
+                          <TableCell align="right">Amount</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {currentVendor.details.map((detail, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{dayjs(detail.date).format('YYYY-MM-DD')}</TableCell>
+                            <TableCell align="right">{detail.amount}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <Typography variant="h6" style={{ marginTop: '1rem' }}>Total Amount: {currentVendor.totalAmount}</Typography>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+      </Modal>
     </Box>
   );
 };
