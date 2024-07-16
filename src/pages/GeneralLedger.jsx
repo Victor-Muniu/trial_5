@@ -46,8 +46,8 @@ function GeneralLedger() {
   const handleCategoryClick = (category) => {
     if (category === 'Creditors') {
       navigate('/creditors');
-    } else if (category === 'Some Other Category') {
-      navigate('/some-other-page');
+    } else if (category === 'Expense') {
+      navigate('/expense');
     }
     
   };

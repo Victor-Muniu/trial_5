@@ -12,12 +12,12 @@ import {
   Box,
   Button,
   TextField,
-  MenuItem,
   Modal,
 } from '@mui/material';
 
 function Expense() {
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const currentYear = new Date().getFullYear();
   const [startDate, setStartDate] = useState(`${currentYear}-01-01`);
   const [endDate, setEndDate] = useState(`${currentYear}-12-31`);
@@ -25,47 +25,23 @@ function Expense() {
   const [newExpense, setNewExpense] = useState({
     date: '',
     category: '',
+    sub_category: '',
     amount: ''
   });
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/expenses');
         setData(response.data);
+        setFilteredData(response.data); // Initialize filteredData with all data
       } catch (error) {
-        console.error('There was a problem with the axios operation:', error);
+        console.error('Error fetching expenses:', error);
       }
     };
     getData();
   }, []);
-
-  // Function to group expenses by category and month-year and aggregate amounts
-  const groupedData = data.reduce((acc, item) => {
-    const date = new Date(item.date);
-    const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
-    
-    if (!acc[item.category]) {
-      acc[item.category] = {};
-    }
-
-    if (!acc[item.category][monthYear]) {
-      acc[item.category][monthYear] = {
-        totalAmount: parseFloat(item.amount),
-        data: [item]
-      };
-    } else {
-      acc[item.category][monthYear].totalAmount += parseFloat(item.amount);
-      // Check if the expense is already included in data array for this monthYear
-      const existingIndex = acc[item.category][monthYear].data.findIndex(e => e._id === item._id);
-      if (existingIndex === -1) {
-        acc[item.category][monthYear].data.push(item);
-      }
-    }
-
-    return acc;
-  }, {});
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -83,6 +59,7 @@ function Expense() {
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/expenses', newExpense);
       setData([...data, response.data]);
+      setFilteredData([...data, response.data]); // Update filteredData with new data
       handleClose();
     } catch (error) {
       console.error('Error posting expense:', error);
@@ -103,10 +80,23 @@ function Expense() {
         }
       });
       setData([...data, ...response.data]);
+      setFilteredData([...data, ...response.data]); // Update filteredData with new data
     } catch (error) {
       console.error('Error uploading file:', error);
     }
   };
+
+  const handleSearch = () => {
+    const searchTermLowerCase = searchTerm ? searchTerm.toLowerCase() : '';
+    const filtered = data.filter(item =>
+      (item.category && item.category.toLowerCase().includes(searchTermLowerCase)) ||
+      (item.sub_category && item.sub_category.toLowerCase().includes(searchTermLowerCase))
+    );
+    setFilteredData(filtered);
+  };
+
+  // Get unique categories from filteredData
+  const categories = [...new Set(filteredData.map(item => item.category))];
 
   return (
     <Box>
@@ -140,53 +130,43 @@ function Expense() {
             InputLabelProps={{ shrink: true }}
           />
         </Box>
+        <TextField
+          label="Search by Category or Sub-Category"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          variant="outlined"
+          size="small"
+          style={{ width: 300 }}
+        />
+        <Button variant="contained" color="primary" onClick={handleSearch} style={{ marginLeft: 8 }}>
+          Search
+        </Button>
       </Box>
-      <TableContainer component={Paper}>
-        <Typography variant="h6" gutterBottom margin={5}>
-          Expenses by Category and Month-Year
-        </Typography>
-        
-        <Typography variant="subtitle2" gutterBottom margin={5}>
-          Between {new Date(startDate).toLocaleDateString()} and {new Date(endDate).toLocaleDateString()}
-        </Typography>
-
-        {Object.keys(groupedData).map((category) => (
-          <React.Fragment key={category}>
-            <Typography variant="h6" gutterBottom margin={5}>
-              {category}
-            </Typography>
-            {Object.keys(groupedData[category]).map((monthYear) => {
-              const { totalAmount, data } = groupedData[category][monthYear];
-              return (
-                <React.Fragment key={monthYear}>
-                  <Typography variant="subtitle1" gutterBottom margin={5}>
-                    {`${monthYear} - Total Amount: ${totalAmount.toFixed(2)}`}
-                  </Typography>
-                  <Table aria-label="expense table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Category</TableCell>
-                        <TableCell>Amount</TableCell>
-                        <TableCell>Date</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.map((row) => (
-                        <TableRow key={row._id}>
-                          <TableCell>{row.category || '-'}</TableCell>
-                          <TableCell>{row.amount || '-'}</TableCell>
-                          <TableCell align="">{new Date(row.date).toLocaleDateString()}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </React.Fragment>
-              );
-            })}
-          </React.Fragment>
-        ))}
-      </TableContainer>
-
+      {categories.map((category) => (
+        <Box key={category} mb={4}>
+          <Typography variant="h6">{category}</Typography>
+          <TableContainer component={Paper}>
+            <Table aria-label={`${category} expenses table`}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Sub-Category</TableCell>
+                  <TableCell>Amount</TableCell>
+                  <TableCell>Date</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData.filter(item => item.category === category).map((row) => (
+                  <TableRow key={row._id}>
+                    <TableCell>{row.sub_category || '-'}</TableCell>
+                    <TableCell>{row.amount || '-'}</TableCell>
+                    <TableCell align="">{new Date(row.date).toLocaleDateString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      ))}
       <Modal open={open} onClose={handleClose}>
         <Box component="form" onSubmit={handleSubmit} style={{ padding: '20px', margin: '100px auto', maxWidth: '500px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
           <Typography variant="h6" marginBottom={3}>Add New Expense</Typography>
@@ -204,6 +184,14 @@ function Expense() {
             name="category"
             label="Category"
             value={newExpense.category}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="sub_category"
+            label="Sub-Category"
+            value={newExpense.sub_category}
             onChange={handleChange}
             fullWidth
             margin="normal"
