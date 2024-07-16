@@ -44,6 +44,7 @@ import HouseKeeping from "../pages/HouseKeeping";
 import FrontOfficeRequisition from "../pages/FrontOfficeRequisition";
 import SokoCarriageInwards from "../pages/SokoCarriageInwards";
 import Payroll from "../pages/Payroll";
+import BanquettingInvoice from "../pages/BanquttingInvoice";
 
 
 const checkAuth = (path) => {
@@ -477,6 +478,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <Payroll />
+        }
+      ]
+    },
+    {
+      path: '/banquetting_invoice',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <BanquettingInvoice />
         }
       ]
     },

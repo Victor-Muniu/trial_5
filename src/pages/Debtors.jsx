@@ -37,7 +37,6 @@ function Debtors() {
               <TableCell>Group</TableCell>
               <TableCell>Booking No</TableCell>
               <TableCell>Work Name</TableCell>
-              <TableCell>Packs</TableCell>
               <TableCell>Amount</TableCell>
             </TableRow>
           </TableHead>
@@ -47,7 +46,6 @@ function Debtors() {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.booking_no}</TableCell>
                 <TableCell>{row.workshopName}</TableCell>
-                <TableCell>{row.packs}</TableCell>
                 <TableCell>{row.Totalamount}</TableCell>
 
               </TableRow>
