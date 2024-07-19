@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import {
   Table,
@@ -17,9 +17,10 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
-  Backdrop
+  Backdrop,
+  Box
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { useReactToPrint } from 'react-to-print';
 
 function Payroll() {
   const [payrolls, setPayrolls] = useState([]);
@@ -33,6 +34,8 @@ function Payroll() {
   });
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openReceiptDialog, setOpenReceiptDialog] = useState(false);
+  const [currentPayroll, setCurrentPayroll] = useState(null);
 
   useEffect(() => {
     const fetchPayrolls = async () => {
@@ -57,9 +60,7 @@ function Payroll() {
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/payrolls', newPayroll);
       console.log('New payroll added:', response.data);
-      // Update local state with the new payroll data
       setPayrolls([...payrolls, response.data]);
-      // Reset form fields
       setNewPayroll({
         date: '',
         gross_income: 0,
@@ -84,8 +85,37 @@ function Payroll() {
     setOpenAddDialog(false);
   };
 
+  const handleOpenReceiptDialog = async (payrollId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`https://hotel-backend-1-trhj.onrender.com/payrolls/${payrollId}`);
+      setCurrentPayroll(response.data);
+      setOpenReceiptDialog(true);
+    } catch (error) {
+      console.error('Error fetching payroll data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseReceiptDialog = () => {
+    setOpenReceiptDialog(false);
+    setCurrentPayroll(null);
+  };
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return now.toLocaleDateString(undefined, options);
+  };
+
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () =>  componentRef.current,
+  });
+
   return (
-    <div>
+    <div className="payroll-root">
       <Typography variant="h4" gutterBottom>
         Payroll
       </Typography>
@@ -185,6 +215,7 @@ function Payroll() {
               <TableCell>Net Income</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -198,14 +229,79 @@ function Payroll() {
                 <TableCell>{payroll.net_income}</TableCell>
                 <TableCell>{payroll.fname}</TableCell>
                 <TableCell>{payroll.lname}</TableCell>
+                <TableCell>
+                  <Button
+                    sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}
+                    color="primary"
+                    onClick={() => handleOpenReceiptDialog(payroll._id)}
+                  >
+                    Pay Slip
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#fff', opacity: 0.5 }} open={openAddDialog} />
+      <Dialog open={openReceiptDialog} onClose={handleCloseReceiptDialog} fullWidth maxWidth="sm">
+        <DialogContent>
+          {loading ? (
+            <CircularProgress />
+          ) : currentPayroll ? (
+            <Box ref={componentRef} style={{width:'100%', height:window.innerHeight}}>
+              
+              <Typography variant="h5" align="center" gutterBottom ref={componentRef}>
+                PAYSLIP
+              </Typography>
+              <Typography variant="h5" align="center" gutterBottom>
+                EPASHIKINO RESORT & SPA LTD
+              </Typography>
+              <Typography>Employee Name: {currentPayroll.fname} {currentPayroll.lname}</Typography>
+              <Typography>Employee No: {currentPayroll.emp_no}</Typography>
+              <Typography>Date: Date: {new Date(currentPayroll.date).toLocaleDateString()}</Typography>
+              <hr />
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Gross Income:</Typography>
+                <Typography>KES {currentPayroll.gross_income}</Typography>
+              </Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography>NHIF Deductions:</Typography>
+                <Typography>KES {currentPayroll.nhif_deductions}</Typography>
+              </Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography>NSSF Deductions:</Typography>
+                <Typography>KES {currentPayroll.nssf_deductions}</Typography>
+              </Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography>PAYE:</Typography>
+                <Typography>KES {currentPayroll.paye}</Typography>
+              </Box>
+              <hr />
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Net Income:</Typography>
+                <Typography>KES {currentPayroll.net_income}</Typography>
+              </Box>
+              <hr />
+              
+            </Box>
+          ) : (
+            'No payroll data available.'
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePrint} color="primary">
+            Print
+          </Button>
+          <Button onClick={handleCloseReceiptDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }

@@ -1,0 +1,49 @@
+.payroll-root {
+    font-family: Arial, sans-serif;
+  }
+  
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+  
+    .payroll-root, .payroll-root * {
+      visibility: visible;
+    }
+  
+    .payroll-root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  
+    .MuiDialog-paper {
+      box-shadow: none !important;
+      border: none !important;
+    }
+  
+    .MuiDialogTitle-root,
+    .MuiDialogContent-root,
+    .MuiDialogActions-root {
+      padding: 0 !important;
+    }
+  
+    .MuiButtonBase-root {
+      display: none !important;
+    }
+  
+    .MuiTypography-root {
+      color: black !important;
+    }
+  
+    .MuiBox-root {
+      display: block;
+      width: 100%;
+    }
+  
+    hr {
+      border: 1px solid black;
+    }
+  }
+  

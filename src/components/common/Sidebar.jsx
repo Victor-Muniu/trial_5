@@ -268,6 +268,13 @@ const Sidebar = ({ sidebarWidth }) => {
         </List>
       )}
 
+
+
+
+
+
+
+
       {role === 'accounting' && (
         <List>
           <ListItem button onClick={navigateTo('/dashboard')}>
@@ -276,54 +283,6 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Dashboards" />
           </ListItem>
-          <ListItem button onClick={navigateTo('/ledger')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <ListAlt />
-            </ListItemIcon>
-            <ListItemText primary="General Ledger" />
-          </ListItem>
-          <ListItem button onClick={navigateTo('/expense')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Paid />
-            </ListItemIcon>
-            <ListItemText primary="Expenses" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/inventory')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Inventory />
-            </ListItemIcon>
-            <ListItemText primary="Inventory" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/trial_balance')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Balance />
-            </ListItemIcon>
-            <ListItemText primary="Trial Balance" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/profit_loss')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <TrendingDown />
-            </ListItemIcon>
-            <ListItemText primary="Profit Loss" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/payroll')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <MonetizationOn />
-            </ListItemIcon>
-            <ListItemText primary="Pay Roll" />
-          </ListItem>
-
-
-          <ListItem button onClick={navigateTo('/bank_statement')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <AccountBalance />
-            </ListItemIcon>
-            <ListItemText primary="Bank Statement" />
-          </ListItem>
 
           <ListItem button onClick={navigateTo('/assets')}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -331,18 +290,61 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Assets" />
           </ListItem>
-          <ListItem button onClick={navigateTo('/banquetting')}>
+
+          <ListItem button onClick={handleMoreClick}>
             <ListItemIcon sx={{ color: 'white' }}>
               <Balcony />
             </ListItemIcon>
-            <ListItemText primary="Banquetting" />
+            <ListItemText primary="Banquettings" />
+            {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
           </ListItem>
+          <Collapse in={openMore} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting')}>
+                <ListItemText primary="Confrences" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_invoice')}>
+                <ListItemText primary="Banqutting Invoice" />
+              </ListItem>
+            </List>
+          </Collapse>
+
+
+
+
+
+
+
           
-          <ListItem button onClick={navigateTo('/banquetting_invoice')}>
+          <ListItem button onClick={handleMoreClick}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Receipt />
+              <Report />
             </ListItemIcon>
-            <ListItemText primary="Banquetting Invoice" />
+            <ListItemText primary="Reports" />
+            {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bank_statement')}>
+                <ListItemText primary="Bank Statement" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/expense')}>
+                <ListItemText primary="Expenses" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/purchases')}>
+                <ListItemText primary="Purchases" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
+                <ListItemText primary="Daily Collections" />
+              </ListItem>
+            </List>
+          </Collapse>
+
+          <ListItem button onClick={navigateTo('/creditors')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Contacts />
+            </ListItemIcon>
+            <ListItemText primary='Creditors' />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/debtors')}>
@@ -352,28 +354,27 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Debtors" />
           </ListItem>
 
-
-
-
-          <ListItem button onClick={navigateTo('/purchases')}>
+          <ListItem button onClick={navigateTo('/ledger')}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Shop />
+              <ListAlt />
             </ListItemIcon>
-            <ListItemText primary="Purchases" />
+            <ListItemText primary="General Ledger" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/suppliers')}>
+          <ListItem button onClick={navigateTo('/inventory')}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <SupervisorAccount />
+              <Inventory />
             </ListItemIcon>
-            <ListItemText primary="Suppliers" />
+            <ListItemText primary="Inventory" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/collections')}>
+          
+
+          <ListItem button onClick={navigateTo('/payroll')}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Collections />
+              <MonetizationOn />
             </ListItemIcon>
-            <ListItemText primary="Daily collections" />
+            <ListItemText primary="Pay Roll" />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/petty_cash')}>
@@ -383,61 +384,32 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Petty Cash" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/creditors')}>
+
+          <ListItem button onClick={navigateTo('/profit_loss')}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Contacts />
+              <TrendingDown />
             </ListItemIcon>
-            <ListItemText primary='Creditors' />
+            <ListItemText primary="Profit Loss" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/suppliers')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <SupervisorAccount />
+            </ListItemIcon>
+            <ListItemText primary="Suppliers" />
           </ListItem>
 
 
-
-          <ListItem button onClick={handleLogout}>
+          <ListItem button onClick={navigateTo('/trial_balance')}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Logout />
+              <Balance />
             </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      )}
-
-
-      {role === 'house keeping' && (
-        <List>
-          <ListItem button onClick={navigateTo('/dashboard')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Dashboard />
-            </ListItemIcon>
-            <ListItemText primary="Dashboards" />
+            <ListItemText primary="Trial Balance" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/rooms')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Bed />
-            </ListItemIcon>
-            <ListItemText primary="Rooms" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/room_report')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Article />
-            </ListItemIcon>
-            <ListItemText primary="Room Report" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/laundry_service')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Checkroom />
-            </ListItemIcon>
-            <ListItemText primary="Laundry Service" />
-          </ListItem>
           
-          <ListItem button onClick={navigateTo('/assets')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <WebAsset />
-            </ListItemIcon>
-            <ListItemText primary="Assets" />
-          </ListItem>
+
+          
 
 
 
