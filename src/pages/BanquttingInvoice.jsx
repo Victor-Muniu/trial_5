@@ -15,6 +15,7 @@ import {
   Table,
   TableRow,
   TableBody,
+  TextField,
 } from '@mui/material';
 import ReactToPrint from 'react-to-print';
 
@@ -71,7 +72,15 @@ function BanquettingInvoice() {
   const [data, setData] = useState([]);
   const [invoiceData, setInvoiceData] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const banquettingInvoiceRef = useRef(null); // Correctly initialize useRef
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    booking_no: '',
+    discount: '',
+    price: '',
+    packs: '',
+    Totalamount: ''
+  });
+  const banquettingInvoiceRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,6 +104,32 @@ function BanquettingInvoice() {
     }
   };
 
+  const handleCreateInvoice = async () => {
+    try {
+      const preparedFormData = {
+        booking_no: formData.booking_no,
+        discount: formData.discount.split(',').map(Number),
+        price: formData.price.split(',').map(Number),
+        packs: formData.packs.split(',').map(Number),
+      };
+      if (formData.Totalamount) {
+        preparedFormData.Totalamount = Number(formData.Totalamount);
+      }
+      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/banquettinginvoices', preparedFormData);
+      setData([...data, response.data]);
+      setCreateDialogOpen(false);
+      setFormData({
+        booking_no: '',
+        discount: '',
+        price: '',
+        packs: '',
+        Totalamount: ''
+      });
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+    }
+  };
+
   const getCurrentDate = () => {
     const now = new Date();
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -104,12 +139,23 @@ function BanquettingInvoice() {
   const fname = localStorage.getItem('fname');
   const lname = localStorage.getItem('lname');
 
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   return (
     <TableContainer sx={{ width: '100%' }}>
       <Typography variant="h6" gutterBottom>
         Banquetting Invoices
       </Typography>
-      <TableContainer component={Paper} sx={{ width: '100%' }}>
+      <Button variant="contained" onClick={() => setCreateDialogOpen(true)}>
+        Create Invoice
+      </Button>
+      <TableContainer component={Paper} sx={{ width: '100%', marginTop: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -199,32 +245,71 @@ function BanquettingInvoice() {
                 </Grid>
                 <Grid item xs={12}>
                   <Typography>
-                    Sub Total <span style={{ float: 'right' }}>{invoiceData.Totalamount}</span>
-                  </Typography>
-                  <Typography>
-                    VAT <span style={{ float: 'right' }}>0.00</span>
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography className="totalStyle">Total {invoiceData.Totalamount}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography sx={{ textAlign: 'right' }}>
-                    Served by: <strong>{fname} {lname}</strong>
-                    <br />
-                    Note: PROVISION OF {invoiceData.package} SERVICES
+                    Sub Total <span className="invoice-total">{invoiceData.Totalamount}</span>
                   </Typography>
                 </Grid>
               </Grid>
+              <Typography sx={{ marginTop: '10px' }}>Prepared by: {fname} {lname}</Typography>
+              <Typography sx={{ marginTop: '10px' }}>
+                <strong>Thank you for choosing us. Welcome again</strong>
+              </Typography>
             </Box>
             <ReactToPrint
-              trigger={() => <Button variant="contained">Print</Button>}
+              trigger={() => <Button variant="contained" sx={{ marginTop: '20px' }}>Print</Button>}
               content={() => banquettingInvoiceRef.current}
-              pageStyle="@media print { body { margin: 0; } }"
             />
           </DialogContent>
         </Dialog>
       )}
+
+      <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)}>
+        <DialogTitle>Create Invoice</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Booking No"
+            name="booking_no"
+            value={formData.booking_no}
+            onChange={handleFormChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Discount"
+            name="discount"
+            value={formData.discount}
+            onChange={handleFormChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Price"
+            name="price"
+            value={formData.price}
+            onChange={handleFormChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Packs"
+            name="packs"
+            value={formData.packs}
+            onChange={handleFormChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Total Amount"
+            name="Totalamount"
+            value={formData.Totalamount}
+            onChange={handleFormChange}
+            fullWidth
+            margin="normal"
+          />
+          <Button variant="contained" onClick={handleCreateInvoice} sx={{ marginTop: '20px' }}>
+            Create
+          </Button>
+        </DialogContent>
+      </Dialog>
     </TableContainer>
   );
 }

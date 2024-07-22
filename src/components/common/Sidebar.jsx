@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -377,6 +377,13 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Pay Roll" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/payment_voucher')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <MonetizationOn />
+            </ListItemIcon>
+            <ListItemText primary="Payment Voucher" />
+          </ListItem>
+
           <ListItem button onClick={navigateTo('/petty_cash')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <LocalAtm />
@@ -392,6 +399,12 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Profit Loss" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/sales')}>
+              <ListItemIcon sx={{color: 'white'}}>
+              <CurrencyExchange />
+              </ListItemIcon>
+              <ListItemText primary= "Sales"/>
+          </ListItem>
           <ListItem button onClick={navigateTo('/suppliers')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <SupervisorAccount />

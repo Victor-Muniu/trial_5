@@ -44,6 +44,8 @@ import FrontOfficeRequisition from "../pages/FrontOfficeRequisition";
 import SokoCarriageInwards from "../pages/SokoCarriageInwards";
 import Payroll from "../pages/Payroll";
 import BanquettingInvoice from "../pages/BanquttingInvoice";
+import Payment_Voucher from "../pages/Payment_Voucher";
+import Sales from "../pages/Sales";
 
 
 const checkAuth = (path) => {
@@ -487,6 +489,26 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <BanquettingInvoice />
+        }
+      ]
+    },
+    {
+      path: '/payment_voucher',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Payment_Voucher />
+        }
+      ]
+    },
+    {
+      path: '/sales',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Sales />
         }
       ]
     },
