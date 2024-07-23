@@ -96,7 +96,7 @@ function Sales() {
     chart: { type: 'area' },
     xaxis: { categories: areaChartData.categories },
     tooltip: { x: { format: 'MMM' } },
-    colors: ['#00E396', '#FF4560', '#008FFB', '#ffA500', '#743089'], 
+    colors: ['#00E396', '#FF4560', '#008FFB', '#ffA500', '#743089', '#C19A6B'], 
     fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3 } },
     stroke: { curve: 'smooth' },
     legend: { position: 'top' }
