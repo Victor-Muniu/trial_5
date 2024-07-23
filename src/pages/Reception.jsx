@@ -43,18 +43,24 @@ function Reception() {
         console.log('Sales Data:', salesData); // Log the sales data
         
         if (salesData && salesData.length > 0) {
-          const monthlySales = new Array(12).fill(0); // Initialize sales for each month
+          // Get the reservationsBillsId from reservation data
+          const reservationBillsIds = data.map(bill => bill._id);
+          console.log('Reservation Bills IDs:', reservationBillsIds);
+
+          // Initialize monthly sales data
+          const monthlySales = new Array(12).fill(0);
 
           salesData.forEach(item => {
             const date = new Date(item.createdAt);
             const month = date.getMonth();
-            const amount = parseFloat(item.amount); // Ensure amount is a number
+            const amount = parseFloat(item.amount);
 
-            // Log each item to ensure fields are correct
-            console.log('Processing item:', { date, month, amount });
-
-            if (!isNaN(month) && month >= 0 && month < 12) {
-              monthlySales[month] += amount;
+            // Process sales only if reservationsBillsId matches
+            if (reservationBillsIds.includes(item.reservationsBillsId)) {
+              console.log('Processing item:', { date, month, amount });
+              if (!isNaN(month) && month >= 0 && month < 12) {
+                monthlySales[month] += amount;
+              }
             }
           });
 
@@ -77,7 +83,7 @@ function Reception() {
   }, [data]);
 
   const lineChartOptions = {
-    chart: { type: 'column' },
+    chart: { type: 'line' },
     xaxis: { categories: lineChartData.categories },
     tooltip: { x: { format: 'MMM' } },
     colors: ['#00E396'],
