@@ -19,7 +19,8 @@ function Sales() {
             roomService: new Array(12).fill(0),
             bar: new Array(12).fill(0),
             curio: new Array(12).fill(0),
-            laundry: new Array(12).fill(0)
+            laundry: new Array(12).fill(0),
+            room: new Array(12).fill(0)
           };
 
           const totals = {
@@ -28,7 +29,8 @@ function Sales() {
             roomService: 0,
             bar: 0,
             curio: 0,
-            laundry: 0
+            laundry: 0,
+            room: 0
           };
 
           response.data.forEach(item => {
@@ -50,6 +52,8 @@ function Sales() {
               category = 'curio'
             } else if (item.laundryServiceId) {
               category = 'laundry'
+            }else if(item.reservationsBillsId){
+              category = 'room'
             }
 
             if (categories[category] && !isNaN(month) && month >= 0 && month < 12) {
@@ -96,7 +100,7 @@ function Sales() {
     chart: { type: 'area' },
     xaxis: { categories: areaChartData.categories },
     tooltip: { x: { format: 'MMM' } },
-    colors: ['#00E396', '#FF4560', '#008FFB', '#ffA500', '#743089', '#C19A6B'], 
+    colors: ['#00E396', '#FF4560', '#008FFB', '#ffA500', '#743089', '#C19A6B', '#CB091'], 
     fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3 } },
     stroke: { curve: 'smooth' },
     legend: { position: 'top' }

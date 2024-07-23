@@ -6,6 +6,7 @@ import Chart from 'react-apexcharts'
 function Reception() {
   const [data, setData] = useState([])
   const [revenue, setRevenue] = useState(0)
+  
   useEffect(() => {
     const getData = async () => {
       try {
@@ -66,6 +67,7 @@ function Reception() {
           </Box>
         </Box>
       </Box>
+
 
     </Box>
   )
