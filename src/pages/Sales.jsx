@@ -18,7 +18,8 @@ function Sales() {
             restaurant: new Array(12).fill(0),
             roomService: new Array(12).fill(0),
             bar: new Array(12).fill(0),
-            curio: new Array(12).fill(0)
+            curio: new Array(12).fill(0),
+            laundry: new Array(12).fill(0)
           };
 
           const totals = {
@@ -26,7 +27,8 @@ function Sales() {
             restaurant: 0,
             roomService: 0,
             bar: 0,
-            curio: 0
+            curio: 0,
+            laundry: 0
           };
 
           response.data.forEach(item => {
@@ -46,6 +48,8 @@ function Sales() {
               category = 'bar';
             } else if (item.curioId) {
               category = 'curio'
+            } else if (item.laundryServiceId) {
+              category = 'laundry'
             }
 
             if (categories[category] && !isNaN(month) && month >= 0 && month < 12) {

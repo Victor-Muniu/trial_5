@@ -508,7 +508,7 @@ const Sidebar = ({ sidebarWidth }) => {
                 <ListItemText primary="Service POS" />
               </ListItem>
               <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/reservations')}>
-                <ListItemText primary="Rervations POS" />
+                <ListItemText primary="Reservations POS" />
               </ListItem>
             </List>
           </Collapse>

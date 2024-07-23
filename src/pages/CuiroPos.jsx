@@ -32,17 +32,12 @@ function CurioPos() {
     const existingItemIndex = orderData.drinksNames.indexOf(item.name);
 
     if (existingItemIndex > -1) {
-      // Item exists, update quantity and price
       const updatedQuantity = [...orderData.quantity];
-      const updatedPrice = [...orderData.price];
-      
       updatedQuantity[existingItemIndex] += 1;
-      updatedPrice[existingItemIndex] = item.unit_price * updatedQuantity[existingItemIndex];
 
       setOrderData({
         ...orderData,
-        quantity: updatedQuantity,
-        price: updatedPrice
+        quantity: updatedQuantity
       });
     } else {
       // Item does not exist, add new entry
