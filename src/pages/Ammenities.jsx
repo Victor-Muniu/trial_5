@@ -1,327 +1,197 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Box, Modal, Backdrop, Fade } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Typography, Paper, Grid, Button } from '@mui/material';
 
-const Ammenities = () => {
-  // State for Ammenities
+function Ammenities() {
   const [ammenities, setAmmenities] = useState([]);
-  const [ammenitiesName, setAmmenitiesName] = useState('');
-  const [price, setPrice] = useState('');
-  const [ageGroup, setAgeGroup] = useState('');
-  const [editingAmmenity, setEditingAmmenity] = useState(null);
-  const [showAmmenityForm, setShowAmmenityForm] = useState(false); 
+  const [orderData, setOrderData] = useState({
+    ammenities: [],
+    staffName: `${localStorage.getItem('fname')} ${localStorage.getItem('lname')}`,
+    date: new Date().toISOString().split('T')[0]
+  });
 
-  const [orders, setOrders] = useState([]);
-  const [staffName, setStaffName] = useState('');
-  const [orderAgeGroup, setOrderAgeGroup] = useState('');
-  const [quantity, setQuantity] = useState(0);
-  const [showOrderForm, setShowOrderForm] = useState(false); 
-
-  useEffect(() => {
-    fetchAmmenities();
-    fetchOrders();
-  }, []);
-
-  // Fetch Ammenities
   const fetchAmmenities = async () => {
     try {
       const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/ammenities');
       setAmmenities(response.data);
     } catch (error) {
-      console.error('Error fetching ammenities:', error);
-    }
-  };
-
-  // Fetch Orders
-  const fetchOrders = async () => {
-    try {
-      const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders');
-      setOrders(response.data);
-    } catch (error) {
       console.error('Error fetching orders:', error);
     }
   };
 
-  // Handle Ammenity Form Submission
-  const handleAmmenitySubmit = async (event) => {
-    event.preventDefault();
-    try {
-      if (editingAmmenity) {
-        const response = await axios.patch(`https://hotel-backend-1-trhj.onrender.com/ammenities/${editingAmmenity._id}`, { name: ammenitiesName, price, age_group: ageGroup });
-        setAmmenities(ammenities.map(a => (a._id === editingAmmenity._id ? response.data : a)));
-        setEditingAmmenity(null);
-      } else {
-        const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/ammenities', { name: ammenitiesName, price, age_group: ageGroup });
-        setAmmenities([...ammenities, response.data]);
-      }
-      setAmmenitiesName('');
-      setPrice('');
-      setAgeGroup('');
-      setShowAmmenityForm(false); // Close the Ammenity form after submission
-    } catch (error) {
-      console.error('Error saving ammenity:', error);
-    }
-  };
-
-  // Handle Ammenities Order Form Submission
-  const handleOrderSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders', {
-        ammenitiesName,
-        staffName,
-        age_group: orderAgeGroup,
-        quantity,
-        date: new Date().toISOString() // Assuming date is auto-generated on server side
+  const handleAddButtonClick = (ammenity) => {
+    const existingAmenity = orderData.ammenities.find((a) => a.ammenitiesName.includes(ammenity.name) && a.age_group.includes(ammenity.age_group));
+    
+    if (existingAmenity) {
+      const updatedAmmenities = orderData.ammenities.map((a) => {
+        if (a.ammenitiesName.includes(ammenity.name) && a.age_group.includes(ammenity.age_group)) {
+          const updatedQuantity = [...a.quantity];
+          const index = a.ammenitiesName.indexOf(ammenity.name);
+          updatedQuantity[index] = (updatedQuantity[index] || 0) + 1;
+          return { ...a, quantity: updatedQuantity };
+        }
+        return a;
       });
-      setOrders([...orders, response.data]);
-      setShowOrderForm(false); // Close the Ammenities Order form after submission
-      // Clear form fields
-      setAmmenitiesName('');
-      setStaffName('');
-      setOrderAgeGroup('');
-      setQuantity(0);
-    } catch (error) {
-      console.error('Error saving order:', error);
+
+      setOrderData({
+        ...orderData,
+        ammenities: updatedAmmenities
+      });
+    } else {
+      setOrderData({
+        ...orderData,
+        ammenities: [
+          ...orderData.ammenities,
+          {
+            ammenitiesName: [ammenity.name],
+            age_group: [ammenity.age_group],
+            quantity: [1]
+          }
+        ]
+      });
     }
   };
 
-  // Handle Edit Ammenity
-  const handleEditAmmenity = (ammenity) => {
-    setAmmenitiesName(ammenity.name);
-    setPrice(ammenity.price);
-    setAgeGroup(ammenity.age_group);
-    setEditingAmmenity(ammenity);
-    setShowAmmenityForm(true); // Show the Ammenity form for editing
+  const handleMinusButtonClick = (ammenity) => {
+    const updatedAmmenities = orderData.ammenities.map((a) => {
+      if (a.ammenitiesName.includes(ammenity.name) && a.age_group.includes(ammenity.age_group)) {
+        const updatedQuantity = [...a.quantity];
+        const index = a.ammenitiesName.indexOf(ammenity.name);
+        if (updatedQuantity[index] > 1) {
+          updatedQuantity[index] -= 1;
+        } else {
+          return null; // To remove the item if quantity is 1
+        }
+        return { ...a, quantity: updatedQuantity };
+      }
+      return a;
+    }).filter(Boolean);
+
+    setOrderData({
+      ...orderData,
+      ammenities: updatedAmmenities
+    });
   };
 
-  // Handle Delete Ammenity
-  const handleDeleteAmmenity = async (id) => {
-    try {
-      await axios.delete(`https://hotel-backend-1-trhj.onrender.com/ammenities/${id}`);
-      setAmmenities(ammenities.filter(a => a._id !== id));
-    } catch (error) {
-      console.error('Error deleting ammenity:', error);
+  const handleSubmitOrder = async () => {
+    if (orderData) {
+      try {
+        const response = await fetch('https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderData)
+        });
+  
+        if (response.ok) {
+          alert('Order submitted successfully!');
+          setOrderData({
+            ammenities: [],
+            staffName: `${localStorage.getItem('fname')} ${localStorage.getItem('lname')}`,
+            date: new Date().toISOString().split('T')[0]
+          });
+        } else {
+          alert('Failed to submit order. Please try again.');
+        }
+      } catch (error) {
+        alert('Network error occurred. Please try again later.');
+      }
     }
   };
+  
 
-  // Handle Delete Ammenities Order
-  const handleDeleteOrder = async (id) => {
-    try {
-      await axios.delete(`https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders/${id}`);
-      setOrders(orders.filter(order => order._id !== id));
-    } catch (error) {
-      console.error('Error deleting order:', error);
-    }
-  };
-
-  // Get role from localStorage
-  const role = localStorage.getItem('role');
+  useEffect(() => {
+    fetchAmmenities();
+  }, []);
 
   return (
-    <div>
-      {/* Add Ammenity Button (Visible for Admin) */}
-      {role === 'admin' && (
+    <Box display='flex' width='100%'>
+      
+      <Box
+        display='flex'
+        flexDirection='row'
+        flexWrap='wrap'
+        justifyContent='center'
+        width='70%'
+        padding={2}
+        alignItems='center'
+      >
+        <Grid container spacing={2}>
+          {ammenities.map((item, index) => {
+            const existingAmenity = orderData.ammenities.find(a => a.ammenitiesName.includes(item.name) && a.age_group.includes(item.age_group));
+            const quantity = existingAmenity ? existingAmenity.quantity[existingAmenity.ammenitiesName.indexOf(item.name)] : 0;
+
+            return (
+              <Grid item key={index} xs={12} md={4}>
+                <Paper elevation={3} style={{ padding: '1rem', height: '12rem', textAlign: 'center' }}>
+                  <Typography variant='h6'>{item.name}</Typography>
+                  <Typography variant='body1'>{item.age_group}</Typography>
+                  <Typography variant='body2'>Price: Kh{item.price}</Typography>
+                  <Typography variant='body2'>Quantity: {quantity}</Typography>
+
+                  <br />
+                  <Box display='flex' justifyContent='space-evenly'>
+                    <Button variant="contained" color="primary" onClick={() => handleAddButtonClick(item)}>ADD</Button>
+                    <Button variant="contained" color="secondary" onClick={() => handleMinusButtonClick(item)}>MINUS</Button>
+                  </Box>
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Box>
+
+      {/* Small Box */}
+      <Box
+        width='30%'
+        padding={2}
+        boxShadow={3}
+        display='flex'
+        flexDirection='column'
+        sx={{
+          backgroundColor: '#f7f7f7',
+          borderRadius: '10px',
+          boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
+          padding: '20px',
+          margin: '20px'
+        }}
+      >
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <Typography variant='h5' sx={{ fontSize: '18px', fontWeight: 'bold' }}>
+            Selected Ammenities
+          </Typography>
+        </div>
+
+        {orderData.ammenities.map((amenity, index) => (
+          <Box key={index} display='flex' flexDirection='row' justifyContent='space-between' sx={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
+            <Typography variant='body1'>{amenity.ammenitiesName.join(', ')}</Typography>
+            <Typography variant='body1'>{amenity.age_group.join(', ')}</Typography>
+            <Typography variant='body1'>Quantity: {amenity.quantity.join(', ')}</Typography>
+          </Box>
+        ))}
+        <Typography variant='body1' sx={{ padding: '10px' }}>
+          Staff: {orderData.staffName}
+        </Typography>
+        <Typography variant='body1' sx={{ padding: '10px' }}>
+          Date: {orderData.date}
+        </Typography>
         <Button
           variant="contained"
           color="primary"
-          style={{ marginTop: '16px', marginRight: '16px' }}
-          onClick={() => setShowAmmenityForm(true)}
+          onClick={handleSubmitOrder}
+          sx={{
+            margin: '10px',
+            padding: '10px',
+            fontSize: '16px',
+            fontWeight: 'bold'
+          }}
         >
-          Add Ammenity
+          Submit Order
         </Button>
-      )}
-
-      {/* Ammenity Form Modal */}
-      <Modal
-        open={showAmmenityForm}
-        onClose={() => setShowAmmenityForm(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={showAmmenityForm}>
-          <Paper style={{ padding: '20px', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <form onSubmit={handleAmmenitySubmit}>
-              <Box mb={2}>
-                <TextField
-                  label="Name"
-                  value={ammenitiesName}
-                  onChange={(e) => setAmmenitiesName(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Box mb={2}>
-                <TextField
-                  label="Price"
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Box mb={2}>
-                <TextField
-                  label="Age Group"
-                  value={ageGroup}
-                  onChange={(e) => setAgeGroup(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Button type="submit" variant="contained" color="primary">
-                {editingAmmenity ? 'Update Ammenity' : 'Add Ammenity'}
-              </Button>
-            </form>
-          </Paper>
-        </Fade>
-      </Modal>
-
-      {/* Ammenities Table */}
-      <TableContainer component={Paper} style={{ marginTop: '16px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Age Group</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ammenities.map((ammenity) => (
-              <TableRow key={ammenity._id}>
-                <TableCell>{ammenity.name}</TableCell>
-                <TableCell>{ammenity.price}</TableCell>
-                <TableCell>{ammenity.age_group}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditAmmenity(ammenity)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteAmmenity(ammenity._id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Ammenities Order Form */}
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ marginTop: '16px', marginLeft: '16px' }}
-        onClick={() => setShowOrderForm(true)}
-      >
-        Post Order
-      </Button>
-
-      {/* Ammenities Order Form Modal */}
-      <Modal
-        open={showOrderForm}
-        onClose={() => setShowOrderForm(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={showOrderForm}>
-          <Paper style={{ padding: '20px', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <form onSubmit={handleOrderSubmit}>
-              <Box mb={2}>
-                <TextField
-                  label="Ammenities Name"
-                  value={ammenitiesName}
-                  onChange={(e) => setAmmenitiesName(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Box mb={2}>
-                <TextField
-                  label="Staff Name"
-                  value={staffName}
-                  onChange={(e) => setStaffName(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Box mb={2}>
-                <TextField
-                  label="Age Group"
-                  value={orderAgeGroup}
-                  onChange={(e) => setOrderAgeGroup(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Box mb={2}>
-                <TextField
-                  label="Quantity"
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                />
-              </Box>
-              <Button type="submit" variant="contained" color="primary">
-                Place Order
-              </Button>
-            </form>
-          </Paper>
-        </Fade>
-      </Modal>
-      
-      {/* Ammenities Orders Table */}
-      <TableContainer component={Paper} style={{ marginTop: '16px' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Ammenities Name</TableCell>
-              <TableCell>Staff Name</TableCell>
-              <TableCell>Age Group</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order._id}>
-                <TableCell>{order.ammenitiesId.name}</TableCell>
-                <TableCell>{order.staffId.fname} {order.staffId.lname}</TableCell>
-                <TableCell>{order.age_group}</TableCell>
-                <TableCell>{order.quantity}</TableCell>
-                <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleDeleteOrder(order._id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+      </Box>
+    </Box>
   );
-};
+}
 
 export default Ammenities;

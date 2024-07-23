@@ -17,14 +17,16 @@ function Sales() {
             amenities: new Array(12).fill(0),
             restaurant: new Array(12).fill(0),
             roomService: new Array(12).fill(0),
-            bar: new Array(12).fill(0)
+            bar: new Array(12).fill(0),
+            curio: new Array(12).fill(0)
           };
 
           const totals = {
             amenities: 0,
             restaurant: 0,
             roomService: 0,
-            bar: 0
+            bar: 0,
+            curio: 0
           };
 
           response.data.forEach(item => {
@@ -42,6 +44,8 @@ function Sales() {
               category = 'roomService';
             } else if (item.clubOrderId) {
               category = 'bar';
+            } else if (item.curioId) {
+              category = 'curio'
             }
 
             if (categories[category] && !isNaN(month) && month >= 0 && month < 12) {
@@ -88,7 +92,7 @@ function Sales() {
     chart: { type: 'area' },
     xaxis: { categories: areaChartData.categories },
     tooltip: { x: { format: 'MMM' } },
-    colors: ['#00E396', '#FF4560', '#008FFB', '#ffA500'], 
+    colors: ['#00E396', '#FF4560', '#008FFB', '#ffA500', '#743089'], 
     fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3 } },
     stroke: { curve: 'smooth' },
     legend: { position: 'top' }
@@ -102,7 +106,7 @@ function Sales() {
         flexDirection='row' 
         flexWrap='wrap' 
         justifyContent='center' 
-        sx={{ gap: 2, marginBottom: '20px' }} // Adjust gap as needed
+        sx={{ gap: 2, marginBottom: '20px' }} 
       >
         {chartsData.length > 0 ? (
           chartsData.map((chart, index) => (
@@ -114,7 +118,7 @@ function Sales() {
               sx={{ 
                 width: '18rem', 
                 margin: '10px', 
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // Add shadow
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', 
                 padding: 1, 
                 backgroundColor: 'white'
               }}

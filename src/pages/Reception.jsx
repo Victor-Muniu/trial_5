@@ -1,4 +1,4 @@
-import { MonetizationOn, MoreHoriz } from '@mui/icons-material'
+import { CurrencyExchange, MonetizationOn, MoreHoriz } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -26,23 +26,7 @@ function Reception() {
     calculateRevenue();
   }, [data]);
 
-  const [state, setState] = useState({
-    options: {
-      chart: {
-        id: 'basic-bar',
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'March', 'Apr','May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      },
-      
-    },
-    series: [
-      {
-        name: 'Monthly Sales',
-        data:[]
-      }
-    ]
-  })
+  
 
 
   return (
@@ -58,7 +42,11 @@ function Reception() {
 
               <MoreHoriz sx={{ marginLeft: 2 }} />
               <Box padding={2.5} gap={6} display='flex' alignItems='center'>
-                <Typography>Room Sales {data.length}</Typography>
+                <Box display='flex' alignItems='center'>
+                    <CurrencyExchange sx={{marginRight: 1}}/>
+                    <Typography variant='h6'>Room Sales</Typography>
+                </Box>
+                <Typography>{data.length}</Typography>
               </Box>
             </Box>
             <Box width='25rem' margin={2} sx={{

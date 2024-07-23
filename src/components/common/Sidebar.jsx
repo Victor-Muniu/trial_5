@@ -309,7 +309,12 @@ const Sidebar = ({ sidebarWidth }) => {
             </List>
           </Collapse>
 
-
+          <ListItem button onClick={navigateTo('/balance_sheet')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balance />
+            </ListItemIcon>
+            <ListItemText primary="Balance Sheet" />
+          </ListItem>
 
 
 
@@ -444,34 +449,6 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Dashboards" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/rooms')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Bed />
-            </ListItemIcon>
-            <ListItemText primary="Rooms" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/reservations')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <BookOnline />
-            </ListItemIcon>
-            <ListItemText primary="Booking Form" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/reservations_analytics')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Analytics />
-            </ListItemIcon>
-            <ListItemText primary="Room Bills" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/bills2')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <NoteAdd />
-            </ListItemIcon>
-            <ListItemText primary=" Create Bills" />
-          </ListItem>
-
           <ListItem button onClick={navigateTo('/banquetting')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <Balcony />
@@ -479,54 +456,82 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Banquetting" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/stock_movement')}>
+          <ListItem button onClick={handleMoreClick}>
             <ListItemIcon sx={{ color: 'white' }}>
+              <NoteAdd />
+            </ListItemIcon>
+            <ListItemText primary="Bills" />
+            {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/reservations_analytics')}>
+                <ListItemText primary="Room Bills" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bills')}>
+                <ListItemText primary="Restaurant Bills" />
+              </ListItem>
+            </List>
+          </Collapse>
+
+          <ListItem button onClick={navigateTo('/stock_movement')}>
+            <ListItemIcon sx={{color: 'white'}}>
               <AddBusiness />
             </ListItemIcon>
-            <ListItemText primary="Curio" />
-          </ListItem>
-
-          <ListItem button onClick={navigateTo('/bills')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <MonetizationOn />
-            </ListItemIcon>
-            <ListItemText primary="Restaurant Bills" />
+            <ListItemText primary='Curio'/>
           </ListItem>
 
           <ListItem button onClick={navigateTo('/room_service')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <RoomService />
             </ListItemIcon>
-            <ListItemText primary="Reservation Biil" />
+            <ListItemText primary="Create Reservation Bill" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/collections')}>
+          <ListItem button onClick={handleTransactionsClick}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Collections />
+              <PointOfSaleOutlined />
             </ListItemIcon>
-            <ListItemText primary="Daily collections" />
+            <ListItemText primary="POS" />
+            {openTransactions ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
           </ListItem>
+          <Collapse in={openTransactions} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/ammenities')}>
+                <ListItemText primary="Ammenities POS" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/curio_pos')}>
+                <ListItemText primary="Curio POS" />
+              </ListItem>
 
-          <ListItem button onClick={navigateTo('/laundry_service')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Checkroom />
-            </ListItemIcon>
-            <ListItemText primary="Laundry Service" />
-          </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bills2')}>
+                <ListItemText primary="Service POS" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/reservations')}>
+                <ListItemText primary="Rervations POS" />
+              </ListItem>
+            </List>
+          </Collapse>
 
-          <ListItem button onClick={navigateTo('/ammenities')}>
+          <ListItem button onClick={handleTransactionsClick}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <Games />
+              <Report />
             </ListItemIcon>
-            <ListItemText primary="Ammenities" />
+            <ListItemText primary="Reports" />
+            {openTransactions ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
           </ListItem>
+          <Collapse in={openTransactions} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
+                <ListItemText primary="Daily Collections" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/front_requisitions')}>
+                <ListItemText primary="Departent Requisition" />
+              </ListItem>
+            </List>
+          </Collapse>
+          
 
-          <ListItem button onClick={navigateTo('/agents_analysis')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <SupportAgent />
-            </ListItemIcon>
-            <ListItemText primary="Agent Analytics" />
-          </ListItem>
 
           <ListItem button onClick={navigateTo('/requisition_form')}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -535,11 +540,11 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Requisition Form" />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/front_requisitions')}>
+          <ListItem button onClick={navigateTo('/rooms')}>
             <ListItemIcon sx={{ color: 'white' }}>
-              <RequestQuoteOutlined />
+              <Bed />
             </ListItemIcon>
-            <ListItemText primary="Departent Requisition" />
+            <ListItemText primary="Rooms" />
           </ListItem>
           
 
