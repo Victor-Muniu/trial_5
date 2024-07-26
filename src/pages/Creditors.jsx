@@ -250,9 +250,7 @@ const Creditors = () => {
                   <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleEdit(row); }} style={{ marginRight: '0.5rem' }}>
                     Edit
                   </Button>
-                  <Button variant="contained" color="secondary" onClick={(e) => { e.stopPropagation(); handleAddCreditor(row); }}>
-                    Add
-                  </Button>
+                  
                 </TableCell>
               </TableRow>
             ))}

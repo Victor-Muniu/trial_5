@@ -321,29 +321,7 @@ const Sidebar = ({ sidebarWidth }) => {
 
 
           
-          <ListItem button onClick={handleMoreClick}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Report />
-            </ListItemIcon>
-            <ListItemText primary="Reports" />
-            {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
-          </ListItem>
-          <Collapse in={openMore} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bank_statement')}>
-                <ListItemText primary="Bank Statement" />
-              </ListItem>
-              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/expense')}>
-                <ListItemText primary="Expenses" />
-              </ListItem>
-              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/purchases')}>
-                <ListItemText primary="Purchases" />
-              </ListItem>
-              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
-                <ListItemText primary="Daily Collections" />
-              </ListItem>
-            </List>
-          </Collapse>
+          
 
           <ListItem button onClick={navigateTo('/creditors')}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -403,6 +381,30 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Profit Loss" />
           </ListItem>
+
+          <ListItem button onClick={handleMoreClick}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Report />
+            </ListItemIcon>
+            <ListItemText primary="Reports" />
+            {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bank_statement')}>
+                <ListItemText primary="Bank Statement" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/expense')}>
+                <ListItemText primary="Expenses" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/purchases')}>
+                <ListItemText primary="Purchases" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
+                <ListItemText primary="Daily Collections" />
+              </ListItem>
+            </List>
+          </Collapse>
 
           <ListItem button onClick={navigateTo('/sales')}>
               <ListItemIcon sx={{color: 'white'}}>

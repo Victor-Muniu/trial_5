@@ -47,6 +47,7 @@ import BanquettingInvoice from "../pages/BanquttingInvoice";
 import Payment_Voucher from "../pages/Payment_Voucher";
 import Sales from "../pages/Sales";
 import CuiroPos from "../pages/CuiroPos";
+import BalanceSheet from "../pages/BalanceSheet";
 
 
 const checkAuth = (path) => {
@@ -520,6 +521,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <CuiroPos />
+        }
+      ]
+    },
+    {
+      path: '/balance_sheet',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <BalanceSheet />
         }
       ]
     },
