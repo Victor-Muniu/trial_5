@@ -488,6 +488,13 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Create Reservation Bill" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/inventory')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Inventory />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
+          </ListItem>
+
           <ListItem button onClick={handleTransactionsClick}>
             <ListItemIcon sx={{ color: 'white' }}>
               <PointOfSaleOutlined />

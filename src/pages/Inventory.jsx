@@ -248,7 +248,7 @@ const Inventory = () => {
                 <TableCell>{row.spoilt}</TableCell>
                 <TableCell>{row.unit_price}</TableCell>
                 <TableCell>{(row.quantity - row.spoilt) * row.unit_price}</TableCell>
-                {role === 'procurement' && (
+                {role === 'admin' && (
                   <TableCell>
                     <Button onClick={() => handleEdit(row)}>
                       <Edit />

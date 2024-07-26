@@ -12,7 +12,7 @@ function Inhouse() {
     useEffect(()=> {
         const getData = async () => {
             try {
-              const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/individuals');
+              const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/reservations');
               const data = response.data;
               setData(data);
             } catch (error) {
@@ -77,7 +77,6 @@ function Inhouse() {
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell>Name</TableCell>
               <TableCell>Package Type</TableCell>
               <TableCell>Adults</TableCell>
               <TableCell>Kids</TableCell>
@@ -94,9 +93,9 @@ function Inhouse() {
                 <TableCell padding="checkbox">
                   <Checkbox />
                 </TableCell>
-                <TableCell>{row.fname} {row.lname}</TableCell>
                 
-                <TableCell>{row.plan}</TableCell>
+                
+                <TableCell>{row.package_type.join(',')}</TableCell>
                 <TableCell>{row.adults}</TableCell>
                 <TableCell>{row.kids}</TableCell>
                 <TableCell>{row.room_no}</TableCell>
