@@ -27,7 +27,14 @@ function Staff() {
   const [staffData, setStaffData] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogType, setDialogType] = useState('');
-  const [currentStaff, setCurrentStaff] = useState(null);
+  const [currentStaff, setCurrentStaff] = useState({
+    fname: '',
+    lname: '',
+    email: '',
+    role: '',
+    password: '',
+    emp_no: ''
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -48,13 +55,27 @@ function Staff() {
 
   const handleOpenDialog = (type, staff = null) => {
     setDialogType(type);
-    setCurrentStaff(staff);
+    setCurrentStaff(staff || {
+      fname: '',
+      lname: '',
+      email: '',
+      role: '',
+      password: '',
+      emp_no: ''
+    });
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setCurrentStaff(null);
+    setCurrentStaff({
+      fname: '',
+      lname: '',
+      email: '',
+      role: '',
+      password: '',
+      emp_no: ''
+    });
   };
 
   const handleInputChange = (e) => {
@@ -105,7 +126,7 @@ function Staff() {
       <Typography variant="h4" gutterBottom>
         Staff Management
       </Typography>
-      <Button color="primary" onClick={() => handleOpenDialog('add')}>
+      <Button color="primary" variant="contained" onClick={() => handleOpenDialog('add')}>
         Add Staff
       </Button>
 
@@ -145,15 +166,66 @@ function Staff() {
         <DialogTitle>{dialogType === 'add' ? 'Add New Staff' : 'Edit Staff'}</DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
-            
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="First Name"
+                name="fname"
+                value={currentStaff.fname}
+                onChange={handleInputChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Last Name"
+                name="lname"
+                value={currentStaff.lname}
+                onChange={handleInputChange}
+                fullWidth
+                required
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Email"
                 name="email"
                 type="email"
-                value={currentStaff?.email || ''}
+                value={currentStaff.email}
                 onChange={handleInputChange}
                 fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Role"
+                name="role"
+                value={currentStaff.role}
+                onChange={handleInputChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Password"
+                name="password"
+                type="password"
+                value={currentStaff.password}
+                onChange={handleInputChange}
+                fullWidth
+                required={dialogType === 'add'}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Employee Number"
+                name="emp_no"
+                value={currentStaff.emp_no}
+                onChange={handleInputChange}
+                fullWidth
+                required
               />
             </Grid>
           </Grid>

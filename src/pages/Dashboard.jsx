@@ -13,7 +13,7 @@ function Dashboard() {
 
   return (
     <Box>
-      {user === 'service' && (
+      {user === 'service' || user === 'admin' && (
         <Restaurant />
       )}
       {user === 'food production' && (
