@@ -18,9 +18,14 @@ import {
   DialogActions,
   CircularProgress,
   Backdrop,
-  Box
+  Box,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl
 } from '@mui/material';
 import { useReactToPrint } from 'react-to-print';
+import { format } from 'date-fns'; // For date formatting
 
 function Payroll() {
   const [payrolls, setPayrolls] = useState([]);
@@ -30,20 +35,27 @@ function Payroll() {
     nhif_deductions: 0,
     nssf_deductions: 0,
     paye: 0,
+    helb: 0,
+    housing_Levy: 0,
     emp_no: ''
   });
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openReceiptDialog, setOpenReceiptDialog] = useState(false);
   const [currentPayroll, setCurrentPayroll] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 
   useEffect(() => {
     const fetchPayrolls = async () => {
+      setLoading(true);
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/payrolls');
         setPayrolls(response.data);
       } catch (error) {
         console.error('Error fetching payroll data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -67,6 +79,8 @@ function Payroll() {
         nhif_deductions: 0,
         nssf_deductions: 0,
         paye: 0,
+        helb: 0,
+        housing_Levy: 0,
         emp_no: ''
       });
       setOpenAddDialog(false);
@@ -103,15 +117,13 @@ function Payroll() {
     setCurrentPayroll(null);
   };
 
-  const getCurrentDate = () => {
-    const now = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return now.toLocaleDateString(undefined, options);
-  };
-
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
-    content: () =>  componentRef.current,
+    content: () => componentRef.current,
+  });
+  const filteredPayrolls = payrolls.filter(payroll => {
+    const payrollDate = new Date(payroll.date);
+    return payrollDate.getFullYear() === selectedYear && payrollDate.getMonth() === selectedMonth;
   });
 
   return (
@@ -123,6 +135,37 @@ function Payroll() {
       <Button sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }} color="primary" onClick={handleOpenAddDialog}>
         Add Payroll
       </Button>
+
+      <Grid container spacing={2} sx={{ mb: 2 }}>
+        <Grid item xs={6} md={4}>
+          <FormControl fullWidth>
+            <InputLabel>Year</InputLabel>
+            <Select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              label="Year"
+            >
+              {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                <MenuItem key={year} value={year}>{year}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <FormControl fullWidth>
+            <InputLabel>Month</InputLabel>
+            <Select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              label="Month"
+            >
+              {Array.from({ length: 12 }, (_, i) => i).map(month => (
+                <MenuItem key={month} value={month}>{format(new Date(2020, month, 1), 'MMMM')}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
 
       <Dialog open={openAddDialog} onClose={handleCloseAddDialog} fullWidth maxWidth="sm">
         <DialogTitle>Add New Payroll</DialogTitle>
@@ -183,6 +226,26 @@ function Payroll() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                label="HELB"
+                type="number"
+                name="helb"
+                value={newPayroll.helb}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Housing Levy"
+                type="number"
+                name="housing_Levy"
+                value={newPayroll.housing_Levy}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 label="Employee Number"
                 type="text"
                 name="emp_no"
@@ -212,30 +275,28 @@ function Payroll() {
               <TableCell>NHIF Deductions</TableCell>
               <TableCell>NSSF Deductions</TableCell>
               <TableCell>PAYE</TableCell>
-              <TableCell>Net Income</TableCell>
+              <TableCell>HELB</TableCell>
+              <TableCell>Housing Levy</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {payrolls.map((payroll) => (
+            {filteredPayrolls.map(payroll => (
               <TableRow key={payroll._id}>
-                <TableCell>{new Date(payroll.date).toLocaleDateString()}</TableCell>
+                <TableCell>{format(new Date(payroll.date), 'MMM dd, yyyy')}</TableCell>
                 <TableCell>{payroll.gross_income}</TableCell>
                 <TableCell>{payroll.nhif_deductions}</TableCell>
                 <TableCell>{payroll.nssf_deductions}</TableCell>
                 <TableCell>{payroll.paye}</TableCell>
-                <TableCell>{payroll.net_income}</TableCell>
+                <TableCell>{payroll.helb}</TableCell>
+                <TableCell>{payroll.housing_Levy}</TableCell>
                 <TableCell>{payroll.fname}</TableCell>
                 <TableCell>{payroll.lname}</TableCell>
                 <TableCell>
-                  <Button
-                    sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}
-                    color="primary"
-                    onClick={() => handleOpenReceiptDialog(payroll._id)}
-                  >
-                    Pay Slip
+                  <Button variant="outlined" onClick={() => handleOpenReceiptDialog(payroll._id)}>
+                    View Receipt
                   </Button>
                 </TableCell>
               </TableRow>
@@ -243,7 +304,6 @@ function Payroll() {
           </TableBody>
         </Table>
       </TableContainer>
-
       <Dialog open={openReceiptDialog} onClose={handleCloseReceiptDialog} fullWidth maxWidth="sm">
         <DialogContent>
           {loading ? (
@@ -277,6 +337,14 @@ function Payroll() {
                 <Typography>PAYE:</Typography>
                 <Typography>KES {currentPayroll.paye}</Typography>
               </Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography>HELB:</Typography>
+                <Typography>KES {currentPayroll.helb}</Typography>
+              </Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Housing Levy:</Typography>
+                <Typography>KES {currentPayroll.housing_Levy}</Typography>
+              </Box>
               <hr />
               <Box display="flex" justifyContent="space-between">
                 <Typography>Net Income:</Typography>
@@ -299,7 +367,7 @@ function Payroll() {
         </DialogActions>
       </Dialog>
 
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      <Backdrop open={loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>

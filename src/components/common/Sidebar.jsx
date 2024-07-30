@@ -291,6 +291,13 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Assets" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/suppliers')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <SupervisorAccount />
+            </ListItemIcon>
+            <ListItemText primary="Address Book" />
+          </ListItem>
+
           <ListItem button onClick={handleMoreClick}>
             <ListItemIcon sx={{ color: 'white' }}>
               <Balcony />
@@ -412,12 +419,7 @@ const Sidebar = ({ sidebarWidth }) => {
               </ListItemIcon>
               <ListItemText primary= "Sales"/>
           </ListItem>
-          <ListItem button onClick={navigateTo('/suppliers')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <SupervisorAccount />
-            </ListItemIcon>
-            <ListItemText primary="Suppliers" />
-          </ListItem>
+          
 
 
           <ListItem button onClick={navigateTo('/trial_balance')}>

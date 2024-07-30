@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, CircularProgress, Card, CardContent, Modal
+  Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, CircularProgress, Card, CardContent, Modal, Checkbox, Grid
 } from '@mui/material';
 import dayjs from 'dayjs';
 
@@ -151,20 +151,40 @@ const Creditors = () => {
     }
   };
 
+  const handleRemoveCreditor = (creditor) => {
+    setPaymentVoucher((prev) => {
+      const newCreditors = prev.creditors.filter(id => id !== creditor._id);
+      return {
+        ...prev,
+        creditors: newCreditors,
+        amount: (parseFloat(prev.amount) || 0) - parseFloat(creditor.amount)
+      };
+    });
+  };
+
   const handleSideCardSubmit = async (e) => {
     e.preventDefault();
     console.log('Payment Voucher:', paymentVoucher);
     try {
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/payment-vouchers', {
-        creditorsId: paymentVoucher.creditors, // Ensure this matches the JSON structure
-        amount: parseFloat(paymentVoucher.amount), // Convert amount to a number
+        creditorsId: paymentVoucher.creditors,
+        amount: parseFloat(paymentVoucher.amount),
         emp_no: paymentVoucher.emp_no
       });
       console.log('Payment Voucher Created:', response.data);
       setSideCardOpen(false);
-      setPaymentVoucher({ creditors: [], amount: '', emp_no: '' }); // Reset state
+      setPaymentVoucher({ creditors: [], amount: '', emp_no: '' });
     } catch (error) {
       console.error('There was a problem with the axios operation:', error);
+    }
+  };
+
+  const handleCheckboxChange = (detail) => {
+    const creditorExists = paymentVoucher.creditors.includes(detail._id);
+    if (creditorExists) {
+      handleRemoveCreditor(detail);
+    } else {
+      handleAddCreditor(detail);
     }
   };
 
@@ -232,128 +252,100 @@ const Creditors = () => {
         </Box>
       </Modal>
 
-      <TableContainer component={Paper} style={{ marginTop: '1rem', width: '100%' }}>
-        <Table aria-label="creditors table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ fontWeight: 'bold' }}>Vendor</TableCell>
-              <TableCell align="right" style={{ fontWeight: 'bold' }}>Total Amount</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {groupedData.map((row, index) => (
-              <TableRow key={index} onClick={() => handleVendorClick(row)} style={{ cursor: 'pointer' }}>
-                <TableCell>{row.vendor}</TableCell>
-                <TableCell align="right">{row.totalAmount.toFixed(2)}</TableCell>
-                <TableCell>
-                  <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleEdit(row); }} style={{ marginRight: '0.5rem' }}>
-                    Edit
-                  </Button>
-                  
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TableContainer component={Paper}>
+            <Table aria-label="creditors table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: 'bold' }}>Vendor</TableCell>
+                  <TableCell align="right" style={{ fontWeight: 'bold' }}>Total Amount</TableCell>
+                  <TableCell style={{ fontWeight: 'bold' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {groupedData.map((row, index) => (
+                  <TableRow key={index} onClick={() => handleVendorClick(row)} style={{ cursor: 'pointer' }}>
+                    <TableCell>{row.vendor}</TableCell>
+                    <TableCell align="right">{row.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleEdit(row); }}>Edit</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>Payment Voucher</Typography>
+              <form onSubmit={handleSideCardSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+                <TextField
+                  label="Employee No"
+                  name="emp_no"
+                  value={paymentVoucher.emp_no}
+                  onChange={(e) => setPaymentVoucher({ ...paymentVoucher, emp_no: e.target.value })}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Total Amount"
+                  name="amount"
+                  value={paymentVoucher.amount}
+                  fullWidth
+                  margin="normal"
+                  type="number"
+                  InputProps={{
+                    readOnly: true
+                  }}
+                />
+                <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '1rem' }}>
+                  Submit
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       <Modal open={modalOpen} onClose={handleModalClose}>
-  <Box
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    minHeight="100vh"
-    bgcolor="rgba(0, 0, 0, 0.5)"
-  >
-    <Card style={{ width: '80%', maxWidth: '800px', overflowY: 'auto', padding: '1rem' }}>
-      <CardContent>
-        {currentVendor && (
-          <>
-            <Typography variant="h5" gutterBottom>
-              {currentVendor.vendor}
-            </Typography>
-            <TableContainer component={Paper} style={{ marginTop: '1rem' }}>
-              <Table aria-label="details table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentVendor.details.map((detail, index) => (
-                    <TableRow
-                      key={index}
-                      onClick={() => handleAddCreditor(detail)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <TableCell>{dayjs(detail.date).format('YYYY-MM-DD')}</TableCell>
-                      <TableCell align="right">{detail.amount}</TableCell>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="rgba(0, 0, 0, 0.5)">
+          <Card style={{ width: '90%', maxWidth: '800px' }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>{currentVendor?.vendor}</Typography>
+              <TableContainer component={Paper}>
+                <Table aria-label="vendor details table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Vendor</TableCell>
+                      <TableCell align="right">Amount</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell align="center">Select</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Typography variant="h6" style={{ marginTop: '1rem' }}>
-              Total Amount: {currentVendor.totalAmount.toFixed(2)}
-            </Typography>
-          </>
-        )}
-      </CardContent>
-    </Card>
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="flex-end"
-      minHeight="100vh"
-      paddingRight={3}
-      style={{ position: 'absolute', top: 0, right: 0 }}
-    >
-      <Card style={{ width: '300px', marginTop: '1rem' }}>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Create Payment Voucher
-          </Typography>
-          <form onSubmit={handleSideCardSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography>Selected Creditors:</Typography>
-            {paymentVoucher.creditors.map((creditorId, index) => (
-              <Typography key={index}>Creditor ID: {creditorId}</Typography>
-            ))}
-            <TextField
-              label="Amount"
-              name="amount"
-              value={paymentVoucher.amount}
-              onChange={(e) => setPaymentVoucher({ ...paymentVoucher, amount: e.target.value })}
-              fullWidth
-              margin="normal"
-              type="number"
-            />
-            <TextField
-              label="Employee Number (emp_no)"
-              name="emp_no"
-              value={paymentVoucher.emp_no}
-              onChange={(e) => setPaymentVoucher({ ...paymentVoucher, emp_no: e.target.value })}
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ marginTop: '1rem' }}
-            >
-              Submit
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </Box>
-  </Box>
-</Modal>
-
+                  </TableHead>
+                  <TableBody>
+                    {currentVendor?.details.map((detail, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell>{detail.vendor}</TableCell>
+                        <TableCell align="right">{detail.amount.toFixed(2)}</TableCell>
+                        <TableCell>{dayjs(detail.date).format('YYYY-MM-DD')}</TableCell>
+                        <TableCell align="center">
+                          <Checkbox
+                            checked={paymentVoucher.creditors.includes(detail._id)}
+                            onChange={() => handleCheckboxChange(detail)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
+        </Box>
+      </Modal>
     </Box>
   );
 };

@@ -30,8 +30,6 @@ function Suppliers() {
     telephone_no: ''
   });
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Retrieve user role from localStorage
   const userRole = localStorage.getItem('role');
 
   useEffect(() => {
@@ -73,7 +71,6 @@ function Suppliers() {
   };
 
   const filteredSuppliers = data.filter((supplier) => {
-    // Ensure supplier.name exists and convert both to lowercase before comparing
     return supplier.name && supplier.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
