@@ -632,13 +632,31 @@ const Sidebar = ({ sidebarWidth }) => {
                 <ListItemText primary="Laudry Service" />
               </ListItem>
               
-              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/reservations_ Analytics')}>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/reservations_analytics')}>
                 <ListItemText primary="Reservations" />
               </ListItem>
 
               <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/rooms')}>
                 <ListItemText primary="Rooms" />
               </ListItem>
+              
+            </List>
+          </Collapse>
+
+
+          <ListItem button onClick={handleMoreClick2}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Storefront />
+            </ListItemIcon>
+            <ListItemText primary="Procurement" />
+            {openMore2 ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore2} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/inventory')}>
+                <ListItemText primary="Inventory" />
+              </ListItem>
+              
               
             </List>
           </Collapse>
