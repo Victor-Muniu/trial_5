@@ -9,6 +9,7 @@ const Sidebar = ({ sidebarWidth }) => {
   const [openTransactions, setOpenTransactions] = useState(false);
   const [openMore, setOpenMore] = useState(false);
   const [openMore2, setOpenMore2] = useState(false)
+  const [openMore3, setOpenMore3] = useState(false)
   const role = localStorage.getItem('role');
 
   const handleTransactionsClick = () => {
@@ -21,7 +22,9 @@ const Sidebar = ({ sidebarWidth }) => {
   const handleMoreClick2 = () => {
     setOpenMore2(!openMore2)
   }
-
+  const handleMoreClick3 = () => {
+    setOpenMore3(!openMore3)
+  }
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -658,6 +661,27 @@ const Sidebar = ({ sidebarWidth }) => {
               </ListItem>
               
               
+            </List>
+          </Collapse>
+
+          <ListItem button onClick={handleMoreClick3}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Storefront />
+            </ListItemIcon>
+            <ListItemText primary="Service" />
+            {openMore3 ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore3} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/restaurant')}>
+                <ListItemText primary="Restaurant" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bar')}>
+                <ListItemText primary="Bar" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/podium')}>
+                <ListItemText primary="Podium" />
+              </ListItem>
             </List>
           </Collapse>
 
