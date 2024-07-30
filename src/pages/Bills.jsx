@@ -14,7 +14,7 @@ function Bills() {
         const getData = async () => {
             try {
                 let endpoint = '';
-                if (role === 'front office') {
+                if (role === 'front office' || role== 'admin') {
                     endpoint = billType === 'restaurant' 
                         ? 'https://hotel-backend-1-trhj.onrender.com/restaurantBills'
                         : 'https://hotel-backend-1-trhj.onrender.com/clubBills';

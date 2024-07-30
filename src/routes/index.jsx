@@ -48,6 +48,7 @@ import Payment_Voucher from "../pages/Payment_Voucher";
 import Sales from "../pages/Sales";
 import CuiroPos from "../pages/CuiroPos";
 import BalanceSheet from "../pages/BalanceSheet";
+import Staff from "../pages/Staff";
 
 
 const checkAuth = (path) => {
@@ -531,6 +532,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <BalanceSheet />
+        }
+      ]
+    },
+    {
+      path: '/staff',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Staff />
         }
       ]
     },

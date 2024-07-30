@@ -44,7 +44,7 @@ const Stock = () => {
 
         if (role === 'service') {
           data = data.filter(item => item.group === 'Bar');
-        } else if (role === 'front office') {
+        } else if (role === 'front office' || role=== 'admin') {
           data = data.filter(item => item.group === 'Curio');
         } else if (role === 'procurement') {
           data = data.filter(item => item.group === 'House Keeping' || item.group === 'Internal');

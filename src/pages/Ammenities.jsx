@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Typography, Paper, Grid, Button } from '@mui/material';
+import { Box, Typography, Paper, Grid, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, CircularProgress, Backdrop } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Ammenities() {
   const [ammenities, setAmmenities] = useState([]);
@@ -9,13 +10,17 @@ function Ammenities() {
     staffName: `${localStorage.getItem('fname')} ${localStorage.getItem('lname')}`,
     date: new Date().toISOString().split('T')[0]
   });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState('');
+  const [selectedAmenity, setSelectedAmenity] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchAmmenities = async () => {
     try {
       const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/ammenities');
       setAmmenities(response.data);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error('Error fetching ammenities:', error);
     }
   };
 
@@ -74,36 +79,62 @@ function Ammenities() {
   };
 
   const handleSubmitOrder = async () => {
-    if (orderData) {
-      try {
-        const response = await fetch('https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(orderData)
-        });
+    setLoading(true);
+    try {
+      const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/ammenitiesOrders', orderData);
   
-        if (response.ok) {
-          alert('Order submitted successfully!');
-          setOrderData({
-            ammenities: [],
-            staffName: `${localStorage.getItem('fname')} ${localStorage.getItem('lname')}`,
-            date: new Date().toISOString().split('T')[0]
-          });
-        } else {
-          alert('Failed to submit order. Please try again.');
-        }
-      } catch (error) {
-        alert('Network error occurred. Please try again later.');
+      if (response.status === 201) {
+        alert('Order submitted successfully!');
+        setOrderData({
+          ammenities: [],
+          staffName: `${localStorage.getItem('fname')} ${localStorage.getItem('lname')}`,
+          date: new Date().toISOString().split('T')[0]
+        });
+      } else {
+        alert('Failed to submit order. Please try again.');
       }
+    } catch (error) {
+      alert('Network error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleOpenDialog = (type, amenity = null) => {
+    setDialogType(type);
+    setSelectedAmenity(amenity);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedAmenity(null);
+  };
+
+  const handleUpdateAmenity = async () => {
+    if (!selectedAmenity) return;
+    setLoading(true);
+    try {
+      const response = await axios.patch(`https://hotel-backend-1-trhj.onrender.com/ammenities/${selectedAmenity._id}`, selectedAmenity);
   
+      if (response.status === 200) {
+        setAmmenities(ammenities.map(a => a._id === response.data._id ? response.data : a));
+        handleCloseDialog();
+      } else {
+        alert('Failed to update amenity. Please try again.');
+      }
+    } catch (error) {
+      alert('Network error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchAmmenities();
   }, []);
+
+  const role = localStorage.getItem('role');
 
   return (
     <Box display='flex' width='100%'>
@@ -134,6 +165,13 @@ function Ammenities() {
                   <Box display='flex' justifyContent='space-evenly'>
                     <Button variant="contained" color="primary" onClick={() => handleAddButtonClick(item)}>ADD</Button>
                     <Button variant="contained" color="secondary" onClick={() => handleMinusButtonClick(item)}>MINUS</Button>
+
+                  {role === 'admin' && (
+                    <IconButton color="secondary" onClick={() => handleOpenDialog('edit', item)}>
+                    <EditIcon />
+                  </IconButton>
+                  )}
+                    
                   </Box>
                 </Paper>
               </Grid>
@@ -190,6 +228,52 @@ function Ammenities() {
           Submit Order
         </Button>
       </Box>
+
+      {/* Edit Dialog */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+        <DialogTitle>Edit Amenity</DialogTitle>
+        <DialogContent>
+          {selectedAmenity && (
+            <Box display='flex' flexDirection='column'>
+              <TextField
+                label="Amenity Name"
+                value={selectedAmenity.name}
+                onChange={(e) => setSelectedAmenity({ ...selectedAmenity, name: e.target.value })}
+                margin='normal'
+                fullWidth
+              />
+              <TextField
+                label="Age Group"
+                value={selectedAmenity.age_group}
+                onChange={(e) => setSelectedAmenity({ ...selectedAmenity, age_group: e.target.value })}
+                margin='normal'
+                fullWidth
+              />
+              <TextField
+                label="Price"
+                type="number"
+                value={selectedAmenity.price}
+                onChange={(e) => setSelectedAmenity({ ...selectedAmenity, price: e.target.value })}
+                margin='normal'
+                fullWidth
+              />
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button
+            onClick={handleUpdateAmenity}
+            color="primary"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Backdrop open={loading} style={{ zIndex: 1200 }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 }

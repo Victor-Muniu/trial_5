@@ -111,7 +111,7 @@ function Collections() {
   return (
     <Box padding={3}>
       <Typography variant="h4" gutterBottom>Daily Collections</Typography>
-      {(role === 'admin' || role === 'front office') && ( // Check if role is admin or front office
+      {(role === 'super admin' || role === 'front office') && ( 
         <Button variant="contained" color="secondary" onClick={handleOpen}>
           Add New Entry
         </Button>
@@ -224,7 +224,7 @@ function Collections() {
               <TableCell>Cheque</TableCell>
               <TableCell>Total Sales</TableCell>
               <TableCell>Shift</TableCell>
-              {(role === 'admin ' || role === 'front office') && (
+              {(role === 'super admin ' || role === 'front office') && (
                 <TableCell>Actions</TableCell>
               )}
               
@@ -244,7 +244,7 @@ function Collections() {
                 <TableCell>{row.total_sales}</TableCell>
                 <TableCell>{row.shift}</TableCell>
                 <TableCell>
-                  {(role === 'admin' || role === 'front office') && ( // Check if role is admin or front office
+                  {(role === ' super admin' || role === 'front office') && ( 
                     <Button variant="contained" color="primary" onClick={() => handleEdit(row)}>
                       Edit
                     </Button>

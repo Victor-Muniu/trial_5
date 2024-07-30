@@ -40,7 +40,7 @@ function CurioPos() {
         quantity: updatedQuantity
       });
     } else {
-      // Item does not exist, add new entry
+    
       setOrderData({
         ...orderData,
         drinksNames: [...orderData.drinksNames, item.name],
