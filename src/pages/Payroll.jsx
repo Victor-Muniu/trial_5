@@ -277,6 +277,7 @@ function Payroll() {
               <TableCell>PAYE</TableCell>
               <TableCell>HELB</TableCell>
               <TableCell>Housing Levy</TableCell>
+              <TableCell>Net Income</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Actions</TableCell>
@@ -292,6 +293,7 @@ function Payroll() {
                 <TableCell>{payroll.paye}</TableCell>
                 <TableCell>{payroll.helb}</TableCell>
                 <TableCell>{payroll.housing_Levy}</TableCell>
+                <TableCell>{payroll.net_income}</TableCell>
                 <TableCell>{payroll.fname}</TableCell>
                 <TableCell>{payroll.lname}</TableCell>
                 <TableCell>
