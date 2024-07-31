@@ -230,7 +230,7 @@ const Inventory = () => {
               <TableCell>Spoilt</TableCell>
               <TableCell>Unit Price</TableCell>
               <TableCell>Value</TableCell>
-              {role === 'procurement' && (
+              {role === 'admin' && (
                 <TableCell>Action</TableCell>
               )}
             </TableRow>
