@@ -15,7 +15,7 @@ const FoodProduction = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/');
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/cheffsLadder');
         const data = response.data;
         console.log(data);
         setData(data);
@@ -27,7 +27,7 @@ const FoodProduction = () => {
   }, []);
 
   const formatLineChartData = () => {
-    // Placeholder for line chart data
+  
     return data.map((item, index) => ({
       name: item.name,
       currentWeek: item.closing_stock,
@@ -36,7 +36,7 @@ const FoodProduction = () => {
   };
 
   const formatPieChartData = () => {
-    // Placeholder for pie chart data
+    
     return data.map((item, index) => ({
       name: item.name,
       value: item.closing_stock,
