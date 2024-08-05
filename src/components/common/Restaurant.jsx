@@ -70,22 +70,24 @@ function Restaurant() {
         const menuItemMap = {};
 
         data.forEach(order => {
-            const { menuId, quantity, amount } = order;
-            if (menuId && menuId.name) {
-                if (menuItemMap[menuId.name]) {
-                    menuItemMap[menuId.name].quantity += quantity;
-                    menuItemMap[menuId.name].revenue += amount;
-                } else {
-                    menuItemMap[menuId.name] = {
-                        quantity: quantity || 0,
-                        revenue: amount || 0,
-                        pointOfSale: menuId.point_of_sale || 'Unknown'
-                    };
+            order.items.forEach(item => {
+                const { menuId, quantity, amount } = item;
+                if (menuId && menuId.name) {
+                    if (menuItemMap[menuId.name]) {
+                        menuItemMap[menuId.name].quantity += quantity;
+                        menuItemMap[menuId.name].revenue += amount;
+                    } else {
+                        menuItemMap[menuId.name] = {
+                            quantity: quantity || 0,
+                            revenue: amount || 0,
+                            pointOfSale: menuId.point_of_sale || 'Unknown'
+                        };
+                    }
                 }
-            }
+            });
         });
 
-        console.log('Menu Item Map:', menuItemMap); // Log the menu item map for debugging
+        console.log('Menu Item Map:', menuItemMap);
 
         const menuItems = Object.keys(menuItemMap).map(name => ({
             name,
@@ -96,7 +98,7 @@ function Restaurant() {
 
         menuItems.sort((a, b) => b.quantity - a.quantity);
 
-        console.log('Top Menu Items:', menuItems); // Log the top menu items
+        console.log('Top Menu Items:', menuItems);
 
         return menuItems.slice(0, 5);
     };
@@ -105,15 +107,15 @@ function Restaurant() {
         const fetchData = async () => {
             const clubData = await getClubData();
             const restaurantData = await getRestaurantData();
-            console.log('Club Data:', clubData); // Log fetched club data
-            console.log('Restaurant Data:', restaurantData); // Log fetched restaurant data
+            console.log('Club Data:', clubData);
+            console.log('Restaurant Data:', restaurantData);
             setClubData(clubData || []);
             setRestaurantData(restaurantData || []);
             const formattedData = formatDataForChart(clubData || [], restaurantData || []);
             setChartData(formattedData);
             const allData = [...(clubData || []), ...(restaurantData || [])];
             const topItems = getTopMenuItems(allData);
-            console.log('Top Menu Items After Processing:', topItems); // Log top items after processing
+            console.log('Top Menu Items After Processing:', topItems);
             setTopMenuItems(topItems);
         };
         fetchData();
@@ -168,17 +170,17 @@ function Restaurant() {
                                         <TableCell>Menu Item</TableCell>
                                         <TableCell>Quantity</TableCell>
                                         <TableCell>Revenue Generated</TableCell>
-                                        <TableCell>Point Of Sale</TableCell>
+                                        
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {topMenuItems.length > 0 ? (
                                         topMenuItems.map((item, index) => (
                                             <TableRow key={index}>
-                                                <TableCell>{item.name}</TableCell>
+                                                <TableCell>{item.name}</TableCell> {/* Updated to item.name */}
                                                 <TableCell>{item.quantity}</TableCell>
                                                 <TableCell>{item.revenue}</TableCell>
-                                                <TableCell>{item.pointOfSale}</TableCell>
+                                                
                                             </TableRow>
                                         ))
                                     ) : (

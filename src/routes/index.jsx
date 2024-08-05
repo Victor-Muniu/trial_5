@@ -49,6 +49,7 @@ import Sales from "../pages/Sales";
 import CuiroPos from "../pages/CuiroPos";
 import BalanceSheet from "../pages/BalanceSheet";
 import Staff from "../pages/Staff";
+import Restaurant from "../components/common/Restaurant";
 
 
 const checkAuth = (path) => {
@@ -542,6 +543,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <Staff />
+        }
+      ]
+    },
+    {
+      path: '/restSales',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Restaurant />
         }
       ]
     },

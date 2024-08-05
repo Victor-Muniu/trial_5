@@ -111,7 +111,7 @@ function CheffsLadder() {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4">Cheffs Ladder ({filteredData.length})</Typography>
+      <Typography variant="h4">Chefs Ladder ({filteredData.length})</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <TextField
           label="Search for inventory..."

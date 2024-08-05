@@ -146,6 +146,20 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Dashboards" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/banquetting')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/cheffs_ladder')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Kitchen />
+            </ListItemIcon>
+            <ListItemText primary="Chefs Ladder" />
+          </ListItem>
+
           <ListItem button onClick={navigateTo('/inventory')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <Inventory />
@@ -158,19 +172,16 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Inhouse" />
           </ListItem>
-          <ListItem button onClick={navigateTo('/cheffs_ladder')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Kitchen />
+          
+
+          <ListItem button onClick={navigateTo('/restSales')}>
+            <ListItemIcon sx={{color: 'white'}}>
+              <MonetizationOn />
             </ListItemIcon>
-            <ListItemText primary="Chefs Ladder" />
+            <ListItemText primary="Sales"/>
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/banquetting')}>
-            <ListItemIcon sx={{ color: 'white' }}>
-              <Balcony />
-            </ListItemIcon>
-            <ListItemText primary="Banquetting" />
-          </ListItem>
+          
 
 
           <ListItem button onClick={handleLogout}>
