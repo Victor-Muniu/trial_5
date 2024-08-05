@@ -133,7 +133,7 @@ const FoodProduction = () => {
                       <TableCell>{row.unit}</TableCell>
                       <TableCell>{row.name}</TableCell>
                       <TableCell>{row.opening_stock}</TableCell>
-                      <TableCell>{row.issue}</TableCell>
+                      <TableCell>{row.issued}</TableCell>
                       <TableCell>{row.total}</TableCell>
                       <TableCell>{row.sold}</TableCell>
                       <TableCell>{row.RT}</TableCell>
