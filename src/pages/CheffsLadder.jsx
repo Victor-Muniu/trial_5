@@ -10,13 +10,14 @@ function CheffsLadder() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStockAlert, setSelectedStockAlert] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [open, setOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
   const [newStock, setNewStock] = useState({
     unit: '',
     name: '',
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     opening_stock: '',
     issued: '',
     RT: '',
@@ -29,15 +30,13 @@ function CheffsLadder() {
     const getData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-zrv3.onrender.com/cheffsLadder');
-        const data = response.data;
-        setData(data);
+        setData(response.data);
       } catch (error) {
         console.error('There was a problem with the axios operation:', error);
       }
     };
     getData();
   }, []);
-  console.log(data)
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
@@ -49,6 +48,10 @@ function CheffsLadder() {
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
   };
 
   const handleClickOpen = () => {
@@ -98,19 +101,33 @@ function CheffsLadder() {
 
   const filteredData = data.filter((item) => {
     return (
-      (selectedCategory === 'All' || item.group === selectedCategory)
+      (selectedCategory === 'All' || item.group === selectedCategory) &&
+      (selectedDate === '' || new Date(item.date).toISOString().split('T')[0] === selectedDate) &&
+      (searchTerm === '' || item.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
-  const role = localStorage.getItem('role')
+
+  const role = localStorage.getItem('role');
+
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4">Cheffs Ladder ({data.length})</Typography>
+      <Typography variant="h4">Cheffs Ladder ({filteredData.length})</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <TextField
           label="Search for inventory..."
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}
+        />
+        <TextField
+          label="Select Date"
+          type="date"
+          variant="outlined"
+          value={selectedDate}
+          onChange={handleDateChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
         <Select
           value={selectedCategory}
@@ -185,7 +202,7 @@ function CheffsLadder() {
         </Table>
       </TableContainer>
       <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>Add New Stock</DialogTitle>
+        <DialogTitle>{isEditMode ? "Edit Stock" : "Add New Stock"}</DialogTitle>
         <DialogContent>
           <TextField 
             autoFocus
@@ -224,11 +241,10 @@ function CheffsLadder() {
             value={newStock.issued}
             onChange={handleInputChange}
           />
-          
           <TextField 
             margin='dense'
             name='RT'
-            label='R.T'
+            label='RT'
             type='number'
             fullWidth
             value={newStock.RT}
@@ -243,17 +259,14 @@ function CheffsLadder() {
             value={newStock.sold}
             onChange={handleInputChange}
           />
-          <TextField
-            margin="dense"
-            name="date"
-            label="Date"
-            type="date"
+          <TextField 
+            margin='dense'
+            name='shift'
+            label='Shift'
+            type='text'
             fullWidth
-            value={newStock.date}
+            value={newStock.shift}
             onChange={handleInputChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
           <TextField 
             margin='dense'
@@ -264,19 +277,10 @@ function CheffsLadder() {
             value={newStock.remarks}
             onChange={handleInputChange}
           />
-          <TextField 
-            margin='dense'
-            name='shift'
-            label='Shift'
-            type='text'
-            fullWidth
-            value={newStock.shift}
-            onChange={handleInputChange}
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Add Stock</Button>
+          <Button onClick={handleSubmit}>{isEditMode ? "Save Changes" : "Add Product"}</Button>
         </DialogActions>
       </Dialog>
     </Box>
