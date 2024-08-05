@@ -162,7 +162,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemIcon sx={{ color: 'white' }}>
               <Kitchen />
             </ListItemIcon>
-            <ListItemText primary="Cheffs Ladder" />
+            <ListItemText primary="Chefs Ladder" />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/banquetting')}>
