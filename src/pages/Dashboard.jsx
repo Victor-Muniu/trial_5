@@ -13,7 +13,7 @@ function Dashboard() {
 
   return (
     <Box>
-      {user === 'service' || user === 'admin' && (
+      {user === 'service' && (
         <Restaurant />
       )}
       {user === 'food production' && (
@@ -30,6 +30,9 @@ function Dashboard() {
       )}
       {user === 'front office' &&(
         <Reception />
+      )}
+      {user === 'admin' && (
+        <Restaurant />
       )}
     </Box>
   )
