@@ -38,7 +38,6 @@ const FoodProduction = () => {
   const formatPieChartData = () => {
     
     return data.map((item, index) => ({
-      name: item.name,
       value: item.closing_stock,
     }));
   };
