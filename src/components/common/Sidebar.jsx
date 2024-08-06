@@ -1,6 +1,6 @@
 import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong } from '@mui/icons-material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse} from '@mui/material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -134,6 +134,13 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItem>
+
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItem>
         </List>
       )}
 
@@ -180,6 +187,16 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="KOT History" />
           </ListItem>
 
+
+          <ListItem button onClick={navigateTo('/recipe')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <ReceiptLong />
+            </ListItemIcon>
+            <ListItemText primary="Recipe Management" />
+          </ListItem>
+
+
+
           
 
           <ListItem button onClick={navigateTo('/restSales')}>
@@ -198,6 +215,15 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItem>
+          
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItem>
+
+          
         </List>
       )}
 
@@ -291,6 +317,13 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Logout" />
           </ListItem>
 
+          
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItem>
         </List>
       )}
 
@@ -467,6 +500,13 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItem>
+
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItem>
         </List>
       )}
 
@@ -590,6 +630,12 @@ const Sidebar = ({ sidebarWidth }) => {
               <Logout />
             </ListItemIcon>
             <ListItemText primary="Logout" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
           </ListItem>
         </List>
       )}
@@ -718,6 +764,13 @@ const Sidebar = ({ sidebarWidth }) => {
               <Logout />
             </ListItemIcon>
             <ListItemText primary="Logout" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
           </ListItem>
         </List>
       )}

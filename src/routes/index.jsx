@@ -51,6 +51,8 @@ import BalanceSheet from "../pages/BalanceSheet";
 import Staff from "../pages/Staff";
 import Restaurant from "../components/common/Restaurant";
 import KOThistory from "../pages/KOThistory";
+import Recipe from "../pages/Recipe";
+import ChangePassword from "../pages/ChangePassword";
 
 
 const checkAuth = (path) => {
@@ -564,6 +566,26 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <KOThistory />
+        }
+      ]
+    },
+    {
+      path: '/recipe',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <Recipe />
+        }
+      ]
+    },
+    {
+      path: '/change_password',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <ChangePassword />
         }
       ]
     },
