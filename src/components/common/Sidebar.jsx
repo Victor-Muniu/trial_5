@@ -196,6 +196,14 @@ const Sidebar = ({ sidebarWidth }) => {
           </ListItem>
 
 
+          <ListItem button onClick={navigateTo('/requisition_form')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Requisition Form" />
+          </ListItem>
+
+
 
           
 
