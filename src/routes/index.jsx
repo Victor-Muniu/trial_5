@@ -50,6 +50,7 @@ import CuiroPos from "../pages/CuiroPos";
 import BalanceSheet from "../pages/BalanceSheet";
 import Staff from "../pages/Staff";
 import Restaurant from "../components/common/Restaurant";
+import KOThistory from "../pages/KOThistory";
 
 
 const checkAuth = (path) => {
@@ -553,6 +554,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <Restaurant />
+        }
+      ]
+    },
+    {
+      path: '/kot_history',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <KOThistory />
         }
       ]
     },
