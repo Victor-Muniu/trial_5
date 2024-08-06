@@ -4,7 +4,7 @@ import { Container, TextField, Button, Typography, Box, FormControl, InputLabel,
 
 function RequisitionForm() {
   const role = localStorage.getItem('role');
-  const defaultRequisitionType = role === 'housekeeping' ? 'housekeeping' : role === 'front office' ? 'front office' : 'restaurant';
+  const defaultRequisitionType = role === 'housekeeping' ? 'housekeeping' : role === 'front office' ? 'front office' : role === 'food production' ? 'food production' : 'restaurant';
 
   const [formData, setFormData] = useState({
     itemName: '',
@@ -35,6 +35,9 @@ function RequisitionForm() {
           break;
         case 'front office':
           endpoint = 'https://hotel-backend-1-trhj.onrender.com/frontOfficeRequisitions';
+          break;
+        case 'food production': 
+          endpoint = 'https://hotel-backend-1-trhj.onrender.com/foodProductionRequisitions';
           break;
         default:
           throw new Error('Invalid requisition type');
@@ -68,7 +71,10 @@ function RequisitionForm() {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        {defaultRequisitionType === 'restaurant' ? 'Restaurant Requisition Form' : defaultRequisitionType === 'housekeeping' ? 'Housekeeping Requisition Form' : 'Front Office Requisition Form'}
+        {defaultRequisitionType === 'restaurant' ? 'Restaurant Requisition Form' :
+         defaultRequisitionType === 'housekeeping' ? 'Housekeeping Requisition Form' :
+         defaultRequisitionType === 'front office' ? 'Front Office Requisition Form' :
+         'Food Production Requisition Form'}
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -126,6 +132,7 @@ function RequisitionForm() {
             <MenuItem value="Club">Club</MenuItem>
             <MenuItem value="Front Office">Front Office</MenuItem>
             <MenuItem value="Housekeeping">Housekeeping</MenuItem>
+            <MenuItem value="Food Production">Food Production</MenuItem>
           </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
@@ -136,7 +143,8 @@ function RequisitionForm() {
             onChange={handleChange}
           >
             <MenuItem value="Pending">Pending</MenuItem>
-            
+            <MenuItem value="Approved">Approved</MenuItem>
+            <MenuItem value="Rejected">Rejected</MenuItem>
           </Select>
         </FormControl>
         <Box mt={2}>
