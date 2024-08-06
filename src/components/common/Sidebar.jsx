@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse} from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined, BedOutlined } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined, BedOutlined, FoodBankOutlined } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ const Sidebar = ({ sidebarWidth }) => {
   const [openMore, setOpenMore] = useState(false);
   const [openMore2, setOpenMore2] = useState(false)
   const [openMore3, setOpenMore3] = useState(false)
+  const [openMore4, setOpenMore4] = useState(false)
   const role = localStorage.getItem('role');
 
   const handleTransactionsClick = () => {
@@ -24,6 +25,9 @@ const Sidebar = ({ sidebarWidth }) => {
   }
   const handleMoreClick3 = () => {
     setOpenMore3(!openMore3)
+  }
+  const handleMoreClick4 = () => {
+    setOpenMore4(!openMore4)
   }
   const navigate = useNavigate();
 
@@ -769,6 +773,27 @@ const Sidebar = ({ sidebarWidth }) => {
             </List>
           </Collapse>
 
+
+          <ListItem button onClick={handleMoreClick4}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <FoodBankOutlined/>
+            </ListItemIcon>
+            <ListItemText primary="Food Production" />
+            {openMore4 ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+          </ListItem>
+          <Collapse in={openMore4} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/cheffs_ladder')}>
+                <ListItemText primary="Chef's Ladder" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/kot_history')}>
+                <ListItemText primary="KOT HISTORY" />
+              </ListItem>
+              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/recipe')}>
+                <ListItemText primary="Recipe Management" />
+              </ListItem>
+            </List>
+          </Collapse>
 
 
 
