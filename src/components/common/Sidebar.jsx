@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse} from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined, BedOutlined } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -202,6 +202,17 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Requisition Form" />
           </ListItem>
+
+
+          <ListItem button onClick={navigateTo('/reservations_analytics')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <BedOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Room Occupancy" />
+          </ListItem>
+
+
+
 
 
 
