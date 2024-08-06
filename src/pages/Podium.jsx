@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
+import StarIcon from '@mui/icons-material/Star'; 
 
-// Styled components
+
 const PodiumContainer = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
@@ -29,6 +30,11 @@ const PodiumAvatar = styled(Avatar)({
   marginRight: '10px',
 });
 
+const StarContainer = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+});
+
 function Podium() {
   const [staffSales, setStaffSales] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,31 +42,29 @@ function Podium() {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const restaurantResponse = await axios.get('https://hotel-backend-1-trhj.onrender.com/restaurantOrders');
-        const clubResponse = await axios.get('https://hotel-backend-1-trhj.onrender.com/clubBills');
-        
+        const [restaurantResponse, clubResponse] = await Promise.all([
+          axios.get('https://hotel-backend-1-trhj.onrender.com/restaurantBills'),
+          axios.get('https://hotel-backend-1-trhj.onrender.com/clubBills')
+        ]);
+
         const restaurantOrders = restaurantResponse.data;
         const clubOrders = clubResponse.data;
 
         const salesData = {};
 
-        // Process restaurant orders
-        restaurantOrders.forEach(order => {
-          const staffName = order.staffName || 'Unknown Staff';
-          if (!salesData[staffName]) {
-            salesData[staffName] = 0;
-          }
-          salesData[staffName] += order.total || 0;
-        });
+        const aggregateSales = (orders, key) => {
+          orders.forEach(order => {
+            const staffName = order.staffName || 'Unknown Staff';
+            if (!salesData[staffName]) {
+              salesData[staffName] = 0;
+            }
+            salesData[staffName] += order[key] || 0;
+          });
+        };
 
-        // Process club orders
-        clubOrders.forEach(order => {
-          const staffName = order.staffName || 'Unknown Staff';
-          if (!salesData[staffName]) {
-            salesData[staffName] = 0;
-          }
-          salesData[staffName] += order.amount || 0;
-        });
+        // Aggregate sales separately
+        aggregateSales(restaurantOrders, 'amount');
+        aggregateSales(clubOrders, 'amount');
 
         const sortedSales = Object.entries(salesData)
           .map(([staffName, totalSales]) => ({ staffName, totalSales }))
@@ -77,7 +81,18 @@ function Podium() {
     fetchSalesData();
   }, []);
 
-  
+  const renderStars = (position) => {
+    switch (position) {
+      case 1:
+        return <StarContainer><StarIcon sx={{ color: 'gold' }} /><StarIcon sx={{ color: 'gold' }} /><StarIcon sx={{ color: 'gold' }} /></StarContainer>;
+      case 2:
+        return <StarContainer><StarIcon sx={{ color: 'silver' }} /><StarIcon sx={{ color: 'silver' }} /></StarContainer>;
+      case 3:
+        return <StarContainer><StarIcon sx={{ color: '#cd7f32' }} /></StarContainer>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <PodiumContainer>
@@ -97,7 +112,10 @@ function Podium() {
             <TableBody>
               {staffSales.map((staff, index) => (
                 <PodiumItem key={index}>
-                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    {renderStars(index + 1)}
+                    {index + 1}
+                  </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <PodiumAvatar>{staff.staffName[0]}</PodiumAvatar>
