@@ -15,6 +15,7 @@ function OccupancyReport() {
 
   const fname = localStorage.getItem('fname');
   const lname = localStorage.getItem('lname');
+  const role = localStorage.getItem('role')
 
   useEffect(() => {
     const getData = async () => {
@@ -68,16 +69,16 @@ function OccupancyReport() {
     WinPrint.close();
   };
 
-  
-    const handleCheckout = async (id) => {
-      try {
-        await axios.delete(`https://hotel-backend-1-trhj.onrender.com/reservations/${id}`);
-        setData(data.filter(room => room._id !== id)); 
-      } catch (error) {
-        console.error('There was a problem with the delete operation:', error);
-      }
-    };
-  
+
+  const handleCheckout = async (id) => {
+    try {
+      await axios.delete(`https://hotel-backend-1-trhj.onrender.com/reservations/${id}`);
+      setData(data.filter(room => room._id !== id));
+    } catch (error) {
+      console.error('There was a problem with the delete operation:', error);
+    }
+  };
+
 
   return (
     <Container>
@@ -96,15 +97,18 @@ function OccupancyReport() {
                   ))
                 )}
               </Typography>
-              <Box display='flex' justifyContent='space-between' >
-              <Button variant="contained" color="primary" onClick={() => handleOpenReceipt(room.room_no)}>
-                Show Receipts
-              </Button>
-              <Button variant="contained" color="primary"  onClick={()=>handleCheckout(room._id)} >
-                  CheckOut 
-              </Button>
-              </Box>
-              
+
+              {role === 'front office' && (
+                <Box display='flex' justifyContent='space-between' ><Button variant="contained" color="primary" onClick={() => handleOpenReceipt(room.room_no)}>
+                  Show Receipts
+                </Button>
+                  <Button variant="contained" color="primary" onClick={() => handleCheckout(room._id)} >
+                    CheckOut
+                  </Button>
+                </Box>
+              )}
+
+
             </Paper>
           </Grid>
         ))}
