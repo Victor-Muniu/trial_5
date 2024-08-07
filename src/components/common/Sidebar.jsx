@@ -818,6 +818,210 @@ const Sidebar = ({ sidebarWidth }) => {
           </ListItem>
         </List>
       )}
+
+      {role === 'super admin' && (
+        <List>
+        <ListItem button onClick={navigateTo('/dashboard')}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Dashboard />
+          </ListItemIcon>
+          <ListItemText primary="Dashboards" />
+        </ListItem>
+
+
+        <ListItem button onClick={handleTransactionsClick}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <AccountBalance />
+          </ListItemIcon>
+          <ListItemText primary="Accounts" />
+          {openTransactions ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+        </ListItem>
+
+        <Collapse in={openTransactions} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/assets')}>
+              <ListItemText primary="Assets" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/suppliers')}>
+              <ListItemText primary="Address Book" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_invoice')}>
+              <ListItemText primary="Banquetting Invoice" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bank_statement')}>
+              <ListItemText primary="Bank Statement" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/balance_sheet')}>
+              <ListItemText primary="Balance Sheet" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/creditors')}>
+              <ListItemText primary="Creditors" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
+              <ListItemText primary="Daily Collections" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/debtors')}>
+              <ListItemText primary="Debtors" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/expense')}>
+              <ListItemText primary="Expenses" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/payroll')}>
+              <ListItemText primary="Pay Roll" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/payment_voucher')}>
+              <ListItemText primary="Payment Voucher" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/profit_loss')}>
+              <ListItemText primary="Profit $ Loss" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/purchases')}>
+              <ListItemText primary="Purchases" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/sales')}>
+              <ListItemText primary="Sales" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/trial_balance')}>
+              <ListItemText primary="Trial Balance" />
+            </ListItem>
+          </List>
+        </Collapse>
+
+        <ListItem button onClick={handleMoreClick}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Storefront />
+          </ListItemIcon>
+          <ListItemText primary="Front Office" />
+          {openMore ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+        </ListItem>
+        <Collapse in={openMore} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/ammenities')}>
+              <ListItemText primary="Ammenities" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting')}>
+              <ListItemText primary="Banqetting" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/stock_movement')}>
+              <ListItemText primary="Curio" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/curio_pos')}>
+              <ListItemText primary="Curio POS" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
+              <ListItemText primary="Daily Collections" />
+            </ListItem>
+            
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/laundry_service')}>
+              <ListItemText primary="Laudry Service" />
+            </ListItem>
+            
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/reservations_analytics')}>
+              <ListItemText primary="Reservations" />
+            </ListItem>
+
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/rooms')}>
+              <ListItemText primary="Rooms" />
+            </ListItem>
+            
+          </List>
+        </Collapse>
+
+
+        <ListItem button onClick={handleMoreClick2}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Storefront />
+          </ListItemIcon>
+          <ListItemText primary="Procurement" />
+          {openMore2 ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+        </ListItem>
+        <Collapse in={openMore2} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/inventory')}>
+              <ListItemText primary="Inventory" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/food_requisition')}>
+              <ListItemText primary="Food Production" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/front_requisitions')}>
+              <ListItemText primary="Front Office" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/housekeeping_requisition')}>
+              <ListItemText primary="House Keeping" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/service_requisition')}>
+              <ListItemText primary="Service" />
+            </ListItem>
+            
+          </List>
+        </Collapse>
+
+        <ListItem button onClick={handleMoreClick3}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Storefront />
+          </ListItemIcon>
+          <ListItemText primary="Service" />
+          {openMore3 ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+        </ListItem>
+        <Collapse in={openMore3} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/restaurant')}>
+              <ListItemText primary="Restaurant" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bar')}>
+              <ListItemText primary="Bar" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/podium')}>
+              <ListItemText primary="Podium" />
+            </ListItem>
+          </List>
+        </Collapse>
+
+
+        <ListItem button onClick={handleMoreClick4}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <FoodBankOutlined/>
+          </ListItemIcon>
+          <ListItemText primary="Food Production" />
+          {openMore4 ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+        </ListItem>
+        <Collapse in={openMore4} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/cheffs_ladder')}>
+              <ListItemText primary="Chef's Ladder" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/kot_history')}>
+              <ListItemText primary="KOT HISTORY" />
+            </ListItem>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/recipe')}>
+              <ListItemText primary="Recipe Management" />
+            </ListItem>
+          </List>
+        </Collapse>
+
+
+
+        <ListItem button onClick={navigateTo('/staff')}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Person3Outlined />
+          </ListItemIcon>
+          <ListItemText primary="Staff" />
+        </ListItem>
+        <ListItem button onClick={handleLogout}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <Logout />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
+
+        <ListItem button onClick={navigateTo('/change_password')}>
+          <ListItemIcon sx={{ color: 'white' }}>
+            <AccountBoxOutlined />
+          </ListItemIcon>
+          <ListItemText primary="My Account" />
+        </ListItem>
+      </List>
+      )}
     </Drawer>
   );
 };

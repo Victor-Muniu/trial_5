@@ -34,6 +34,9 @@ function Dashboard() {
       {user === 'admin' && (
         <Restaurant />
       )}
+      {user === 'super admin' && (
+        <Restaurant />
+      )}
     </Box>
   )
 }
