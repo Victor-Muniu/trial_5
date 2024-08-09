@@ -132,7 +132,7 @@ const Banquetting = () => {
     <StyledCard>
       <Typography variant="h6">Banquetting Schedule</Typography>
       <CardContent>
-        {role === 'front office' && (
+        {role === 'front office'|| role === 'super admin' && (
           <Button variant="contained" color="primary" onClick={() => {
             resetForm();
             setIsUpdate(false);
@@ -152,7 +152,7 @@ const Banquetting = () => {
         />
       </CardContent>
       <Dialog open={open} onClose={() => setOpen(false)}>
-        {role === 'front ofice' && (
+        {role === 'front ofice' || role === 'super admin' && (
           <DialogTitle>{isUpdate ? 'Update Banquetting' : 'Add Banquetting'}</DialogTitle>
         )}
         <DialogContent>
@@ -216,7 +216,7 @@ const Banquetting = () => {
               margin="normal"
             />
             <DialogActions>
-              {role === 'front office' && isUpdate && (
+              {role === 'front office' || role === 'super admin' && isUpdate && (
                 <Button onClick={handleDelete} color="error">
                   Delete
                 </Button>

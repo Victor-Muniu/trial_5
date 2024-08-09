@@ -115,7 +115,7 @@ function Rooms() {
           <Typography variant="body2">Vacant: {room.vacancy}</Typography>
           <Typography variant="body1">Clean: {room.clean}</Typography>
           <Typography variant="body2">Damage: {room.damage_report}</Typography>
-          {(role === 'admin' || role === 'housekeeping') && (
+          {(role === 'admin' || role === 'housekeeping' || role === 'super admin') && (
             <>
               <IconButton color="primary" onClick={() => handleEdit(room)}>
                 <Edit />

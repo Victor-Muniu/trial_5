@@ -115,7 +115,7 @@ function ProfitLoss() {
             {Object.keys(groupedData).map((group) => (
               groupedData[group].map((row, index) => (
                 <TableRow key={row._id}>
-                  <TableCell>{row.group_name} ({row._id})</TableCell>
+                  <TableCell>{row.group_name}</TableCell>
                   <TableCell align="right">{row.Debit.toLocaleString()}</TableCell>
                   <TableCell align="right">{row.Credit.toLocaleString()}</TableCell>
                 </TableRow>

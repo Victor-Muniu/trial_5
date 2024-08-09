@@ -1,92 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
+import { Button, Dialog, DialogTitle, DialogContent, Box, Typography, TextField, TableCell, TableRow, TableBody, TableHead, Table, TableContainer, Paper } from '@mui/material';
 import axios from 'axios';
-import {
-  Typography,
-  TableContainer,
-  Paper,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Grid,
-  Box,
-  TableCell,
-  TableHead,
-  Table,
-  TableRow,
-  TableBody,
-  TextField,
-} from '@mui/material';
-import ReactToPrint from 'react-to-print';
-
-const invoiceContainerStyle = {
-  fontFamily: "'Arial', sans-serif",
-  padding: '20px',
-  maxWidth: '800px',
-  margin: '0 auto',
-  border: '1px solid #ddd',
-  borderRadius: '5px',
-};
-
-const printStyle = {
-  '@media print': {
-    '@page': {
-      size: 'A4',
-      margin: '10mm',
-    },
-    body: {
-      margin: '0',
-    },
-    '#printableArea': {
-      margin: '0 auto',
-      border: 'none',
-    },
-    '.MuiDialogContent-root': {
-      padding: '0',
-    },
-    '.MuiDialog-paper': {
-      boxShadow: 'none',
-      margin: '0',
-    },
-    '.invoice-table': {
-      width: '100%',
-      borderCollapse: 'collapse',
-    },
-    '.invoice-table th, .invoice-table td': {
-      border: '1px solid #ddd',
-      padding: '8px',
-      textAlign: 'left',
-    },
-    '.invoice-total': {
-      float: 'right',
-    },
-    '.totalStyle': {
-      fontWeight: 'bold',
-      textAlign: 'right',
-      marginTop: '20px',
-    },
-  },
-};
+import InvoicePrint from './InvoicePrint'; // Update the import path as needed
 
 function BanquettingInvoice() {
-  const [data, setData] = useState([]);
-  const [invoiceData, setInvoiceData] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [data, setData] = React.useState([]);
+  const [groupedData, setGroupedData] = React.useState([]);
+  const [selectedInvoices, setSelectedInvoices] = React.useState([]);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
+  const [formData, setFormData] = React.useState({
     booking_no: '',
     discount: '',
     price: '',
     packs: '',
-    Totalamount: ''
+    Totalamount: '',
   });
   const banquettingInvoiceRef = useRef(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/banquettinginvoices');
         setData(response.data);
+        groupInvoices(response.data);
       } catch (error) {
         console.error('Error fetching banquetting invoices:', error);
       }
@@ -94,14 +31,27 @@ function BanquettingInvoice() {
     fetchData();
   }, []);
 
-  const handleFetchData = async (id) => {
-    try {
-      const response = await axios.get(`https://hotel-backend-1-trhj.onrender.com/banquettinginvoices/${id}`);
-      setInvoiceData(response.data);
-      setDialogOpen(true);
-    } catch (error) {
-      console.error('Error fetching invoice data:', error);
-    }
+  const groupInvoices = (invoices) => {
+    const grouped = invoices.reduce((acc, invoice) => {
+      const name = invoice.banquettingDetails.name;
+      if (!acc[name]) {
+        acc[name] = {
+          name: name,
+          totalAmount: 0,
+          invoices: [],
+        };
+      }
+      acc[name].totalAmount += invoice.Totalamount;
+      acc[name].invoices.push(invoice);
+      return acc;
+    }, {});
+
+    setGroupedData(Object.values(grouped));
+  };
+
+  const handleRowClick = (invoices) => {
+    setSelectedInvoices(invoices);
+    setDialogOpen(true);
   };
 
   const handleCreateInvoice = async () => {
@@ -111,29 +61,22 @@ function BanquettingInvoice() {
         discount: formData.discount.split(',').map(Number),
         price: formData.price.split(',').map(Number),
         packs: formData.packs.split(',').map(Number),
+        Totalamount: Number(formData.Totalamount),
       };
-      if (formData.Totalamount) {
-        preparedFormData.Totalamount = Number(formData.Totalamount);
-      }
       const response = await axios.post('https://hotel-backend-1-trhj.onrender.com/banquettinginvoices', preparedFormData);
       setData([...data, response.data]);
+      groupInvoices([...data, response.data]);
       setCreateDialogOpen(false);
       setFormData({
         booking_no: '',
         discount: '',
         price: '',
         packs: '',
-        Totalamount: ''
+        Totalamount: '',
       });
     } catch (error) {
       console.error('Error creating invoice:', error);
     }
-  };
-
-  const getCurrentDate = () => {
-    const now = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return now.toLocaleDateString(undefined, options);
   };
 
   const fname = localStorage.getItem('fname');
@@ -159,28 +102,18 @@ function BanquettingInvoice() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Booking No</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Workshop Name</TableCell>
-              <TableCell>Prices</TableCell>
-              <TableCell>Packs</TableCell>
               <TableCell>Total Amount (Ksh)</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((invoice) => (
-              <TableRow key={invoice.invoiceId}>
-                <TableCell>{invoice.banquettingDetails.booking_no}</TableCell>
-                <TableCell>{invoice.banquettingDetails.name}</TableCell>
-                <TableCell>{invoice.banquettingDetails.workshopName}</TableCell>
-                <TableCell>{invoice.price.join(', ')}</TableCell>
-                <TableCell>{invoice.packs.join(', ')}</TableCell>
-                <TableCell>{invoice.Totalamount}</TableCell>
+            {groupedData.map((group, index) => (
+              <TableRow key={index} onClick={() => handleRowClick(group.invoices)}>
+                <TableCell>{group.name}</TableCell>
+                <TableCell>{group.totalAmount}</TableCell>
                 <TableCell>
-                  <Button variant="contained" onClick={() => handleFetchData(invoice.invoiceId)}>
-                    Print Invoice
-                  </Button>
+                  <Button variant="contained">View Invoices</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -188,127 +121,67 @@ function BanquettingInvoice() {
         </Table>
       </TableContainer>
 
-      {invoiceData && (
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Invoice Details</DialogTitle>
-          <DialogContent>
-            <Box id="printableArea" sx={{ ...invoiceContainerStyle, ...printStyle }} ref={banquettingInvoiceRef}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="h6">EPASHIKINO RESORT & SPA</Typography>
-                  <Typography>Dealers in: Hotel Accommodation & Conference Services</Typography>
-                  <Typography sx={{ marginBottom: '10px' }}>PIN No: P051626100V</Typography>
-                  <Typography sx={{ marginBottom: '10px' }}>
-                    Client: <strong>{invoiceData.name}</strong>
-                    <br />
-                    Workshop name: {invoiceData.workshopName}
-                  </Typography>
-                  <Typography>Date: {getCurrentDate()}</Typography>
-                </Grid>
-                <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ marginBottom: '10px' }}>
-                    TEL/FAX: 0705455001, 0788455001
-                    <br />
-                    Email: info@epashikinoresort.com
-                    <br />
-                    Date: {getCurrentDate()}
-                    <br />
-                    Transaction no: {invoiceData.booking_no}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box sx={{ borderTop: '1px solid #ddd', borderBottom: '1px solid #ddd', margin: '20px 0' }}>
-                    <Table className="invoice-table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Item Description</TableCell>
-                          <TableCell align="right">Price</TableCell>
-                          <TableCell align="right">Paxs</TableCell>
-                          <TableCell align="right">Amount</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {invoiceData.prices.map((price, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{invoiceData.package}</TableCell>
-                            <TableCell align="right">{price}</TableCell>
-                            <TableCell align="right">{invoiceData.packs[index]}</TableCell>
-                            <TableCell align="right">{invoiceData.packs[index] * price}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                    <Typography>
-                      <span className="invoice-total">Total Amount {invoiceData.Totalamount}</span>
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography>
-                    Sub Total <span className="invoice-total">{invoiceData.Totalamount}</span>
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Typography sx={{ marginTop: '10px' }}>Prepared by: {fname} {lname}</Typography>
-              <Typography sx={{ marginTop: '10px' }}>
-                <strong>Thank you for choosing us. Welcome again</strong>
-              </Typography>
-            </Box>
-            <ReactToPrint
-              trigger={() => <Button variant="contained" sx={{ marginTop: '20px' }}>Print</Button>}
-              content={() => banquettingInvoiceRef.current}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
-
-      <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)}>
-        <DialogTitle>Create Invoice</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Booking No"
-            name="booking_no"
-            value={formData.booking_no}
-            onChange={handleFormChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Discount"
-            name="discount"
-            value={formData.discount}
-            onChange={handleFormChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Price"
-            name="price"
-            value={formData.price}
-            onChange={handleFormChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Packs"
-            name="packs"
-            value={formData.packs}
-            onChange={handleFormChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Total Amount"
-            name="Totalamount"
-            value={formData.Totalamount}
-            onChange={handleFormChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button variant="contained" onClick={handleCreateInvoice} sx={{ marginTop: '20px' }}>
-            Create
-          </Button>
+      {/* Print Invoice Dialog */}
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Banquetting Invoice</DialogTitle>
+        <DialogContent dividers>
+          {selectedInvoices && (
+            <InvoicePrint ref={banquettingInvoiceRef} selectedInvoices={selectedInvoices} fname={fname} lname={lname} />
+          )}
         </DialogContent>
+      </Dialog>
+
+      {/* Create Invoice Dialog */}
+      <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Create New Invoice</DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ padding: 2 }}>
+            <TextField
+              name="booking_no"
+              label="Booking No"
+              fullWidth
+              margin="normal"
+              value={formData.booking_no}
+              onChange={handleFormChange}
+            />
+            <TextField
+              name="discount"
+              label="Discount (comma-separated)"
+              fullWidth
+              margin="normal"
+              value={formData.discount}
+              onChange={handleFormChange}
+            />
+            <TextField
+              name="price"
+              label="Price (comma-separated)"
+              fullWidth
+              margin="normal"
+              value={formData.price}
+              onChange={handleFormChange}
+            />
+            <TextField
+              name="packs"
+              label="Packs (comma-separated)"
+              fullWidth
+              margin="normal"
+              value={formData.packs}
+              onChange={handleFormChange}
+            />
+            <TextField
+              name="Totalamount"
+              label="Total Amount"
+              fullWidth
+              margin="normal"
+              type="number"
+              value={formData.Totalamount}
+              onChange={handleFormChange}
+            />
+          </Box>
+        </DialogContent>
+        <Box sx={{ textAlign: 'center', marginTop: 2 }}>
+          <Button variant="contained" onClick={handleCreateInvoice}>Create Invoice</Button>
+        </Box>
       </Dialog>
     </TableContainer>
   );

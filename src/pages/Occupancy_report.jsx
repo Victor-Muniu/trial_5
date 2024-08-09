@@ -98,7 +98,7 @@ function OccupancyReport() {
                 )}
               </Typography>
 
-              {role === 'front office' && (
+              {role === 'front office' || role === 'super admin' && (
                 <Box display='flex' justifyContent='space-between' ><Button variant="contained" color="primary" onClick={() => handleOpenReceipt(room.room_no)}>
                   Show Receipts
                 </Button>

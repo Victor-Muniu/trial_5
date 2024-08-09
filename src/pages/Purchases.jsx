@@ -115,30 +115,30 @@ function Purchases() {
         amount: ''
       });
 
-      setShowAddForm(false); // Close the form after successful submission
+      setShowAddForm(false); 
     } catch (error) {
       console.error('Error adding purchase:', error.message);
-      // Handle specific errors here if needed
+      
       if (error.response) {
-        // The request was made and the server responded with a status code
+        
         console.error('Server responded with:', error.response.data);
       } else if (error.request) {
-        // The request was made but no response was received
+        
         console.error('No response received:', error.request);
       } else {
-        // Something happened in setting up the request that triggered an Error
+        
         console.error('Request setup error:', error.message);
       }
     }
   };
 
-  // Function to group purchases by month and year with vendor details
+  
   const groupPurchasesByMonthYear = () => {
     const groupedData = {};
     data.forEach(row => {
       const date = new Date(row.date);
-      const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`; // Example format: "7-2024"
-      const key = `${monthYear}_${row.vendor}`; // Unique key combining monthYear and vendor
+      const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`; 
+      const key = `${monthYear}_${row.vendor}`; 
       if (!groupedData[key]) {
         groupedData[key] = {
           monthYear,

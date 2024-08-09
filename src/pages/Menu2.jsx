@@ -15,7 +15,7 @@ function Menu2() {
   const [searchTerm, setSearchTerm] = useState('');
   const { table_no } = useParams();
   const fname = localStorage.getItem('fname');
-  const isAdmin = localStorage.getItem('role') === 'admin'; 
+  const isAdmin = localStorage.getItem('role') === 'super admin'; 
 
   useEffect(() => {
     const getData = async () => {

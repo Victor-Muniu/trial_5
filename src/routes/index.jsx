@@ -53,6 +53,7 @@ import Restaurant from "../components/common/Restaurant";
 import KOThistory from "../pages/KOThistory";
 import Recipe from "../pages/Recipe";
 import ChangePassword from "../pages/ChangePassword";
+import PrintTest from "../pages/PrintTest";
 
 
 const checkAuth = (path) => {
@@ -586,6 +587,16 @@ export const router = createBrowserRouter([
         {
           index:true,
           element: <ChangePassword />
+        }
+      ]
+    },
+    {
+      path: '/test',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <PrintTest />
         }
       ]
     },
