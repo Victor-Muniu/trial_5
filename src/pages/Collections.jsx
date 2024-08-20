@@ -224,7 +224,7 @@ function Collections() {
               <TableCell>Cheque</TableCell>
               <TableCell>Total Sales</TableCell>
               <TableCell>Shift</TableCell>
-              {(role === 'super admin ') && (
+              {(role === 'super admin' ) && (
                 <TableCell>Actions</TableCell>
               )}
               
@@ -244,7 +244,7 @@ function Collections() {
                 <TableCell>{row.total_sales}</TableCell>
                 <TableCell>{row.shift}</TableCell>
                 <TableCell>
-                  {(role === ' super admin') && ( 
+                  {(role === 'super admin') && ( 
                     <Button variant="contained" color="primary" onClick={() => handleEdit(row)}>
                       Edit
                     </Button>
