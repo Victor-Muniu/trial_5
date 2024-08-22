@@ -59,6 +59,14 @@ const Sidebar = ({ sidebarWidth }) => {
               <Dashboard />
             </ListItemIcon>
             <ListItemText primary="Dashboards" />
+
+            
+          </ListItem>
+          <ListItem button onClick={navigateTo('/banquetting_form')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting Form" />
           </ListItem>
           <ListItem button onClick={handleTransactionsClick}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -108,6 +116,20 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary="Banquetting" />
           </ListItem>
 
+          <ListItem button onClick={navigateTo('/banquetting_req')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting Requisitions" />
+          </ListItem>
+
+
+          <ListItem button onClick={navigateTo('/inventory')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Inventory />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
+          </ListItem>
           <ListItem button onClick={navigateTo('/bills2')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <NoteAdd />
@@ -163,6 +185,21 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Banquetting" />
           </ListItem>
+
+          <ListItem button onClick={navigateTo('/banquetting_form')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting Form" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/banquetting_req')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting Requisitions" />
+          </ListItem>
+
 
           <ListItem button onClick={navigateTo('/cheffs_ladder')}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -280,6 +317,9 @@ const Sidebar = ({ sidebarWidth }) => {
           </ListItem>
           <Collapse in={openMore} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_req')}>
+                <ListItemText primary="Banquetting" />
+              </ListItem>
               <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/food_requisition')}>
                 <ListItemText primary="Food Production" />
               </ListItem>
@@ -638,6 +678,14 @@ const Sidebar = ({ sidebarWidth }) => {
               <RequestQuoteOutlined />
             </ListItemIcon>
             <ListItemText primary="Requisition Form" />
+          </ListItem>
+          s
+
+          <ListItem button onClick={navigateTo('/front_requisition')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Requisitions" />
           </ListItem>
 
           <ListItem button onClick={navigateTo('/rooms')}>

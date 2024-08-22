@@ -54,6 +54,8 @@ import KOThistory from "../pages/KOThistory";
 import Recipe from "../pages/Recipe";
 import ChangePassword from "../pages/ChangePassword";
 import PrintTest from "../pages/PrintTest";
+import BanquettingRequisitionForm from "../pages/BanquettingRequisitions";
+import BanquettingReq from "../pages/BanquettingReq";
 
 
 const checkAuth = (path) => {
@@ -600,6 +602,29 @@ export const router = createBrowserRouter([
         }
       ]
     },
+
+    {
+      path: '/banquetting_form',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <BanquettingRequisitionForm />
+        }
+      ]
+    },
+    
+    {
+      path: '/banquetting_req',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <BanquettingReq />
+        }
+      ]
+    },
+    
     {
       path: "*",
       element: <Navigate to={checkAuth()} replace />, 
