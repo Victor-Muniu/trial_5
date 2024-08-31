@@ -491,9 +491,7 @@ const Sidebar = ({ sidebarWidth }) => {
               <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting')}>
                 <ListItemText primary="Confrences" />
               </ListItem>
-              <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_invoice')}>
-                <ListItemText primary="Banqutting Invoice" />
-              </ListItem>
+              
             </List>
           </Collapse>
 
@@ -518,7 +516,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItemText primary='Creditors' />
           </ListItem>
 
-          <ListItem button onClick={navigateTo('/debtors')}>
+          <ListItem button onClick={navigateTo('/banquetting_invoice')}>
             <ListItemIcon sx={{ color: 'white' }}>
               <MoneyOffCsred />
             </ListItemIcon>
@@ -962,9 +960,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/suppliers')}>
               <ListItemText primary="Address Book" />
             </ListItem>
-            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_invoice')}>
-              <ListItemText primary="Banquetting Invoice" />
-            </ListItem>
+            
             <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/bank_statement')}>
               <ListItemText primary="Bank Statement" />
             </ListItem>
@@ -977,7 +973,7 @@ const Sidebar = ({ sidebarWidth }) => {
             <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/collections')}>
               <ListItemText primary="Daily Collections" />
             </ListItem>
-            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/debtors')}>
+            <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_invoice')}>
               <ListItemText primary="Debtors" />
             </ListItem>
             <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/expense')}>
