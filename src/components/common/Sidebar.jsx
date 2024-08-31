@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse} from '@mui/material';
-import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined, BedOutlined, FoodBankOutlined } from '@mui/icons-material';
+import { Dashboard, Report, ExpandLess, ExpandMore, Logout, PointOfSaleOutlined, MonetizationOn, Balcony, Inventory, AirlineSeatIndividualSuite, Kitchen, RequestQuote, SupervisorAccount, Contacts, ListAlt, Paid, Shop, Balance, TrendingDown, AccountBalance, Air, WebAsset, MoneyOffCsred, Collections, LocalAtm, Bed, Article, Checkroom, BookOnline, Analytics, SupportAgent, RoomService, RequestQuoteOutlined, NoteAdd, AddBusiness, Games, Recycling, Receipt, CurrencyExchange, Person3Outlined, Storefront, ReceiptLong, AccountBoxOutlined, BedOutlined, FoodBankOutlined, Pages, SensorOccupied } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -392,7 +392,66 @@ const Sidebar = ({ sidebarWidth }) => {
 
 
 
+      {role === 'house keeping' && (
+        <List>
+          <ListItem button onClick={navigateTo('/dashboard')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Dashboard />
+            </ListItemIcon>
+            <ListItemText primary="Dashboards" />
+          </ListItem>
 
+          <ListItem button onClick={navigateTo('/banquetting')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Balcony />
+            </ListItemIcon>
+            <ListItemText primary="Banquetting" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/inventory')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Inventory />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
+          </ListItem>
+          <ListItem button onClick={navigateTo('/reservations_analytics')}>
+            <ListItemIcon sx={{color: 'white'}}>
+              <SensorOccupied />
+            </ListItemIcon>
+            <ListItemText primary='Occupancy'/>
+          </ListItem>
+          <ListItem button onClick={navigateTo('/rooms')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Bed />
+            </ListItemIcon>
+            <ListItemText primary="Rooms" />
+          </ListItem>
+
+          <ListItem button onClick={navigateTo('/requisition_form')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <RequestQuoteOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Requisition Form" />
+          </ListItem>
+
+
+
+
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+          
+          <ListItem button onClick={navigateTo('/change_password')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <AccountBoxOutlined />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItem>
+        </List>
+      )}
 
 
 
@@ -679,7 +738,7 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItemIcon>
             <ListItemText primary="Requisition Form" />
           </ListItem>
-          s
+          
 
           <ListItem button onClick={navigateTo('/front_requisition')}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -741,6 +800,14 @@ const Sidebar = ({ sidebarWidth }) => {
               </ListItem>
             </List>
           </Collapse>
+
+          <ListItem button onClick={navigateTo('/blog')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Pages />
+            </ListItemIcon>
+            <ListItemText primary="Blog" />
+          </ListItem>
+
 
           <ListItem button onClick={handleMoreClick}>
             <ListItemIcon sx={{ color: 'white' }}>
@@ -885,6 +952,8 @@ const Sidebar = ({ sidebarWidth }) => {
           {openTransactions ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
         </ListItem>
 
+
+
         <Collapse in={openTransactions} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/assets')}>
@@ -934,6 +1003,13 @@ const Sidebar = ({ sidebarWidth }) => {
             </ListItem>
           </List>
         </Collapse>
+
+        <ListItem button onClick={navigateTo('/blog')}>
+            <ListItemIcon sx={{ color: 'white' }}>
+              <Pages />
+            </ListItemIcon>
+            <ListItemText primary="Blog" />
+          </ListItem>
 
         <ListItem button onClick={handleMoreClick}>
           <ListItemIcon sx={{ color: 'white' }}>

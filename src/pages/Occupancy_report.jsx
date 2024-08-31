@@ -82,7 +82,12 @@ function OccupancyReport() {
 
   return (
     <Container>
+      {role === 'front office' && (
       <Typography variant="h6">Room Bills</Typography>
+      )}
+      {role === 'house keeping' && (
+        <Typography variant="h6">Occupancy report</Typography>
+      )}
       <Grid container spacing={3}>
         {data.map((room, index) => (
           <Grid item xs={12} md={4} key={index}>

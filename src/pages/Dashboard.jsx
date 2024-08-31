@@ -26,7 +26,7 @@ function Dashboard() {
         <Accounts />
       )}
       {user === 'house keeping' &&(
-        <HouseKeeping />
+        <Reception />
       )}
       {user === 'front office' &&(
         <Reception />

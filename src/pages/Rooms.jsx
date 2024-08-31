@@ -115,7 +115,7 @@ function Rooms() {
           <Typography variant="body2">Vacant: {room.vacancy}</Typography>
           <Typography variant="body1">Clean: {room.clean}</Typography>
           <Typography variant="body2">Damage: {room.damage_report}</Typography>
-          {(role === 'admin' || role === 'housekeeping' || role === 'super admin') && (
+          {(role === 'admin' || role === 'house keeping' || role === 'super admin') && (
             <>
               <IconButton color="primary" onClick={() => handleEdit(room)}>
                 <Edit />
@@ -135,7 +135,7 @@ function Rooms() {
       <Typography variant="h4" gutterBottom>
         Room Status
       </Typography>
-      {(role === 'admin' || role === 'housekeeping') && (
+      {(role === 'admin' || role === 'super admin') && (
         <Button variant="contained" color="primary" onClick={handleAddNewRoom}>Add New Room</Button>
       )}
 

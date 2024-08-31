@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, TextField, Button, Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 
 function RequisitionForm() {
   const role = localStorage.getItem('role');
@@ -17,9 +18,28 @@ function RequisitionForm() {
     requisitionType: defaultRequisitionType
   });
 
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
+        setItems(response.data);
+      } catch (error) {
+        console.error('There was a problem fetching the items:', error);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleItemNameChange = (event, value) => {
+    setFormData({ ...formData, itemName: value ? value.name : '' });
   };
 
   const handleSubmit = async (e) => {
@@ -36,7 +56,7 @@ function RequisitionForm() {
         case 'front office':
           endpoint = 'https://hotel-backend-1-trhj.onrender.com/frontOfficeRequisitions';
           break;
-        case 'food production': 
+        case 'food production':
           endpoint = 'https://hotel-backend-1-trhj.onrender.com/foodProductionRequisitions';
           break;
         default:
@@ -61,13 +81,6 @@ function RequisitionForm() {
     }
   };
 
-  useEffect(() => {
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      requisitionType: defaultRequisitionType
-    }));
-  }, [defaultRequisitionType]);
-
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
@@ -77,13 +90,15 @@ function RequisitionForm() {
          'Food Production Requisition Form'}
       </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField
-          label="Item Name"
-          name="itemName"
-          value={formData.itemName}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
+        <Autocomplete
+          options={items}
+          getOptionLabel={(option) => option.name || ''} // Ensure this matches your data structure
+          value={items.find(item => item.name === formData.itemName) || null}
+          onChange={handleItemNameChange}
+          isOptionEqualToValue={(option, value) => option.name === value}
+          renderInput={(params) => (
+            <TextField {...params} label="Item Name" margin="normal" fullWidth />
+          )}
         />
         <TextField
           label="Quantity"
@@ -143,8 +158,7 @@ function RequisitionForm() {
             onChange={handleChange}
           >
             <MenuItem value="Pending">Pending</MenuItem>
-            <MenuItem value="Approved">Approved</MenuItem>
-            <MenuItem value="Rejected">Rejected</MenuItem>
+            
           </Select>
         </FormControl>
         <Box mt={2}>

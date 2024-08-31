@@ -56,6 +56,7 @@ import ChangePassword from "../pages/ChangePassword";
 import PrintTest from "../pages/PrintTest";
 import BanquettingRequisitionForm from "../pages/BanquettingRequisitions";
 import BanquettingReq from "../pages/BanquettingReq";
+import NewsPage from "../pages/NewsPage";
 
 
 const checkAuth = (path) => {
@@ -624,7 +625,16 @@ export const router = createBrowserRouter([
         }
       ]
     },
-    
+    {
+      path: '/blog',
+      element: <MainLayout />,
+      children: [
+        {
+          index:true,
+          element: <NewsPage />
+        }
+      ]
+    },
     {
       path: "*",
       element: <Navigate to={checkAuth()} replace />, 

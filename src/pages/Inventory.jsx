@@ -209,7 +209,7 @@ const Inventory = () => {
             shrink: true,
           }}
         />
-        {(role === 'admin' || role === 'procurement') && (
+        {(role === 'super admin' || role === 'procurement') && (
           <>
             <Button variant="contained" color="primary" onClick={handleClickOpen}>+ Add Product</Button>
             <Button variant="contained" color="secondary" onClick={handleUploadDialogOpen}>Upload File</Button>
@@ -230,7 +230,7 @@ const Inventory = () => {
               <TableCell>Spoilt</TableCell>
               <TableCell>Unit Price</TableCell>
               <TableCell>Value</TableCell>
-              {role === 'admin' && (
+              {role === 'super admin' && (
                 <TableCell>Action</TableCell>
               )}
             </TableRow>
@@ -248,7 +248,7 @@ const Inventory = () => {
                 <TableCell>{row.spoilt}</TableCell>
                 <TableCell>{row.unit_price}</TableCell>
                 <TableCell>{(row.quantity - row.spoilt) * row.unit_price}</TableCell>
-                {role === 'admin' && (
+                {role === 'super admin' && (
                   <TableCell>
                     <Button onClick={() => handleEdit(row)}>
                       <Edit />
