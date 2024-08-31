@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, TextField, Button, Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText, Autocomplete } from '@mui/material';
 
 function BanquettingRequisitionForm() {
   const [formData, setFormData] = useState({
@@ -13,9 +13,28 @@ function BanquettingRequisitionForm() {
     status: ''
   });
 
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('https://hotel-backend-1-trhj.onrender.com/items');
+        setItems(response.data);
+      } catch (error) {
+        console.error('There was a problem fetching the items:', error);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleItemNameChange = (event, value) => {
+    setFormData({ ...formData, itemName: value ? value.name : '' });
   };
 
   const handleSubmit = async (e) => {
@@ -45,13 +64,15 @@ function BanquettingRequisitionForm() {
         Banquetting Requisition Form
       </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField
-          label="Item Name"
-          name="itemName"
-          value={formData.itemName}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
+        <Autocomplete
+          options={items}
+          getOptionLabel={(option) => option.name || ''} 
+          value={items.find(item => item.name === formData.itemName) || null}
+          onChange={handleItemNameChange}
+          isOptionEqualToValue={(option, value) => option.name === value}
+          renderInput={(params) => (
+            <TextField {...params} label="Item Name" margin="normal" fullWidth />
+          )}
         />
         <TextField
           label="Quantity"
@@ -99,6 +120,7 @@ function BanquettingRequisitionForm() {
             <MenuItem value="Restaurant">Restaurant</MenuItem>
             <MenuItem value="Food Production">Food Production</MenuItem>
           </Select>
+          <FormHelperText>Select the department for the requisition.</FormHelperText>
         </FormControl>
         <FormControl fullWidth margin="normal">
           <InputLabel>Status</InputLabel>
@@ -111,6 +133,7 @@ function BanquettingRequisitionForm() {
             <MenuItem value="Approved">Approved</MenuItem>
             <MenuItem value="Rejected">Rejected</MenuItem>
           </Select>
+          <FormHelperText>Select the current status of the requisition.</FormHelperText>
         </FormControl>
         <Box mt={2}>
           <Button variant="contained" color="primary" type="submit" fullWidth>
