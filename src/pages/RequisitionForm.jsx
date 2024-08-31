@@ -5,7 +5,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 function RequisitionForm() {
   const role = localStorage.getItem('role');
-  const defaultRequisitionType = role === 'housekeeping' ? 'housekeeping' : role === 'front office' ? 'front office' : role === 'food production' ? 'food production' : 'restaurant';
+  const defaultRequisitionType = role === 'house keeping' ? 'house keeping' : role === 'front office' ? 'front office' : role === 'food production' ? 'food production' : 'restaurant';
 
   const [formData, setFormData] = useState({
     itemName: '',
@@ -50,7 +50,7 @@ function RequisitionForm() {
         case 'restaurant':
           endpoint = 'https://hotel-backend-1-trhj.onrender.com/restaurantRequisitions';
           break;
-        case 'housekeeping':
+        case 'house keeping':
           endpoint = 'https://hotel-backend-1-trhj.onrender.com/houseKeepingRequisitions';
           break;
         case 'front office':
@@ -62,6 +62,8 @@ function RequisitionForm() {
         default:
           throw new Error('Invalid requisition type');
       }
+
+      console.log('Posting to endpoint:', endpoint); // Log endpoint for debugging
 
       const response = await axios.post(endpoint, formData);
       console.log('Requisition created:', response.data);
@@ -85,17 +87,17 @@ function RequisitionForm() {
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
         {defaultRequisitionType === 'restaurant' ? 'Restaurant Requisition Form' :
-         defaultRequisitionType === 'housekeeping' ? 'Housekeeping Requisition Form' :
+         defaultRequisitionType === 'house keeping' ? 'Housekeeping Requisition Form' :
          defaultRequisitionType === 'front office' ? 'Front Office Requisition Form' :
          'Food Production Requisition Form'}
       </Typography>
       <form onSubmit={handleSubmit}>
         <Autocomplete
           options={items}
-          getOptionLabel={(option) => option.name || ''} // Ensure this matches your data structure
+          getOptionLabel={(option) => option.name || ''} 
           value={items.find(item => item.name === formData.itemName) || null}
           onChange={handleItemNameChange}
-          isOptionEqualToValue={(option, value) => option.name === value}
+          isOptionEqualToValue={(option, value) => option.name === value.name} // Correct comparison
           renderInput={(params) => (
             <TextField {...params} label="Item Name" margin="normal" fullWidth />
           )}
@@ -158,7 +160,6 @@ function RequisitionForm() {
             onChange={handleChange}
           >
             <MenuItem value="Pending">Pending</MenuItem>
-            
           </Select>
         </FormControl>
         <Box mt={2}>
