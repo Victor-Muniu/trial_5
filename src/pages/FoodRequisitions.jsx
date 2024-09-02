@@ -24,7 +24,7 @@ function FoodRequisitions() {
 
   const handleApprove = async (row) => {
     const patchData = {
-      itemName: row.itemID.name,
+      itemName: row.itemID.name,  // Use row.itemID.name instead of row.itemName
       quantity: row.quantity,
       unit: row.unit,
       description: row.description,
@@ -68,7 +68,7 @@ function FoodRequisitions() {
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell>{row.itemName}</TableCell>
+              <TableCell>{row.itemID.name}</TableCell>
               <TableCell>{row.department}</TableCell>
               <TableCell>{row.quantity}</TableCell>
               <TableCell>{row.unit}</TableCell>

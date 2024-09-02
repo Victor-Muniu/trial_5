@@ -1057,6 +1057,9 @@ const Sidebar = ({ sidebarWidth }) => {
         </ListItem>
         <Collapse in={openMore2} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+          <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/banquetting_req')}>
+                <ListItemText primary="Banquetting" />
+              </ListItem>
             <ListItem button sx={{ pl: 4 }} onClick={navigateTo('/inventory')}>
               <ListItemText primary="Inventory" />
             </ListItem>
